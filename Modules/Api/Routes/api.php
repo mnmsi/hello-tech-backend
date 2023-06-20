@@ -25,6 +25,7 @@ use Modules\Api\Http\Controllers\System\SiteSettingController;
 use Modules\Api\Http\Controllers\System\SystemAddressController;
 use Modules\Api\Http\Controllers\System\TermsConditionController;
 use Modules\Api\Http\Controllers\System\TestimonialController;
+use Modules\Api\Http\Controllers\System\VideoReviewController;
 use Modules\Api\Http\Controllers\User\UserAddressController;
 use Modules\Api\Http\Controllers\User\UserController;
 
@@ -48,7 +49,9 @@ Route::middleware('guest')->group(function () {
     Route::get('banners', [BannerController::class, 'banners']);                // Banner Routes
     Route::get('testimonials', [TestimonialController::class, 'testimonials']); // Testimonial Routes
     Route::get('showrooms', [ShowroomController::class, 'showrooms']);          // Showroom Routes
-    Route::get('colors', [ColorController::class, 'colors']);                   // Color Routes
+    Route::get('colors', [ColorController::class, 'colors']); // Color Routes
+    //    route for video review
+    Route::get('video-review', [VideoReviewController::class, 'index']);
 
     // Routes on OrderController
     Route::controller(OrderController::class)->group(function () {
@@ -120,7 +123,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Product Routes (Auth) or (Guest) Mode
 Route::middleware('guest')->group(function () {
-
+    // brands route
+    Route::prefix('brands')->group(function () {
+        Route::get('/', [BrandController::class, 'index']);
+        Route::get('/popular', [BrandController::class, 'popularBrands']);
+    });
+    //Routes on Product Category
+    Route::controller(CategoryController::class)->prefix('categories')->group(function () {
+        Route::get('/', 'categories');                // Product Categories
+        Route::get('popular-categories', 'popularCategories'); // Product Popular Categories
+    });
     // Routes on product prefix
     Route::prefix('product')->group(function () {
 
@@ -128,40 +140,6 @@ Route::middleware('guest')->group(function () {
         Route::get('counts', [ProductController::class, 'totalProductType']);          // Total Product Count
         Route::get('review/{id}', [ReviewController::class, 'review']); // Product Review
     });
-
-    // Routes on BikeController
-
-
-    // Routes on AccessoryController
-
-
-    // Routes on bike prefix for bike brand and bike category
-    Route::controller(BrandController::class)->group(function () {
-
-        // Routes on bike prefix for bike brand and popular bike brand
-        Route::prefix('bike')->group(function () {
-            Route::get('brands', 'bikeBrands');                    // Product Brands
-            Route::get('popular-brands', 'popularBikeBrands');     // Product Popular Brands
-        });
-
-        // Accessory Brand Route
-        Route::prefix('accessory')->group(function () {
-            Route::get('brands', 'accessoryBrands');                // Accessory Brands
-            Route::get('popular-brands', 'popularAccessoryBrands'); // Accessory Popular Brands
-        });
-
-        Route::get('category/brands/{id}', 'categoryBrands');       // Accessory Category Brands
-    });
-
-    // Routes on accessory prefix for accessory category
-    Route::controller(CategoryController::class)->prefix('accessory')->group(function () {
-        Route::get('categories', 'categories');                // Product Categories
-        Route::get('popular-categories', 'popularCategories'); // Product Popular Categories
-    });
-
-
-
-
     //        Route on Terms and Condition
     Route::controller(TermsConditionController::class)->group(function () {
         Route::get('terms', 'terms');

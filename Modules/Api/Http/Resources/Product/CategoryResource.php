@@ -18,8 +18,11 @@ class CategoryResource extends JsonResource
     {
         return [
             'id'        => $this->id,
-            'name'      => $this->name,
-            'image_url' => asset('storage/' . $this->image_url),
+            'name'      => ucwords(strtolower($this->name)),
+            'slug'      => $this->slug,
+            'icon'      => str_contains($this->icon, 'http') ? $this->icon : asset('storage/' . $this->icon),
+            'count'     => 100 , // $this->products()->count(), change to 100 for testing
+            'image_url' => str_contains($this->image_url, 'http') ? $this->image_url : asset('storage/' . $this->image_url),
         ];
     }
 }

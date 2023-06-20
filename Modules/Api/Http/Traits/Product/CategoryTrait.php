@@ -13,8 +13,8 @@ trait CategoryTrait
     public function getCategories()
     {
         return Category::where('is_active', 1)
-                       ->orderBy('name', 'asc')
-                       ->get();
+            ->orderBy('name', 'asc')
+            ->get();
     }
 
     /**
@@ -23,8 +23,8 @@ trait CategoryTrait
     public function getPopularCategories()
     {
         return Category::where('is_active', 1)
-                       ->where('is_popular', 1)
-                       ->orderBy('name', 'asc')
-                       ->get();
+            ->where('is_popular', 1)
+            ->orderBy('name', 'asc')
+            ->get();
     }
 }

@@ -15,43 +15,22 @@ class BrandController extends Controller
     /**
      * @return JsonResponse
      */
-    public function bikeBrands()
+    public function index()
     {
         return $this->respondWithSuccessWithData(
-            new BrandCollection($this->getBikeBrands())
+            new BrandCollection($this->brands())
         );
     }
 
     /**
      * @return JsonResponse
      */
-    public function popularBikeBrands()
+    public function popularBrands()
     {
         return $this->respondWithSuccessWithData(
-            BrandResource::collection($this->getPopularBikeBrands())
+            BrandResource::collection($this->getPopularBrands())
         );
     }
-
-    /**
-     * @return JsonResponse
-     */
-    public function accessoryBrands()
-    {
-        return $this->respondWithSuccessWithData(
-            new BrandCollection($this->getAccessoryBrands())
-        );
-    }
-
-    /**
-     * @return JsonResponse
-     */
-    public function popularAccessoryBrands()
-    {
-        return $this->respondWithSuccessWithData(
-            BrandResource::collection($this->getPopularAccessoryBrands())
-        );
-    }
-
     /**
      * @param $id
      * @return JsonResponse

@@ -12,58 +12,20 @@ trait BrandTrait
     /**
      * @return mixed
      */
-    public function getBikeBrands()
+    public function brands()
     {
-        return Brand::where('is_active', 1)
-            ->where(function ($query) {
-                $query->where('type', 'bike')
-                    ->orWhere('type', 'both');
-            })
-            ->orderBy('name')
+        return Brand::where('is_active', 1)->orderBy('id', 'desc')
             ->paginate(request('per_page', 9));
     }
 
     /**
      * @return mixed
      */
-    public function getPopularBikeBrands()
+    public function getPopularBrands()
     {
         return Brand::where('is_active', 1)
-            ->where(function ($query) {
-                $query->where('type', 'bike')
-                    ->orWhere('type', 'both');
-            })
             ->where('is_popular', 1)
-            ->orderBy('name', 'asc')
-            ->get();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAccessoryBrands()
-    {
-        return Brand::where('is_active', 1)
-            ->where(function ($query) {
-                $query->where('type', 'accessory')
-                    ->orWhere('type', 'both');
-            })
-            ->orderBy('name')
-            ->paginate(request('per_page', 9));
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPopularAccessoryBrands()
-    {
-        return Brand::where('is_active', 1)
-            ->where(function ($query) {
-                $query->where('type', 'accessory')
-                    ->orWhere('type', 'both');
-            })
-            ->where('is_popular', 1)
-            ->orderBy('name', 'asc')
+            ->orderBy('id', 'asc')
             ->get();
     }
 
@@ -75,11 +37,7 @@ trait BrandTrait
     {
         return Brand::where('is_active', 1)
             ->where('category_id', $id)
-            ->where(function ($query) {
-                $query->where('type', 'accessory')
-                    ->orWhere('type', 'both');
-            })
-            ->orderBy('name')
+            ->orderBy('id', 'asc')
             ->get();
     }
 }

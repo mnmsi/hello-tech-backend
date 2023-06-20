@@ -228,7 +228,7 @@ class Product extends Resource
                         ->hideFromIndex()
                         ->hideWhenCreating()
                         ->readonly(),
-//                  color name
+                    //                  color name
                     Text::make('Color Name', 'color_name')
                         ->sortable()
                         ->rules('required', 'max:255')
@@ -237,7 +237,7 @@ class Product extends Resource
                                 'placeholder' => 'Enter name',
                             ],
                         ]),
-//                  color image
+                    //                  color image
                     Image::make('Color Image', 'color_image')
                         ->path('product_color')
                         ->disk('public')
@@ -247,14 +247,14 @@ class Product extends Resource
                         ->preview(function ($value, $disk) {
                             return $value ? Storage::disk($disk)->url($value) : null;
                         })->prunable(),
-//                  color stock
+                    //                  color stock
                     Number::make('Color Stock', 'color_stock')
                         ->min(0)
                         ->rules('required'),
 
                 ])->hideFromIndex()
                 ->hideFromDetail(),
-//            product specification
+            //            product specification
             Flexible::make('Add Product specification *', 'specification_list')
                 ->button('Add more specification')
                 ->addLayout('Select specification', 'video', [
@@ -263,7 +263,7 @@ class Product extends Resource
                         ->hideFromIndex()
                         ->hideWhenCreating()
                         ->readonly(),
-//                    title
+                    //                    title
                     Text::make('Specification Title', 'specification_title')
                         ->sortable()
                         ->rules('required', 'max:255')
@@ -272,7 +272,7 @@ class Product extends Resource
                                 'placeholder' => 'Enter specification title',
                             ],
                         ]),
-//                    details
+                    //                    details
                     Text::make('Specification Value', 'specification_value')
                         ->sortable()
                         ->rules('required', 'max:255')
@@ -281,7 +281,7 @@ class Product extends Resource
                                 'placeholder' => 'Enter specification value',
                             ],
                         ]),
-//                    feature
+                    //                    feature
                     Select::make('Specification Feature', 'is_key_feature')->options([
                         '1' => 'Yes',
                         '0' => 'No',
@@ -385,7 +385,7 @@ class Product extends Resource
                 $product_color->save();
             }
         }
-//        specification
+        //        specification
         if (isset($specification_data['specification_list'])) {
             foreach ($specification_data['specification_list'] as $s) {
                 $specification = new ProductSpecification();
@@ -402,11 +402,11 @@ class Product extends Resource
     {
         $color_list = $request->only('color_list');
         $productColors = new ProductColor();
-//        data
+        //        data
         $new_color = collect($color_list['color_list'])->pluck('attributes.color_id')->toArray();
         $prev_colors = $productColors->where('product_id', $model->id)->pluck('id')->toArray();
         $deleteColors = array_diff($prev_colors, $new_color);
-//       delete color
+        //       delete color
         $dddd = ProductColor::whereIn('id', $deleteColors)->each(function ($item) {
             $item->delete();
         });
@@ -438,14 +438,14 @@ class Product extends Resource
             }
         }
 
-//        product specification update
+        //        product specification update
         $specification_list = $request->only('specification_list');
         $specification_model = new ProductSpecification();
 
         $specification_new_color = collect($specification_list['specification_list'])->pluck('attributes.specification_id')->toArray();
         $specification_prev_colors = $specification_model->where('product_id', $model->id)->pluck('id')->toArray();
         $specification_delete_colors = array_diff($specification_prev_colors, $specification_new_color);
-//        delete item
+        //        delete item
         $ppp = ProductSpecification::whereIn('id', $specification_delete_colors)->each(function ($item) {
             $item->delete();
         });

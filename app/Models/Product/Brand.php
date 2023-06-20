@@ -5,6 +5,7 @@ namespace App\Models\Product;
 use App\Models\Sell\SellBike;
 use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Brand extends BaseModel
 {
@@ -12,7 +13,6 @@ class Brand extends BaseModel
     protected $fillable = [
         'name',
         'image_url',
-        'type',
         'is_popular',
         'is_active',
         'created_at',
@@ -24,9 +24,9 @@ class Brand extends BaseModel
         'is_active' => 'boolean'
     ];
 
-    public function sellBike()
+    public function setSlugAttribute($value): void
     {
-        return $this->hasMany(SellBike::class);
+        $this->attributes['slug'] = Str::slug($value);
     }
 
     public function category(): BelongsTo

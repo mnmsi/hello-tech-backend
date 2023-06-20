@@ -102,7 +102,7 @@ class Product extends BaseModel
         return $this->colors->pluck('id');
     }
 
-//    list
+    //    list
 
     /**
      * @throws \Exception
@@ -152,5 +152,4 @@ class Product extends BaseModel
             return [];
         }
     }
-
 }

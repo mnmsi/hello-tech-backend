@@ -73,7 +73,7 @@ class Brand extends Resource
             ])->rules('required'),
 
             BelongsTo::make('Category', 'category')
-                ->dependsOn(['type'],function (BelongsTo $field, NovaRequest $request, FormData $formData){
+                ->dependsOn(['type'], function (BelongsTo $field, NovaRequest $request, FormData $formData) {
                     if ($formData->type == "both" || $formData->type == "accessory") {
                         $field
                             ->rules('required');
