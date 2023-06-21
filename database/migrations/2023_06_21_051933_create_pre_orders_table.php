@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_colors', function (Blueprint $table) {
+        Schema::create('pre_orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
-            $table->string('name');
-            $table->string('color_code');
-            $table->integer('stock');
+            $table->text('product_name');
+            $table->string('product_image');
+            $table->text('name');
+            $table->text('email')->nullable();
+            $table->text('phone');
+            $table->text('address')->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
         });
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_colors');
+        Schema::dropIfExists('pre_orders');
     }
 };

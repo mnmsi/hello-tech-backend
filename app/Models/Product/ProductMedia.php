@@ -11,9 +11,7 @@ class ProductMedia extends BaseModel
     protected $fillable = [
         'product_id',
         'product_color_id',
-        'type',
-        'url',
-        'thumbnail_url',
+        'image_url',
         'created_at',
         'updated_at'
     ];
@@ -28,22 +26,4 @@ class ProductMedia extends BaseModel
         return $this->belongsTo(ProductColor::class, 'product_color_id', 'id');
     }
 
-    public function getURLAttribute($value)
-    {
-        if ($value) {
-            if(filter_var($value, FILTER_VALIDATE_URL) !== false)
-            {
-                return $value;
-            }
-            return asset('storage/' . $value);
-        }
-        return $value;
-    }
-//    public function getThumbnailURLAttribute($value)
-//    {
-//        if ($value) {
-//            return asset('storage/' . $value);
-//        }
-//        return $value;
-//    }
 }

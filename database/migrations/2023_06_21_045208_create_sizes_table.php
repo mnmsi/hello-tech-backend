@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_colors', function (Blueprint $table) {
+        Schema::create('sizes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('color_code');
-            $table->integer('stock');
-            $table->dateTime('created_at')->useCurrent();
-            $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
+            $table->tinyInteger('is_active')->default(1)->comment('0: Inactive, 1: Active');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_colors');
+        Schema::dropIfExists('sizes');
     }
 };

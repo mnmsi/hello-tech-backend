@@ -13,21 +13,16 @@ return new class extends Migration {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('brand_id');
-            $table->unsignedBigInteger('body_type_id')->nullable();
-            $table->enum('type', ['bike', 'accessory']);
             $table->unsignedBigInteger('category_id')->nullable();
             $table->string('name');
+            $table->string('slug')->unique();
             $table->string('product_code')->unique();
             $table->double('price', 10, 2, true);
             $table->integer('discount_rate')->default(0);
-            $table->integer('shipping_charge')->nullable();
-            $table->integer('total_stock')->nullable();
-            $table->tinyInteger('is_used')->default(0)->comment('0: New, 1: Used');
             $table->tinyInteger('is_featured')->default(0)->comment('0: No, 1: Yes');
             $table->tinyInteger('is_active')->default(1)->comment('0: Inactive, 1: Active');
-            $table->string('badge_url')->nullable();
             $table->string('image_url')->nullable();
-            $table->mediumText('short_description')->nullable();
+            $table->string('video_url')->nullable();
             $table->longText('description');
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();

@@ -15,14 +15,9 @@ return new class extends Migration
             $table->foreign('category_id')
                 ->references('id')
                 ->on('categories');
-
             $table->foreign('brand_id')
                   ->references('id')
                   ->on('brands');
-
-            $table->foreign('body_type_id')
-                ->references('id')
-                ->on('bike_body_types');
         });
     }
 
@@ -34,7 +29,6 @@ return new class extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->dropForeign('products_category_id_foreign');
             $table->dropForeign('products_brand_id_foreign');
-            $table->dropForeign('products_body_type_id_foreign');
         });
     }
 };

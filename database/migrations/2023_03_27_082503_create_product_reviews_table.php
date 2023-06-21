@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('product_id');
+            $table->text('title');
             $table->text('review');
             $table->float('rate', 2, 1);
             $table->dateTime('created_at')->useCurrent();

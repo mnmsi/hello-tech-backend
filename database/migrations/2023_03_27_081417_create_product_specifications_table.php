@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('product_id');
             $table->string('title');
             $table->string('value');
-            $table->tinyInteger('is_key_feature')->default(0)->comment('1 = Yes, 0 = No');
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
         });

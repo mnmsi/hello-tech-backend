@@ -10,7 +10,7 @@ class ProductColor extends BaseModel
     protected $fillable = [
         'product_id',
         'name',
-        'image_url',
+        'color_code',
         'stock',
         'created_at',
         'updated_at'
