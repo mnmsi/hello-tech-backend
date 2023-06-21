@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('product_name');
             $table->string('product_image');
+            $table->tinyInteger('product_quantity');
             $table->text('name');
             $table->text('email')->nullable();
             $table->text('phone');

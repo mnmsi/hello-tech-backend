@@ -6,11 +6,9 @@ use Modules\Api\Http\Controllers\Order\CartController;
 use Modules\Api\Http\Controllers\Order\OrderController;
 use Modules\Api\Http\Controllers\Order\ShippingChargeController;
 use Modules\Api\Http\Controllers\OTP\OtpController;
-use Modules\Api\Http\Controllers\Product\AccessoryController;
-use Modules\Api\Http\Controllers\Product\BikeController;
-use Modules\Api\Http\Controllers\Product\FeatureController;
 use Modules\Api\Http\Controllers\Product\BrandController;
 use Modules\Api\Http\Controllers\Product\CategoryController;
+use Modules\Api\Http\Controllers\Product\PreOrderController;
 use Modules\Api\Http\Controllers\Product\ProductController;
 use Modules\Api\Http\Controllers\Product\ReviewController;
 use Modules\Api\Http\Controllers\Product\WishListController;
@@ -133,9 +131,12 @@ Route::middleware('guest')->group(function () {
         Route::get('/', 'categories');                // Product Categories
         Route::get('popular-categories', 'popularCategories'); // Product Popular Categories
     });
+    //    Routes on Pre-Order
+    Route::controller(PreOrderController::class)->prefix('pre-order')->group(function () {
+        Route::post('/store', 'store');
+    });
     // Routes on product prefix
     Route::prefix('product')->group(function () {
-
         // Route for product count
         Route::get('counts', [ProductController::class, 'totalProductType']);          // Total Product Count
         Route::get('review/{id}', [ReviewController::class, 'review']); // Product Review
@@ -159,21 +160,8 @@ Route::middleware('guest')->group(function () {
 //Route::get('bike/details/{name}', [BikeController::class, 'details']);
 // Routes on feature prefix
 Route::middleware('product')->group(function () {
-    Route::controller(FeatureController::class)->prefix('featured')->group(function () {
-        Route::get('new-bike', 'newBike');   // Feature new bikes
-        Route::get('used-bike', 'usedBike'); // Feature used bikes
-    });
-    Route::controller(BikeController::class)->group(function () {
-        Route::get('bikes', 'bikes');                                                // Bikes Routes
-        Route::get('related-bikes', 'relatedBikes');                                 // Related Bikes Routes
-        Route::get('bike-body-types', 'bikeBodyTypes');                              // Related Bikes Routes
-        Route::get('bike/details/{name}', 'details');                                  // Bike Details Routes
-    });
-    Route::controller(AccessoryController::class)->group(function () {
-        Route::get('accessories', 'accessories');                        // Accessories Routes
-        Route::get('related-accessories', 'relatedAccessories');         // Related Accessories Routes
-        Route::get('featured-accessories', 'featuredAccessories');        // Featured Accessories Routes
-        Route::get('accessory/details/{name}', 'details');                 // Accessory Details Routes
+    Route::controller(ProductController::class)->prefix('featured')->group(function () {
+        Route::get('/product/{id}', 'getFeaturedProduct');   // Feature new bikes
     });
     Route::get('home-page-sections', [HomePageSectionController::class, 'homePageSections']);
 });

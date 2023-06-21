@@ -11,6 +11,7 @@ class PreOrder extends Model
     protected $fillable = [
         'product_name',
         'product_image',
+        'product_quantity',
         'name',
         'email',
         'phone',

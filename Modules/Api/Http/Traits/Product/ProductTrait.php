@@ -24,4 +24,8 @@ trait ProductTrait
     {
         return Product::find($productId);
     }
+
+    public function featuredProduct($categoryId){
+        return Product::where('category_id',$categoryId)->where('is_featured',1)->get();
+    }
 }

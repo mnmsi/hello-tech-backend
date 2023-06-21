@@ -4,11 +4,14 @@ namespace Modules\Api\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Modules\Api\Http\Resources\Product\ProductResource;
 use Modules\Api\Http\Traits\Product\ProductCountTrait;
+use Modules\Api\Http\Traits\Product\ProductTrait;
 
 class ProductController extends Controller
 {
     use ProductCountTrait;
+    use ProductTrait;
 
     /**
      * @return JsonResponse
@@ -21,5 +24,11 @@ class ProductController extends Controller
             'total_accessories' => $this->totalAccessories(),
             'total_shops'       => $this->totalShops(),
         ]);
+    }
+
+    public function getFeaturedProduct($categoryId){
+        return $this->respondWithSuccessWithData(
+            ProductResource::collection($this->featuredProduct($categoryId))
+        );
     }
 }

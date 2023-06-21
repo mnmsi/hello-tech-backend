@@ -21,18 +21,14 @@ class ProductResource extends JsonResource
     {
         return [
             'id'                   => $this->id,
-            'type'                 => $this->type,
             'name'                 => $this->name,
             'slug'                 => $this->slug,
             'price'                => $this->price,
-            'discount_rate'        => $this->discount_rate,
             'price_after_discount' => $this->calculateDiscountPrice($this->price, $this->discount_rate),
-            'image_url'            => asset('storage/' . $this->image_url),
-            'colors'               => $this->colors->pluck('name','id') ?? [],
+            'image_url'            => str_contains($this->image_url, 'http') ? $this->image_url : asset('storage/' . $this->image_url),
+            'hover_image_url'      => str_contains($this->hover_image_url, 'http') ? $this->hover_image_url : asset('storage/' . $this->hover_image_url),
             'is_favorite'          => $this->is_favorite,
-            $this->mergeWhen($this->type == 'bike', [
-                'is_used' => $this->is_used ?? 0,
-            ]),
+            'is_cart'              => $this->is_cart,
         ];
     }
 }

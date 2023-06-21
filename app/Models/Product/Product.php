@@ -2,6 +2,7 @@
 
 namespace App\Models\Product;
 
+use App\Models\Order\Cart;
 use App\Models\System\BikeBodyType;
 use App\Models\User\UserWishlist;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,7 +34,6 @@ class Product extends BaseModel
         'updated_at'
     ];
     protected $casts = [
-        'is_used' => 'boolean',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
         'color_list' => FlexibleCast::class,
@@ -47,7 +47,7 @@ class Product extends BaseModel
         });
     }
 
-    protected $appends = ['is_favorite', 'product_colors_id'];
+    protected $appends = ['is_favorite', 'product_colors_id','is_cart'];
 
 
     public function brand()
@@ -88,6 +88,18 @@ class Product extends BaseModel
     public function getIsFavoriteAttribute()
     {
         $query = UserWishlist::where('user_id', Auth::id())
+            ->where('product_id', $this->id)
+            ->get();
+        if ($query->count() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getIsCartAttribute()
+    {
+        $query = Cart::where('user_id', Auth::id())
             ->where('product_id', $this->id)
             ->get();
         if ($query->count() > 0) {
