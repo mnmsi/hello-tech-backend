@@ -44,7 +44,7 @@ Route::middleware('guest')->group(function () {
 
     Route::get('site-settings', [SiteSettingController::class, 'siteSettings']);
     Route::get('seo-settings', [SeoSettingController::class, 'seoSettings']);
-    Route::get('banners', [BannerController::class, 'banners']);                // Banner Routes
+                 // Banner Routes
     Route::get('testimonials', [TestimonialController::class, 'testimonials']); // Testimonial Routes
     Route::get('showrooms', [ShowroomController::class, 'showrooms']);          // Showroom Routes
     Route::get('colors', [ColorController::class, 'colors']); // Color Routes
@@ -121,6 +121,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Product Routes (Auth) or (Guest) Mode
 Route::middleware('guest')->group(function () {
+
+//    Route on Banner
+    Route::controller(BannerController::class)->prefix('banners')->group(function () {
+        Route::get('/', 'banners');
+        Route::get('category/{id}', 'getBannerByCategory');
+        Route::get('product/{id}', 'getBannerByProduct');
+    });
+
     // brands route
     Route::prefix('brands')->group(function () {
         Route::get('/', [BrandController::class, 'index']);

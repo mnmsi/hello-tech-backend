@@ -12,9 +12,38 @@ class BannerController extends Controller
     {
         // Get all active banners
         $banners = Banner::where('is_active', 1)
-                         ->get();
+            ->get();
 
         // Return response with banners
         return $this->respondWithSuccessWithData(BannerResource::collection($banners));
+    }
+
+    public function getBannerByCategory($id)
+    {
+        // Get banner by id
+        try {
+            $banner = Banner::where('category_id', $id)
+                ->where('is_active', 1)
+                ->firstOrFail();
+            return $this->respondWithSuccessWithData(new BannerResource($banner));
+        } catch (\Exception $e) {
+            return $this->respondError('Banner not found');
+        }
+    }
+
+    public function getBannerByProduct($id)
+    {
+        // Get banner by id
+        try {
+            $banner = Banner::where('product_id', $id)
+                ->where('is_active', 1)
+                ->where('show_on', 'all')
+                ->where('page','home')
+                ->firstOrFail();
+            return $this->respondWithSuccessWithData(new BannerResource($banner));
+        } catch (\Exception $e) {
+            return $this->respondError('Banner not found');
+        }
+        // Return response with banner
     }
 }

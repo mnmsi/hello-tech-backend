@@ -3,6 +3,7 @@
 namespace App\Models\Product;
 
 use App\Models\Order\Cart;
+use App\Models\System\Banner;
 use App\Models\System\BikeBodyType;
 use App\Models\User\UserWishlist;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -83,6 +84,11 @@ class Product extends BaseModel
     public function wishlists()
     {
         return $this->hasMany(UserWishlist::class);
+    }
+
+    public function banner()
+    {
+        return $this->hasOne(Banner::class);
     }
 
     public function getIsFavoriteAttribute()
