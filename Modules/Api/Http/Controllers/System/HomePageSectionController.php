@@ -11,11 +11,20 @@ class HomePageSectionController extends Controller
 {
     public function homePageSections()
     {
-        $data = HomePageSection::with('homePageSection.product')->orderBy('section_order', 'asc')
+        $data = HomePageSection::with('homePageSection.product')
             ->get();
-
         return $this->respondWithSuccessWithData(
             HomePageSectionResource::collection($data)
         );
     }
+
+    public function featured(){
+            $data = HomePageSection::with(['homePageSection.product' => function($q){
+                $q->where('is_featured', 1);
+                $q->where('is_active', 1);
+            }])
+            ->get();
+        return $this->respondWithSuccessWithData(
+            HomePageSectionResource::collection($data)
+        ); }
 }

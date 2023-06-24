@@ -18,8 +18,6 @@ class HomePageSectionResource extends JsonResource
     {
         return [
             'section_title' => $this->section_title,
-            'section_subtitle' => $this->section_subtitle,
-            'section_order' => $this->section_order,
             'products' => HomePageSectionProductResource::collection($this->homePageSection),
         ];
     }

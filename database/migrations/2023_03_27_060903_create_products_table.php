@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('brand_id');
             $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('warranty_id')->nullable();
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('product_code')->unique();
@@ -21,6 +22,7 @@ return new class extends Migration {
             $table->integer('discount_rate')->default(0);
             $table->tinyInteger('is_featured')->default(0)->comment('0: No, 1: Yes');
             $table->tinyInteger('is_active')->default(1)->comment('0: Inactive, 1: Active');
+            $table->tinyInteger('is_official')->default(0)->comment('0: No, 1: Yes');
             $table->string('image_url');
             $table->string('hover_image_url')->nullable();
             $table->string('video_url')->nullable();
