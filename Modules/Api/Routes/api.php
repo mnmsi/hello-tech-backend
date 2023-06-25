@@ -10,6 +10,7 @@ use Modules\Api\Http\Controllers\Product\BrandController;
 use Modules\Api\Http\Controllers\Product\CategoryController;
 use Modules\Api\Http\Controllers\Product\PreOrderController;
 use Modules\Api\Http\Controllers\Product\ProductController;
+use Modules\Api\Http\Controllers\Product\ProductMetaController;
 use Modules\Api\Http\Controllers\Product\ReviewController;
 use Modules\Api\Http\Controllers\Product\WarrantyController;
 use Modules\Api\Http\Controllers\Product\WishListController;
@@ -123,9 +124,11 @@ Route::middleware('auth:sanctum')->group(function () {
 // Product Routes (Auth) or (Guest) Mode
 Route::middleware('guest')->group(function () {
 
-//    warranty list
+//   product meta
+    Route::controller(ProductMetaController::class)->prefix('product-meta')->group(function () {
+        Route::get('category/{slug}', 'productMeta');
+    });
 
-    Route::get('warranty-list', [WarrantyController::class, 'index']);
 
 //    Route on Banner
     Route::controller(BannerController::class)->prefix('banners')->group(function () {
@@ -140,7 +143,7 @@ Route::middleware('guest')->group(function () {
     Route::prefix('brands')->group(function () {
         Route::get('/', [BrandController::class, 'index']);
         Route::get('/popular', [BrandController::class, 'popularBrands']);
-        Route::get('/category/{id}', [BrandController::class, 'categoryBrands']);
+        Route::get('/category/{slug}', [BrandController::class, 'categoryBrands']);
     });
     //Routes on Product Category
     Route::controller(CategoryController::class)->prefix('categories')->group(function () {

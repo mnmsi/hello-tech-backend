@@ -18,9 +18,7 @@ return new class extends Migration
             $table->foreign('brand_id')
                   ->references('id')
                   ->on('brands');
-            $table->foreign('warranty_id')
-                  ->references('id')
-                  ->on('warranties');
+            $table->foreign('product_meta_key_id')->references('id')->on('product_meta_keys');
         });
     }
 
@@ -32,7 +30,7 @@ return new class extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->dropForeign('products_category_id_foreign');
             $table->dropForeign('products_brand_id_foreign');
-            $table->dropForeign('products_warranty_id_foreign');
+            $table->dropForeign('products_product_meta_key_id_foreign');
         });
     }
 };

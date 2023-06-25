@@ -4,6 +4,7 @@ namespace Modules\Api\Http\Traits\Product;
 
 use App\Models\BaseModel;
 use App\Models\Product\Brand;
+use App\Models\Product\Category;
 use LaravelIdea\Helper\App\Models\_IH_BaseModel_C;
 use LaravelIdea\Helper\App\Models\Product\_IH_Brand_C;
 
@@ -33,13 +34,17 @@ trait BrandTrait
      * @param $id
      * @return BaseModel[]|Brand[]|_IH_BaseModel_C|_IH_Brand_C
      */
-    public function getCategoryBrands($id)
+    public function getCategoryBrands($slug)
     {
-        if ($id == 0) {
+        if($slug == 'gadgets'){
+            return Brand::where('is_active', 1)->inRandomOrder()->limit(14)->get();
+        }
+        if ($slug == 'all') {
             return Brand::where('is_active', 1)
                 ->orderBy('id', 'asc')
                 ->get();
         } else {
+            $id = Category::where('slug', $slug)->first()->id;
             return Brand::where('is_active', 1)
                 ->where('category_id', $id)
                 ->orderBy('id', 'asc')

@@ -35,10 +35,10 @@ class BrandController extends Controller
      * @param $id
      * @return JsonResponse
      */
-    public function categoryBrands($id)
+    public function categoryBrands($slug)
     {
         return $this->respondWithSuccessWithData(
-            BrandResource::collection($this->getCategoryBrands($id))
+            BrandResource::collection($this->getCategoryBrands($slug))
         );
     }
 }
