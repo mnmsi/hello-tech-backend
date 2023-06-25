@@ -3,6 +3,8 @@
 namespace App\Models\Product;
 
 use App\Models\Order\Cart;
+use App\Models\ProductMetaKey;
+use App\Models\ProductMetaValue;
 use App\Models\System\Banner;
 use App\Models\System\BikeBodyType;
 use App\Models\User\UserWishlist;
@@ -89,6 +91,11 @@ class Product extends BaseModel
     public function banner()
     {
         return $this->hasOne(Banner::class);
+    }
+
+    public function metaValues()
+    {
+        return $this->hasMany(ProductMetaValue::class);
     }
 
     public function getIsFavoriteAttribute()

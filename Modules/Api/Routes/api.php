@@ -46,7 +46,7 @@ Route::middleware('guest')->group(function () {
 
     Route::get('site-settings', [SiteSettingController::class, 'siteSettings']);
     Route::get('seo-settings', [SeoSettingController::class, 'seoSettings']);
-                 // Banner Routes
+    // Banner Routes
     Route::get('testimonials', [TestimonialController::class, 'testimonials']); // Testimonial Routes
     Route::get('showrooms', [ShowroomController::class, 'showrooms']);          // Showroom Routes
     Route::get('colors', [ColorController::class, 'colors']); // Color Routes
@@ -138,7 +138,6 @@ Route::middleware('guest')->group(function () {
     });
 
 
-
     // brands route
     Route::prefix('brands')->group(function () {
         Route::get('/', [BrandController::class, 'index']);
@@ -179,9 +178,12 @@ Route::middleware('guest')->group(function () {
 //Route::get('bike/details/{name}', [BikeController::class, 'details']);
 // Routes on feature prefix
 Route::middleware('product')->group(function () {
-    Route::controller(ProductController::class)->prefix('featured')->group(function () {
-        Route::get('/product/{id}', 'getFeaturedProduct');   // Feature new bikes
+    Route::controller(ProductController::class)->prefix('product')->group(function () {
+        Route::get('/featured/{id}', 'getFeaturedProduct');   // Feature product
+        Route::get('/', 'getProduct');   // Feature product
     });
+//    Route::
+//    Route
     Route::controller(HomePageSectionController::class)->prefix('new-arrivals')->group(function () {
         Route::get('/', 'homePageSections');   // feature new arrivals
         Route::get('featured', 'featured');   // feature new arrivals
