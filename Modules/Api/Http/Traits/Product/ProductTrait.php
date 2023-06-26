@@ -44,7 +44,6 @@ trait ProductTrait
 
     public function getProductsQuery($params)
     {
-//        dd($params);
         return Product::where('is_active', 1)
             ->when($params['name'], function ($query) use ($params) {
                 $query->where('name', 'like', '%' . $params['name'] . '%');
@@ -58,7 +57,9 @@ trait ProductTrait
             ->when($params['is_official'], function ($query) use ($params) {
                 $query->where('is_official', $params['is_official']);
             })->when($params['value'], function ($query) use ($params) {
-                $query->whereIn('product_meta_key_id', $params['value']);
+                $query->where('product_meta_key_id', $params['value']);
+            })->when($params['short_by'], function ($query) use ($params) {
+                $query->orderBy('price', $params['short_by']);
             })->paginate(10);
 
     }
