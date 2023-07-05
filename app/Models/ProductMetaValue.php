@@ -11,7 +11,6 @@ class ProductMetaValue extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_id',
         'product_meta_key_id',
         'value',
     ];
@@ -21,8 +20,8 @@ class ProductMetaValue extends Model
         return $this->belongsTo(ProductMetaKey::class, 'product_meta_key_id');
     }
 
-    public function product()
+    public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsToMany(Product::class, 'product_meta_values', 'product_meta_value_id', 'product_id');
     }
 }

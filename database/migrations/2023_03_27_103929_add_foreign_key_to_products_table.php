@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign('brand_id')
                   ->references('id')
                   ->on('brands');
-            $table->foreign('product_meta_key_id')->references('id')->on('product_meta_keys');
+            $table->foreign('product_meta_value_id')->references('id')->on('product_meta_values');
         });
     }
 
@@ -30,7 +30,7 @@ return new class extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->dropForeign('products_category_id_foreign');
             $table->dropForeign('products_brand_id_foreign');
-            $table->dropForeign('products_product_meta_key_id_foreign');
+            $table->dropForeign('products_product_meta_value_id_foreign');
         });
     }
 };

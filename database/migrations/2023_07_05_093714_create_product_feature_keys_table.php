@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_meta_values', function (Blueprint $table) {
+        Schema::create('product_feature_keys', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_meta_key_id')->constrained('product_meta_keys')->cascadeOnDelete();
-            $table->string('value');
-            $table->timestamps();
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
+            $table->string('key');
+            $table->dateTime('created_at')->useCurrent();
+            $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_meta_values');
+        Schema::dropIfExists('product_feature_keys');
     }
 };

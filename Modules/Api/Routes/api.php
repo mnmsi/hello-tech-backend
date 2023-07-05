@@ -158,6 +158,7 @@ Route::middleware('guest')->group(function () {
         // Route for product count
         Route::get('counts', [ProductController::class, 'totalProductType']);          // Total Product Count
         Route::get('review/{id}', [ReviewController::class, 'review']); // Product Review
+        Route::get('related/{id}', [ProductController::class, 'relatedProduct']); // Related Product
     });
     //        Route on Terms and Condition
     Route::controller(TermsConditionController::class)->group(function () {
@@ -180,10 +181,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('product')->group(function () {
     Route::controller(ProductController::class)->prefix('product')->group(function () {
         Route::get('/featured/{id}', 'getFeaturedProduct');   // Feature product
-        Route::get('/', 'getProduct');   // Feature product
+        Route::get('/', 'getProduct');  // Feature product
+        Route::get('details/{name}', 'details');  // Product Details
     });
-//    Route::
-//    Route
     Route::controller(HomePageSectionController::class)->prefix('new-arrivals')->group(function () {
         Route::get('/', 'homePageSections');   // feature new arrivals
         Route::get('featured', 'featured');   // feature new arrivals

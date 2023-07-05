@@ -2,6 +2,7 @@
 
 namespace Modules\Api\Http\Traits\Product;
 
+use App\Models\Product\Category;
 use App\Models\Product\Product;
 
 trait ProductTrait
@@ -44,12 +45,18 @@ trait ProductTrait
 
     public function getProductsQuery($params)
     {
+        if ($params['category'] == 'gadgets') {
+            $params['category'] = null;
+        }
         return Product::where('is_active', 1)
             ->when($params['name'], function ($query) use ($params) {
                 $query->where('name', 'like', '%' . $params['name'] . '%');
             })
             ->when($params['category'], function ($query) use ($params) {
-                $query->where('category_id', $params['category']);
+//                $query->where('category_id', $id);
+                $query->whereHas('category', function ($query) use ($params) {
+                    $query->where('slug', $params['category']);
+                });
             })
             ->when($params['brand'], function ($query) use ($params) {
                 $query->where('brand_id', $params['brand']);
@@ -57,10 +64,23 @@ trait ProductTrait
             ->when($params['is_official'], function ($query) use ($params) {
                 $query->where('is_official', $params['is_official']);
             })->when($params['value'], function ($query) use ($params) {
-                $query->where('product_meta_key_id', $params['value']);
-            })->when($params['short_by'], function ($query) use ($params) {
+                $query->whereHas('metaValues', function ($query) use ($params) {
+                    $query->whereIn('id', [$params['value']]);
+                });
+            })
+            ->when($params['short_by'], function ($query) use ($params) {
                 $query->orderBy('price', $params['short_by']);
-            })->paginate(10);
+            })->orderBy('created_at', 'desc')
+            ->paginate(3);
+    }
 
+    public function getProductDetailsBySlug($slug)
+    {
+        return  Product::where('slug', $slug)->with(['productFeatureKeys'])->first();
+    }
+
+    public function getProductDataById($id)
+    {
+        return Product::where('id', $id)->with(['productFeatureKeys'])->first();
     }
 }
