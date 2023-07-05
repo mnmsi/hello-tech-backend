@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Api\Http\Resources\Product\ProductCollection;
+use Modules\Api\Http\Resources\Product\ProductDataResource;
 use Modules\Api\Http\Resources\Product\ProductDetailsResource;
 use Modules\Api\Http\Resources\Product\ProductResource;
 use Modules\Api\Http\Traits\Product\ProductCountTrait;
@@ -51,5 +52,12 @@ class ProductController extends Controller
         return $this->respondWithSuccessWithData(
             new ProductDetailsResource($this->getProductDetailsBySlug($name))
         );
+    }
+
+    public function getProductDataById($id)
+    {
+       return $this->respondWithSuccessWithData(
+                ProductDataResource::collection($this->productDataById($id))
+            );
     }
 }

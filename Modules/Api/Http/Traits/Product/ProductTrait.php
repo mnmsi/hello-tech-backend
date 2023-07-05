@@ -4,6 +4,7 @@ namespace Modules\Api\Http\Traits\Product;
 
 use App\Models\Product\Category;
 use App\Models\Product\Product;
+use App\Models\ProductData;
 
 trait ProductTrait
 {
@@ -76,11 +77,11 @@ trait ProductTrait
 
     public function getProductDetailsBySlug($slug)
     {
-        return  Product::where('slug', $slug)->with(['productFeatureKeys'])->first();
+        return  Product::where('slug', $slug)->with(['productFeatureKeys','banner'])->first();
     }
 
-    public function getProductDataById($id)
+    public function productDataById($id)
     {
-        return Product::where('id', $id)->with(['productFeatureKeys'])->first();
+        return ProductData::where('product_feature_value_id', $id)->get();
     }
 }

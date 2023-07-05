@@ -4,6 +4,7 @@ namespace Modules\Api\Http\Resources\Product;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Api\Http\Resources\System\BannerResource;
 use Modules\Api\Http\Traits\Product\FeatureTrait;
 use Modules\Api\Http\Traits\Product\ProductTrait;
 
@@ -28,12 +29,11 @@ class ProductDetailsResource extends JsonResource
             'brand' => new BrandResource($this->brand),
             'colors' => $this->colors ? ColorResource::collection($this->colors) : [],
             'features' => $this->productFeatureKeys ? ProductFeatureResource::collection($this->productFeatureKeys) : [],
-//            'media'                => $this->media ? MediaResource::collection($this->media) : [],
-//            'specifications'       => $this->specifications ? SpecificationResource::collection($this->specifications->where('is_key_feature', 0)) : [],
-//            'summary'              => $this->specifications ? SpecificationResource::collection($this->specifications->where('is_key_feature', 1)) : [],
-//            'description'          => $this->description,
-//            'short_description'    => $this->short_description,
-//            'is_favorite'          => $this->is_favorite,
+            'media' => $this->media ? MediaResource::collection($this->media) : [],
+            'specifications' => $this->specifications ? SpecificationResource::collection($this->specifications) : [],
+            'description' => $this->description,
+            'video_url' => $this->video_url ? $this->video_url : '',
+            'banner_url' => $this->banner ? new BannerResource($this->banner) : [],
         ];
     }
 }
