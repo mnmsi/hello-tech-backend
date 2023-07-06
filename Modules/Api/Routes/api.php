@@ -183,7 +183,8 @@ Route::middleware('product')->group(function () {
         Route::get('/featured/{id}', 'getFeaturedProduct');   // Feature product
         Route::get('/', 'getProduct');  // Feature product
         Route::get('details/{name}', 'details');  // Product Details
-        Route::get('get-data/{id}', 'getProductDataById');  // Product Details
+        Route::get('get-data/{id}', 'getProductDataById');
+        Route::get('related','relatedProduct');// Related Product
     });
     Route::controller(HomePageSectionController::class)->prefix('new-arrivals')->group(function () {
         Route::get('/', 'homePageSections');   // feature new arrivals

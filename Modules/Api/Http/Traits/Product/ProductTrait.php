@@ -77,11 +77,19 @@ trait ProductTrait
 
     public function getProductDetailsBySlug($slug)
     {
-        return  Product::where('slug', $slug)->with(['productFeatureKeys','banner'])->first();
+        return Product::where('slug', $slug)->with(['productFeatureKeys', 'banner'])->first();
     }
 
     public function productDataById($id)
     {
-        return ProductData::where('product_feature_value_id', $id)->get();
+        return ProductData::where('product_feature_value_id', $id)->orWhere('product_color_id', $id)->first();
+    }
+
+    public function getRelatedProduct()
+    {
+        return Product::where('is_active', 1)
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
     }
 }

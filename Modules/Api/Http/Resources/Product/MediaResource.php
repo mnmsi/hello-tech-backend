@@ -19,7 +19,7 @@ class MediaResource extends JsonResource
         return [
             'id' => $this->id,
             'color' => $this->color->name,
-            'thumbnail_url' => str_contains($this->thumbnail_url, 'http') ? $this->thumbnail_url : asset('storage/' . $this->thumbnail_url),
+            'thumbnail_url' => str_contains($this->image_url, 'http') ? $this->image_url : asset('storage/' . $this->image_url),
         ];
     }
 }

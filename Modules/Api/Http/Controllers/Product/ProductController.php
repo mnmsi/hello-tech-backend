@@ -57,7 +57,14 @@ class ProductController extends Controller
     public function getProductDataById($id)
     {
        return $this->respondWithSuccessWithData(
-                ProductDataResource::collection($this->productDataById($id))
+                new ProductDataResource($this->productDataById($id))
             );
+    }
+
+    public function relatedProduct()
+    {
+        return $this->respondWithSuccessWithData(
+            ProductResource::collection($this->getRelatedProduct())
+        );
     }
 }
