@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\OtpMail;
 use Illuminate\Support\Facades\Route;
 use Modules\Api\Http\Controllers\Auth\ApiAuthController;
 use Modules\Api\Http\Controllers\Order\CartController;
@@ -28,6 +29,7 @@ use Modules\Api\Http\Controllers\System\TestimonialController;
 use Modules\Api\Http\Controllers\System\VideoReviewController;
 use Modules\Api\Http\Controllers\User\UserAddressController;
 use Modules\Api\Http\Controllers\User\UserController;
+use Illuminate\Support\Facades\Mail;
 
 // Authenticating Routes
 Route::controller(ApiAuthController::class)->group(function () {
@@ -35,6 +37,8 @@ Route::controller(ApiAuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('forgot-password', 'forgotPassword');
     Route::post('reset-password', 'resetPassword');
+//    social login
+    Route::post('google-login', 'googleLogin');
     Route::get('logout', 'logout')->middleware('auth:sanctum');
 });
 
@@ -184,7 +188,7 @@ Route::middleware('product')->group(function () {
         Route::get('/', 'getProduct');  // Feature product
         Route::get('details/{name}', 'details');  // Product Details
         Route::get('get-data/{id}', 'getProductDataById');
-        Route::get('related','relatedProduct');// Related Product
+        Route::get('related', 'relatedProduct');// Related Product
     });
     Route::controller(HomePageSectionController::class)->prefix('new-arrivals')->group(function () {
         Route::get('/', 'homePageSections');   // feature new arrivals

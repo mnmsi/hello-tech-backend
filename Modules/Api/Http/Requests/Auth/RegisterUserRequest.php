@@ -25,6 +25,22 @@ class RegisterUserRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        //check phone or email
+        if (filter_var($this->user, FILTER_VALIDATE_EMAIL)) {
+            $this->merge([
+                'type' => 'email', // 'email' or 'phone
+                'email' => $this->user,
+            ]);
+        } else {
+            $this->merge([
+                'type' => 'phone', // 'email' or 'phone
+                'phone' => $this->user,
+            ]);
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -33,14 +49,9 @@ class RegisterUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|string|max:190',
-            'last_name' => 'required|string|max:190',
-            'phone' => 'required|string|unique:App\Models\User\User,phone',
+            'user'    => 'required|string|unique:App\Models\User\User,' . $this->type,
             'otp' => 'required|numeric|digits:6',
             'email' => 'nullable | string | email | max:190 | unique:App\Models\User\User,email',
-            'date_of_birth' => 'nullable | date',
-            'gender' => 'nullable | in:male,female,other',
-            'avatar' => 'nullable | image | mimes:jpeg,png,jpg,gif,svg | max:2048',
             'password' => ['required', 'string', 'min:6'],
         ];
     }

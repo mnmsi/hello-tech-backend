@@ -17,9 +17,23 @@ class AuthenticateUserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
+    }
+
+    public function prepareForValidation()
+    {
+        //check phone or email
+        if (filter_var($this->user, FILTER_VALIDATE_EMAIL)) {
+            $this->merge([
+                'type' => 'email', // 'email' or 'phone
+            ]);
+        } else {
+            $this->merge([
+                'type' => 'phone', // 'email' or 'phone
+            ]);
+        }
     }
 
     /**
@@ -30,7 +44,7 @@ class AuthenticateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone'    => 'required|string|exists:App\Models\User\User,phone',
+            'user'    => 'required|string|exists:App\Models\User\User,' . $this->type,
             'password' => 'required|string|min:6',
         ];
     }

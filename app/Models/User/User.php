@@ -25,14 +25,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
+        'name',
         'email',
         'phone',
+        'uid',
         'password',
-        'phone_verified_at',
-        'date_of_birth',
-        'gender',
+        'verified_at',
         'avatar',
         'remember_token',
         'created_at',
@@ -59,30 +57,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
-        'date_of_birth'     => 'date',
+        'date_of_birth' => 'date',
     ];
 
-    protected $appends = [
-        'name'
-    ];
 
     protected $with = [
         'user_role'
     ];
 
-    public function name(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->first_name . ' ' . $this->last_name, // Concatenate first name and last name
-        );
-    }
 
-    public function dob(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d-m-Y'),  // Format date of birth
-        );
-    }
 
     public function addresses()
     {

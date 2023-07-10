@@ -19,11 +19,25 @@ class ResetPasswordRequest extends FormRequest
      *
      * @return array
      */
+
+    public function prepareForValidation()
+    {
+        //check phone or email
+        if (filter_var($this->user, FILTER_VALIDATE_EMAIL)) {
+            $this->merge([
+                'type' => 'email', // 'email' or 'phone
+            ]);
+        } else {
+            $this->merge([
+                'type' => 'phone', // 'email' or 'phone
+            ]);
+        }
+    }
     public function rules()
     {
         return [
-            'otp' => 'required|numeric|digits:6',
-            'phone' => 'required|string',
+            'otp' => 'required|numeric|digits:6|exists:App\Models\User\PhoneVerification,otp',
+            'user' => 'required|string|exists:App\Models\User\PhoneVerification,' . $this->type,
             'password' => 'required|string|min:6',
         ];
     }

@@ -12,7 +12,8 @@ return new class extends Migration {
     {
         Schema::create('phone_verifications', function (Blueprint $table) {
             $table->id();
-            $table->string('phone', 20)->unique();
+            $table->string('phone', 20)->unique()->nullable();
+            $table->string('email', 100)->unique()->nullable();
             $table->string('otp', 6);
             $table->timestamp('expires_at');
         });

@@ -20,6 +20,20 @@ class SendOtpRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        //check phone or email
+        if (filter_var($this->user, FILTER_VALIDATE_EMAIL)) {
+            $this->merge([
+                'type' => 'email', // 'email' or 'phone
+            ]);
+        } else {
+            $this->merge([
+                'type' => 'phone', // 'email' or 'phone
+            ]);
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,7 +42,7 @@ class SendOtpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone' => 'required|string|unique:App\Models\User\User,phone',
+            'user' => 'required|string|unique:App\Models\User\User,' . $this->type,
         ];
     }
 

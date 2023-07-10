@@ -2,10 +2,28 @@
 
     namespace App\Http\Requests\Auth;
 
+    use Illuminate\Contracts\Validation\Validator;
     use Illuminate\Foundation\Http\FormRequest;
+    use Illuminate\Http\Exceptions\HttpResponseException;
+    use Modules\Api\Http\Traits\Response\ApiResponseHelper;
 
     class OtpValidateRequest extends FormRequest
     {
+        use ApiResponseHelper;
+        public function prepareForValidation()
+        {
+            //check phone or email
+            if (filter_var($this->user, FILTER_VALIDATE_EMAIL)) {
+                $this->merge([
+                    'type' => 'email', // 'email' or 'phone
+                ]);
+            } else {
+                $this->merge([
+                    'type' => 'phone', // 'email' or 'phone
+                ]);
+            }
+        }
+
         /**
          * Determine if the user is authorized to make this request.
          */
@@ -18,21 +36,19 @@
         public function rules(): array
         {
             return [
-                'phone' => 'required|string|exists:phone_verifications,phone',
-                'otp' => 'required|numeric|digits:6|exists:phone_verifications,otp',
+                'user' => 'required|string|exists:App\Models\User\PhoneVerification,' . $this->type,
+                'otp' => 'required|numeric|digits:6|exists:App\Models\User\PhoneVerification,otp',
             ];
         }
 
-        protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+
+        protected function failedValidation(Validator $validator)
         {
-            throw new \Illuminate\Http\Exceptions\HttpResponseException(
-                response()->json([
-                    'status' => false,
-                    'message' => $validator->errors()->first(),
-                    'data' => null,
-                ], 422)
+            throw new HttpResponseException(
+                $this->respondFailedValidation($validator->errors()->first())
             );
         }
+
 
 
     }
