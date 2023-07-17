@@ -27,4 +27,11 @@
                 ->with('product')
                 ->get();
         }
+
+        public function deleteWishList($id)
+        {
+            return UserWishlist::where('user_id', auth()->user()->id)
+                ->where('product_id', $id)
+                ->delete();
+        }
     }

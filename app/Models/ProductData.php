@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Order\Cart;
 use App\Models\Product\Product;
 use App\Models\Product\ProductColor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -32,5 +33,10 @@ class ProductData extends Model
     public function productColor()
     {
         return $this->belongsTo(ProductColor::class);
+    }
+
+    public function cart()
+    {
+        return $this->hasMany(Cart::class);
     }
 }

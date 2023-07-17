@@ -14,10 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('product_color_id');
-            $table->integer('discount_rate')->default(0);
-            $table->decimal('price', 10, 2);
-            $table->decimal('total', 10, 2);
+            $table->unsignedBigInteger('product_color_id')->nullable();
+            $table->unsignedBigInteger('product_data_id')->nullable();
             $table->integer('quantity')->default(1);
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();

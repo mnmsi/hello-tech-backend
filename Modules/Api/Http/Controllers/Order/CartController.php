@@ -23,7 +23,6 @@ class CartController extends Controller
         $carts = $this->getCartedData();
         return $this->respondWithSuccess([
             'data' => CartResource::collection($carts),
-            'total_price' => $this->getTotalPrice(),
         ]);
     }
 
@@ -67,9 +66,6 @@ class CartController extends Controller
     {
         $request->validate([
             'id' => 'required|exists:carts,id',
-            'product_id' => 'required|exists:products,id',
-            'product_color_id' => 'required|exists:product_colors,id',
-            'quantity' => 'required|numeric|min:1',
         ]);
         $cart = $this->updateCartProduct($request);
         if ($cart) {

@@ -15,6 +15,10 @@ return new class extends Migration {
                   ->references('id')
                   ->on('users')
                   ->onDelete('cascade');
+            $table->foreign('division_id')
+                  ->references('id')
+                  ->on('divisions')
+                  ->onDelete('cascade');
         });
     }
 
@@ -25,6 +29,7 @@ return new class extends Migration {
     {
         Schema::table('user_addresses', function (Blueprint $table) {
             $table->dropForeign('user_addresses_user_id_foreign');
+            $table->dropForeign('user_addresses_division_id_foreign');
         });
     }
 };

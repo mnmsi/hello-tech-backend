@@ -24,7 +24,7 @@ class WishListResource extends JsonResource
             'product_id' => $this->product_id,
             'type' => $this->product->type, // 'bike' or 'part
             'slug' => $this->product->slug,
-            'image_url' => asset('storage/' . $this->product->image_url),
+            'image_url' => str_contains($this->product->image_url, 'http') ? $this->product->image_url : asset('storage/' . $this->product->image_url),
             'name' => $this->product->name,
             'price' => $this->product->price,
             'brand' => $this->product->brand->name,

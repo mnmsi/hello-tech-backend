@@ -76,6 +76,11 @@ class Product extends BaseModel
         return $this->hasMany(ProductColor::class);
     }
 
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
     public function media()
     {
         return $this->hasMany(ProductMedia::class);

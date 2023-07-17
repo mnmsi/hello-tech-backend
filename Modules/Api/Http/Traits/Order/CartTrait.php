@@ -18,18 +18,13 @@ trait CartTrait
 
 //    total price of cart
 
-    public function getTotalPrice()
-    {
-        return Cart::where('status', '1')->where('user_id', auth()->id())->sum('total');
-
-    }
-
     /**
      * @return array|mixed
      */
     public function getCartedData()
     {
-        return Cart::with(['product', 'productColor'])->where('user_id', auth()->id())->get();
+        return Cart::with(['product', 'productColor','productData'])->where('user_id', auth()->id())->get();
+
     }
 
     /**
@@ -40,7 +35,7 @@ trait CartTrait
     {
         $request->merge(['user_id' => auth()->id()]);
         try {
-            $cart = Cart::where('product_id', $request->product_id)->where('product_color_id', $request->product_color_id)->where('user_id', auth()->id())->first();
+            $cart = Cart::where('product_id', $request->product_id)->where('user_id', auth()->id())->first();
             if ($cart) {
                 return false;
             } else {

@@ -21,15 +21,10 @@ return new class extends Migration
             $table->string('fav_icon')->nullable();
             $table->string('dark_fav_icon')->nullable();
             $table->string('facebook_url')->nullable();
-            $table->string('instagram_url')->nullable();
             $table->string('twitter_url')->nullable();
+            $table->string('whatsapp_url')->nullable();
             $table->string('youtube_url')->nullable();
-            $table->string('linkedin_url')->nullable();
-            $table->string('facebook_logo')->nullable();
-            $table->string('instagram_logo')->nullable();
-            $table->string('twitter_logo')->nullable();
-            $table->string('youtube_logo')->nullable();
-            $table->string('linkedin_logo')->nullable();
+            $table->string('site address')->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
         });

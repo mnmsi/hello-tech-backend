@@ -22,19 +22,28 @@ class CartResource extends JsonResource
             'id' => $this->id,
             'quantity' => $this->quantity,
             'is_checked' => $this->status,
-            'total' => $this->total,
             'product_id' => $this->product_id,
-            'shipping_charge' => $this->product->charge ?? 0,
             'product_color_id' => $this->product_color_id,
-            'name' => $this->product->name,
-            'price' => $this->product->price,
-            'type' => $this->product->type,
-            'discount_rate' => $this->product->discount_rate,
-            'price_after_discount' => $this->calculateDiscountPrice($this->product->price,$this->product->discount_rate),
-            'total_stock' => $this->productColor->stock,
-            'image' => asset('storage/'.$this->product->image_url),
-            'color' => $this->productColor->name,
-            'color_image' => asset('storage/'.$this->productColor->image_url),
+            'product_data_id' => $this->product_data_id,
+            'name' => $this->product->name ?? '',
+            'price' => $this->checkPrice(),
+            'price_after_discount' => $this->checkColorForPrice(),
+            'image_url' => $this->product->image ?? str_contains($this->product->image_url, 'http') ? $this->product->image_url : asset('storage/' . $this->product->image_url),
+            'color_name' => $this->productColor->name ?? '',
         ];
+    }
+
+    public function checkColorForPrice()
+    {
+        return !$this->product_data_id
+            ? $this->calculateDiscountPrice($this->product->price,$this->product->discount_rate)
+            : $this->productData->price;
+    }
+
+    public function checkPrice()
+    {
+        return !$this->product_data_id
+            ? $this->product->price
+            : $this->productData->price;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Models\Order;
 
+use App\Models\Product\Product;
+use App\Models\ProductData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\BaseModel;
 
@@ -11,9 +13,7 @@ class Cart extends BaseModel
         'user_id',
         'product_id',
         'product_color_id',
-        'discount_rate',
-        'price',
-        'total',
+        'product_data_id',
         'quantity',
         'status',
         'created_at',
@@ -22,7 +22,7 @@ class Cart extends BaseModel
 
     public function product()
     {
-        return $this->belongsTo('App\Models\Product\Product');
+        return $this->belongsTo(Product::class);
     }
 
     public function productColor()
@@ -33,6 +33,11 @@ class Cart extends BaseModel
     public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function productData()
+    {
+        return $this->belongsTo(ProductData::class);
     }
 
 

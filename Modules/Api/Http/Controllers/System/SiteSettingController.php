@@ -9,15 +9,13 @@ class SiteSettingController extends Controller
 {
     public function siteSettings()
     {
-        $data = SiteSetting::select('name', 'email', 'phone', 'header_logo', 'footer_logo', 'fav_icon', 'dark_fav_icon', 'facebook_url', 'instagram_url', 'twitter_url', 'youtube_url', 'linkedin_url')
+        $data = SiteSetting::select('name', 'email', 'phone', 'header_logo', 'footer_logo', 'fav_icon', 'dark_fav_icon', 'facebook_url', 'twitter_url', 'youtube_url', 'whatsapp_url','site address AS site_address')
             ->first();
-
         $data['status'] = true;
-        $data['header_logo'] = asset('storage/' . $data['header_logo']);
-        $data['footer_logo'] = asset('storage/' . $data['footer_logo']);
-        $data['fav_icon'] = asset('storage/' . $data['fav_icon']);
-        $data['dark_fav_icon'] = asset('storage/' . $data['dark_fav_icon']);
-
+        $data['header_logo'] = str_contains($data['header_logo'], 'http') ? $data['header_logo'] : asset('storage/' . $data['header_logo']);
+        $data['footer_logo'] = str_contains($data['footer_logo'], 'http') ? $data['footer_logo'] : asset('storage/' . $data['footer_logo']);
+        $data['fav_icon'] = str_contains($data['fav_icon'], 'http') ? $data['fav_icon'] : asset('storage/' . $data['fav_icon']);
+        $data['dark_fav_icon'] = str_contains($data['dark_fav_icon'], 'http') ? $data['dark_fav_icon'] : asset('storage/' . $data['dark_fav_icon']);
         return $data;
     }
 }

@@ -42,7 +42,7 @@ class SendOtpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user' => 'required|string|unique:App\Models\User\User,' . $this->type,
+            'user' => 'required|string|exists:App\Models\User\User,' . $this->type,
         ];
     }
 

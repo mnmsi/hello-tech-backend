@@ -16,6 +16,7 @@ use Modules\Api\Http\Controllers\Product\ReviewController;
 use Modules\Api\Http\Controllers\Product\WarrantyController;
 use Modules\Api\Http\Controllers\Product\WishListController;
 use Modules\Api\Http\Controllers\SellBike\SellBikeController;
+use Modules\Api\Http\Controllers\System\AboutController;
 use Modules\Api\Http\Controllers\System\BannerController;
 use Modules\Api\Http\Controllers\System\ColorController;
 use Modules\Api\Http\Controllers\System\HomePageSectionController;
@@ -50,6 +51,7 @@ Route::middleware('guest')->group(function () {
 
     Route::get('site-settings', [SiteSettingController::class, 'siteSettings']);
     Route::get('seo-settings', [SeoSettingController::class, 'seoSettings']);
+    Route::get('about', [AboutController::class, 'index']);
     // Banner Routes
     Route::get('testimonials', [TestimonialController::class, 'testimonials']); // Testimonial Routes
     Route::get('showrooms', [ShowroomController::class, 'showrooms']);          // Showroom Routes
@@ -108,6 +110,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(WishlistController::class)->prefix("wishlist")->group(function () {
         Route::post('add', 'store');
         Route::get('list', 'list');
+        Route::delete('remove/{id}', 'delete');
     });
 
     // Routes on cart prefix
