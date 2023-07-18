@@ -31,6 +31,7 @@ class Product extends BaseModel
         'total_stock',
         'is_used',
         'is_featured',
+        'stock',
         'is_active',
         'badge_url',
         'image_url',

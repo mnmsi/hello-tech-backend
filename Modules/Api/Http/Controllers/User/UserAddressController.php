@@ -34,9 +34,19 @@ class UserAddressController extends Controller
         $address = $this->storeAddress($request->validated());
 
         // Return response with user addresses
-        return $this->respondWithSuccessWithData(
-            UserAddressResource::collection($this->getAddresses())
-        );
+        return $this->respondWithSuccess(['message' => 'Address added successfully']);
+    }
+
+    public function edit($id)
+    {
+       $address = $this->editAddress($id);
+         if (!$address) {
+              return $this->respondNotFound('Address not found');
+         }else{
+            return $this->respondWithSuccessWithData(
+                new UserAddressResource($address)
+            );
+         }
     }
 
     /**
@@ -44,13 +54,22 @@ class UserAddressController extends Controller
      */
     public function update(UserAddressRequest $request, $id)
     {
-        // Update address
-        $address = $this->updateAddress($id, $request->validated());
-
-        // Return response with user addresses
         return $this->respondWithSuccessWithData(
-            UserAddressResource::collection($this->getAddresses())
+            $request->all()
         );
+
+        // Update address
+        $address = $this->updateAddress($id, $request->all());
+
+        if ($address) {
+            // Return response with user addresses
+            return $this->respondWithSuccessWithData(
+//                UserAddressResource::collection($this->getAddresses())
+                $address->toArray()
+            );
+        }
+
+        return $this->respondNotFound("Something went wrong!");
     }
 
     /**

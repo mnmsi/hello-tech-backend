@@ -39,13 +39,14 @@ class UserAddressRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'        => 'required|string',
-            'phone'       => 'required|string',
-            'address'     => 'required|string',
+            'name' => 'required|string',
+            'type' => 'required|string',
+            'email' => 'nullable|email',
+            'zip_code' => 'required|string|min:3|max:10',
+            'phone' => 'required|string',
+            'address_line' => 'required|string',
             'division_id' => 'required|integer|exists:App\Models\System\Division,id',
-            'city_id'     => 'required|integer|exists:App\Models\System\City,id',
-            'area_id'     => 'required|integer|exists:App\Models\System\Area,id',
-            'is_default'  => 'nullable|in:0,1',
+            'is_default' => 'nullable|in:0,1',
         ];
     }
 

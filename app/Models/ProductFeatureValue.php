@@ -11,6 +11,7 @@ class ProductFeatureValue extends Model
     protected $fillable = [
         'product_feature_key_id',
         'value',
+        'price',
     ];
 
     public function productFeatureKey()

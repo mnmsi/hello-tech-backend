@@ -19,14 +19,13 @@
             return [
                 'id' => $this->id,
                 'name' => $this->name,
+                'type' => $this->type,
+                'email' => $this->email ?? '',
+                'zip_code' => $this->zip_code,
                 'phone' => $this->phone,
-                'address' => $this->address,
+                'address_line' => $this->address_line,
                 'division' => $this->division->name,
                 'division_id' => $this->division->id,
-                'city' => $this->city->name,
-                'city_id' => $this->city->id,
-                'area' => $this->area->name,
-                'area_id' => $this->area->id,
                 'is_default' => $this->is_default,
             ];
         }

@@ -12,6 +12,7 @@ class ProductColor extends BaseModel
         'product_id',
         'name',
         'color_code',
+        'stock',
         'created_at',
         'updated_at'
     ];
