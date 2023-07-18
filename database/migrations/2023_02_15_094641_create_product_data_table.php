@@ -16,8 +16,6 @@ return new class extends Migration
             $table->foreignId('product_id')->nullable()->constrained('products')->cascadeOnDelete();
             $table->foreignId('product_feature_value_id')->nullable()->constrained('product_feature_values')->cascadeOnDelete();
             $table->foreignId('product_color_id')->nullable()->constrained('product_colors')->cascadeOnDelete();
-            $table->double('price', 10, 2, true);
-            $table->integer('stock');
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
         });

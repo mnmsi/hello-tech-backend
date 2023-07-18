@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->string('name');
             $table->string('color_code');
+            $table->decimal('price',8,2)->default(0.00);
+            $table->integer('stock')->default(0);
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
         });

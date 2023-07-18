@@ -69,28 +69,23 @@ Route::middleware('guest')->group(function () {
 // User Routes (Auth) or (User) Mode
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::post("sell/store", [SellBikeController::class, 'store']);
-
     // Routes on user prefix
     Route::prefix('user')->group(function () {
-
         // Routes on user prefix
         Route::controller(UserController::class)->group(function () {
             Route::get('me', 'user');                     // User Info Routes
-            Route::post('update', 'update');              // User Update Routes
-        });
-
-        // User Address List Routes
-        Route::get('addresses', [UserAddressController::class, 'addresses']);  // User Address Routes
+            Route::post('update', 'update');
+            Route::post('change-password','changePassword');
+        });;  // User Address Routes
     });
 
     // Routes on address prefix
     Route::controller(UserAddressController::class)->prefix('address')->group(function () {
-        Route::post('store', 'store');               // Address Store Routes
-        Route::put('update/{id}', 'update');         // Address Update Routes
+        Route::get('/', 'addresses');                // Address List Routes
+        Route::post('store', 'store');
+        Route::get('edit/{id}','edit');// Address Store Routes
+        Route::post('update/{id}', 'update');         // Address Update Routes
         Route::delete('delete/{id}', 'delete');      // Address Delete Routes
-
-        //        selected address
         Route::get('selected-address/{id?}', 'getSelectedAddress');      // Address Delete Routes
     });
 

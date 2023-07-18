@@ -14,6 +14,7 @@ trait UserAddressTrait
         return Auth::user()->addresses;
     }
 
+
     /**
      * @return mixed
      */
@@ -30,14 +31,25 @@ trait UserAddressTrait
     /**
      * @return mixed
      */
+
+    public function editAddress($id){
+        return Auth::user()->addresses()->where('id', $id)->first();
+    }
+
+    /**
+     * @return mixed
+     */
     public function updateAddress($id, $data)
     {
-        if ($data['is_default'] == 1)
-            Auth::user()->addresses()->update(['is_default' => 0]);
+//        if ($data['is_default'] == 1){
+//            Auth::user()->addresses()->update(['is_default' => 0]);
+//        }
+
         return Auth::user()
             ->addresses()
             ->where('id', $id)
-            ->update($data);
+            ->first();
+
     }
 
 // selected address
