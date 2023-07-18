@@ -65,11 +65,7 @@ class User extends Resource
                 ->updateRules('nullable')
                 ->noPeeking(),
 //first name
-            Text::make('First Name', 'first_name')
-                ->sortable()
-                ->rules('required', 'max:255'),
-//last name
-            Text::make('Last Name', 'last_name')
+            Text::make('Full Name', 'name')
                 ->sortable()
                 ->rules('required', 'max:255'),
 //            image
@@ -97,20 +93,6 @@ class User extends Resource
                 ->creationRules('required', Rules\Password::defaults())
                 ->updateRules('nullable', Rules\Password::defaults()),
 
-//            date of birth
-
-            Date::make('Date of Birth', 'date_of_birth')
-                ->nullable(),
-
-            // gender
-            Select::make('Gender', 'gender')
-                ->options([
-                    'male' => 'Male',
-                    'female' => 'Female',
-                    'other' => 'Other',
-                ])
-                ->sortable()
-                ->nullable(),
 //            date
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()

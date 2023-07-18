@@ -163,7 +163,7 @@ return [
     */
 
      'brand' => [
-         'logo' => public_path('/img/sawari-logo.svg'),
+         'logo' => public_path('/img/app-logo.svg'),
 
          'colors' => [
              "400" => "24, 182, 155, 0.5",

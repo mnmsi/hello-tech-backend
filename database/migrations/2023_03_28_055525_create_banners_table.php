@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('cascade');
             $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
-            $table->enum('page', ['home', 'new-arrivals', 'brands', 'product-detail']);
+            $table->enum('page', ['home', 'new-arrivals', 'brands', 'product-detail', 'all-bikes', 'popular-brands', 'bike-accessories', 'our-showrooms']);
             $table->enum('show_on', ['top', 'bottom', 'all', 'detail']);
             $table->string('image_url');
             $table->tinyInteger('is_active')->default(1)->comment('0: Inactive, 1: Active');
