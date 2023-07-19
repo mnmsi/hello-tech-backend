@@ -8,6 +8,8 @@ use App\Models\OrderDetails;
 use App\Models\Product\Product;
 use App\Models\System\DeliveryOption;
 use App\Models\System\PaymentMethod;
+use App\Models\Voucher;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\Api\Http\Traits\Payment\PaymentTrait;
@@ -213,4 +215,17 @@ OrderTrait
         return $buyNowProductPrice - ($buyNowProductPrice * $buyNowProductDiscountRate / 100);
     }
 
+    public function voucherDiscountCalculate($data)
+    {
+        try {
+            $data = Voucher::where('code', $data['code'])
+                ->where('expires_at', '>', Carbon::parse(now()->addHours(6))->format('Y-m-d H:i:s'))
+                ->where('status', 1)
+                ->first();
+
+            return $data;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }

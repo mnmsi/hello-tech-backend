@@ -107,4 +107,36 @@ class OrderController extends Controller
             );
         }
     }
+
+    //    voucher get
+    public function getVoucherDiscount(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|exists:vouchers,code',
+            'amount' => 'required|min:0',
+        ]);
+        $discount = $this->voucherDiscountCalculate($request);
+        if ($discount) {
+            $result = [
+                'id' => $discount->id,
+                'code' => $discount->code,
+                'value' => $discount->value,
+                'type' => $discount->type,
+                'amount' => $request['amount'],
+            ];
+
+            if ($discount->type == "amount") {
+                $result['discount_amount'] = $request['amount'] - $discount->value;
+            } else {
+                $result['discount_amount'] = $request['amount'] - (($discount->value * $request['amount']) / 100);
+            }
+            return $this->respondWithSuccessWithData(
+                $result
+            );
+        } else {
+            return $this->respondError(
+                "Something went wrong!"
+            );
+        }
+    }
 }

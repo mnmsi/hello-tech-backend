@@ -121,6 +121,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('order-list', [OrderController::class, 'orderList']); // Make Order Routes
     Route::post('buy-now', [OrderController::class, 'buyNow']); // Buy Now Routes
     Route::post('buy-now/make-order', [OrderController::class, 'makeOrderFromBuyNow']); // Buy Now Routes
+
+    Route::get('voucher-discount', [OrderController::class, 'getVoucherDiscount']); // Buy Now Routes
 });
 
 // Product Routes (Auth) or (Guest) Mode
