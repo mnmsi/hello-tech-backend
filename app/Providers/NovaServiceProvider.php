@@ -33,6 +33,7 @@ use App\Nova\User;
 use App\Nova\UserAddress;
 use App\Nova\UserWishlist;
 use App\Nova\VideoReviews;
+use App\Nova\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
@@ -79,6 +80,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(Order::class),
                     MenuItem::resource(OrderDetail::class),
                     MenuItem::resource(PaymentDetails::class),
+                    MenuItem::resource(Voucher::class),
                 ])->icon('shopping-cart')->collapsable(),
 //                bike sell
 //                MenuSection::make('Bike Sell', [
