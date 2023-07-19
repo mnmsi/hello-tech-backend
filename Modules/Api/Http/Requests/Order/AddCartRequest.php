@@ -34,7 +34,6 @@ class AddCartRequest extends FormRequest
             'product_id'       => 'required|integer|exists:App\Models\Product\Product,id',
             'quantity'         => 'required|integer|min:1',
             'product_color_id' => 'integer|exists:App\Models\Product\ProductColor,id',
-            'product_data_id'  => 'integer|exists:App\Models\Product\ProductData,id',
         ];
     }
 

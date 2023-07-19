@@ -2,6 +2,7 @@
 
 namespace Modules\Api\Http\Resources\Cart;
 
+use App\Models\ProductFeatureValue;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -18,32 +19,22 @@ class CartResource extends JsonResource
      */
     public function toArray($request): array
     {
+        if($this->product_data){
+            $feature_value = ProductFeatureValue::whereIn('id', json_decode($this->product_data,true))->get();
+            $feature_price = $feature_value->sum('price');
+        }
         return [
             'id' => $this->id,
             'quantity' => $this->quantity,
             'is_checked' => $this->status,
+            'name' => $this->product->name ?? '',
             'product_id' => $this->product_id,
             'product_color_id' => $this->product_color_id,
-            'product_data_id' => $this->product_data_id,
-            'name' => $this->product->name ?? '',
-            'price' => $this->checkPrice(),
-            'price_after_discount' => $this->checkColorForPrice(),
+            'price' => $this->calculateDiscountPrice($this->product->price ?? 0, $this->product->discount_rate ?? 0),
             'image_url' => $this->product->image ?? str_contains($this->product->image_url, 'http') ? $this->product->image_url : asset('storage/' . $this->product->image_url),
             'color_name' => $this->productColor->name ?? '',
+            'color_price' => $this->productColor->price ?? '',
+            'total_price' => ($this->calculateDiscountPrice($this->product->price , $this->product->discount_rate ?? 0)  + $feature_price  + $this->productColor->price ) * $this->quantity,
         ];
-    }
-
-    public function checkColorForPrice()
-    {
-        return !$this->product_data_id
-            ? $this->calculateDiscountPrice($this->product->price,$this->product->discount_rate)
-            : $this->productData->price;
-    }
-
-    public function checkPrice()
-    {
-        return !$this->product_data_id
-            ? $this->product->price
-            : $this->productData->price;
     }
 }

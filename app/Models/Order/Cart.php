@@ -13,7 +13,7 @@ class Cart extends BaseModel
         'user_id',
         'product_id',
         'product_color_id',
-        'product_data_id',
+        'product_data',
         'quantity',
         'status',
         'created_at',
@@ -35,10 +35,7 @@ class Cart extends BaseModel
         return $this->belongsTo('App\Models\User');
     }
 
-    public function productData()
-    {
-        return $this->belongsTo(ProductData::class);
-    }
+
 
 
 }

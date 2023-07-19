@@ -21,6 +21,7 @@ class CartController extends Controller
     public function carts()
     {
         $carts = $this->getCartedData();
+//        dd($carts->toArray());
         return $this->respondWithSuccess([
             'data' => CartResource::collection($carts),
         ]);
@@ -86,7 +87,7 @@ class CartController extends Controller
         $product = $this->getSelectedCartProduct();
         return $this->respondWithSuccess([
             'data' => CartResource::collection($product),
-            'total_price' => $this->getTotalPrice(),
+            'total_price' => null,
         ]);
     }
 }
