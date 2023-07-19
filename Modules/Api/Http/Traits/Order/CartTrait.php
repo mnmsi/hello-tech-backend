@@ -23,7 +23,7 @@ trait CartTrait
      */
     public function getCartedData()
     {
-        return Cart::with(['product', 'productColor','productData'])->where('user_id', auth()->id())->get();
+        return Cart::with(['product', 'productColor',])->where('user_id', auth()->id())->get();
 
     }
 
@@ -33,6 +33,7 @@ trait CartTrait
      */
     public function addProductToCart($request): mixed
     {
+//        dd($request->all());
         $request->merge(['user_id' => auth()->id()]);
         try {
             $cart = Cart::where('product_id', $request->product_id)->where('user_id', auth()->id())->first();
