@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
 //            BikeBodyTypeSeeder::class,
 //            BrandSeeder::class,
 //            CategorySeeder::class,
-//            DeliveryOptionSeeder::class,
+            DeliveryOptionSeeder::class,
 //            PaymentMethodSeeder::class,
 //            ShowroomSeeder::class,
 //            TestimonialSeeder::class,

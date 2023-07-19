@@ -81,17 +81,17 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(PaymentDetails::class),
                 ])->icon('shopping-cart')->collapsable(),
 //                bike sell
-                MenuSection::make('Bike Sell', [
-                    MenuItem::resource(SellBike::class),
-                    MenuItem::resource(BikeSellRequest::class),
-                ])->icon('cube')->collapsable(),
+//                MenuSection::make('Bike Sell', [
+//                    MenuItem::resource(SellBike::class),
+//                    MenuItem::resource(BikeSellRequest::class),
+//                ])->icon('cube')->collapsable(),
 //                system
                 MenuSection::make('System', [
 //                    MenuItem::resource(Showroom::class),
                     MenuItem::resource(Brand::class),
                     MenuItem::resource(Category::class),
                     MenuItem::resource(Banner::class),
-                    MenuItem::resource(BodyType::class),
+//                    MenuItem::resource(BodyType::class),
                     MenuItem::resource(PaymentMethods::class),
                     MenuItem::resource(ShippingCharge::class),
                     MenuItem::resource(DeliveryOption::class),

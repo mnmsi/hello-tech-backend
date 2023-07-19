@@ -16,13 +16,14 @@ return new class extends Migration {
             $table->unsignedBigInteger('payment_method_id');
             $table->unsignedBigInteger('delivery_option_id');
             $table->unsignedBigInteger('user_address_id')->nullable();
-            $table->unsignedBigInteger('showroom_id')->nullable();
+            $table->unsignedBigInteger('voucher_id')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('order_key')->nullable();
             $table->integer('discount_rate')->nullable();
             $table->integer('shipping_amount')->nullable();
             $table->decimal('subtotal_price', 10, 2);
             $table->decimal('total_price', 10, 2);
+            $table->longText('order_note')->nullable();
             $table->enum('status', ['pending', 'processing', 'completed', 'delivered', 'cancelled'])->default('pending');
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
