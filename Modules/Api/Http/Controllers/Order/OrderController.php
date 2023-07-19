@@ -75,13 +75,12 @@ class OrderController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'product_color_id' => 'required|exists:product_colors,id',
         ]);
         $cart = $this->buyNowProduct($request);
         if ($cart) {
             return $this->respondWithSuccess([
                 'data' => [new OrderResource($cart)],
-                'total_price' => $this->buyNowProductPrice($request),
+//                'total_price' => $this->buyNowProductPrice($request),
             ]);
         } else {
             return $this->respondError(

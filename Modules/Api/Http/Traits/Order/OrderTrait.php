@@ -23,7 +23,7 @@ OrderTrait
     public function getDeliveryOptions()
     {
         return DeliveryOption::where('is_active', 1)
-            ->select('id', 'name', 'bonus')
+            ->select('id', 'name', 'amount')
             ->get();
     }
 
