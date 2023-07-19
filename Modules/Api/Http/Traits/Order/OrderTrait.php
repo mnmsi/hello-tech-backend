@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Modules\Api\Http\Traits\Payment\PaymentTrait;
 use Modules\Api\Http\Traits\Product\ProductTrait;
 
-trait OrderTrait
+trait
+OrderTrait
 {
     use productTrait;
 

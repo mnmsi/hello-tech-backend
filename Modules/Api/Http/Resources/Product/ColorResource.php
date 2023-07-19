@@ -20,6 +20,8 @@ class ColorResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'color_code' => $this->color_code,
+            'price'=>$this->price,
+            'stock'=>$this->stock,
         ];
     }
 }
