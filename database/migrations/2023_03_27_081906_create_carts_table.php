@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('product_color_id')->nullable();
-            $table->unsignedBigInteger('product_data_id')->nullable();
+            $table->json('product_data')->nullable();
             $table->integer('quantity')->default(1);
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();

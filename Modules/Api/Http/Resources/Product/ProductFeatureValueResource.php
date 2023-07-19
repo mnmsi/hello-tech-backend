@@ -12,6 +12,8 @@ class ProductFeatureValueResource extends JsonResource
         return [
             'id' => $this->id,
             'value' => $this->value,
+            'stock' => $this->stock,
+            'price' => $this->price,
         ];
     }
 }

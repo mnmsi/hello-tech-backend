@@ -3,6 +3,7 @@
 namespace Modules\Api\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Api\Http\Resources\Product\ProductCollection;
@@ -56,9 +57,9 @@ class ProductController extends Controller
 
     public function getProductDataById($id)
     {
-       return $this->respondWithSuccessWithData(
-                new ProductDataResource($this->productDataById($id))
-            );
+        return $this->respondWithSuccessWithData(
+            new ProductDataResource($this->productDataById($id))
+        );
     }
 
     public function relatedProduct()
@@ -66,5 +67,19 @@ class ProductController extends Controller
         return $this->respondWithSuccessWithData(
             ProductResource::collection($this->getRelatedProduct())
         );
+    }
+
+    public function calculatePrice(Request $request)
+    {
+       $product_feature_id = $request->feature_value_id;
+       if(isset( $request->feature_value_id)){
+           foreach ($product_feature_id as $key => $value){
+               $product_feature_id[$key] = (int)$value;
+           }
+       }
+        $product = Product::with(['productFeatureValues','colors'])->where('id',$request->product_id)->first();
+       $price =  $this->calculateDiscountPrice($product->price,$product->discount_rate) +  $product->productFeatureValues->whereIn('id',$product_feature_id)->sum('price') + $product->colors->whereIn('id',$request->color_id)->sum('price');
+       return $this->respondWithSuccessWithData($price * $request->quantity ?? 1);
+
     }
 }

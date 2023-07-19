@@ -5,6 +5,7 @@ namespace App\Models\Product;
 use App\Models\Order\Cart;
 use App\Models\ProductData;
 use App\Models\ProductFeatureKey;
+use App\Models\ProductFeatureValue;
 use App\Models\ProductMetaKey;
 use App\Models\ProductMetaValue;
 use App\Models\System\Banner;
@@ -115,6 +116,10 @@ class Product extends BaseModel
     public function productFeatureKeys()
     {
         return $this->hasMany(ProductFeatureKey::class);
+    }
+    public function productFeatureValues()
+    {
+        return $this->hasManyThrough(ProductFeatureValue::class,ProductFeatureKey::class);
     }
 
     public function getIsFavoriteAttribute()
