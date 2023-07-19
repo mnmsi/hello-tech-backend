@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('delivery_options', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('bonus')->nullable();
+            $table->string('amount')->default(0);
             $table->tinyInteger('is_active')->default(1)->comment('1 = Yes, 0 = No');
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();

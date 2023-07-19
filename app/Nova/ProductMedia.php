@@ -45,7 +45,7 @@ class ProductMedia extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @return array
      */
     public function fields(NovaRequest $request)
@@ -67,59 +67,15 @@ class ProductMedia extends Resource
                 })
                 ->noPeeking(),
 
-//            type
-            Select::make('Type', 'type')->options([
-                'image' => 'Image',
-                'video' => 'Video',
-                'youtube' => 'Youtube',
-            ])->rules('required'),
-//            url
-            Text::make('Url', 'url')
-                ->sortable()
-                ->hideFromDetail()
-                ->dependsOn(['type'], function (Text $field, NovaRequest $request, FormData $formData) {
-                    if ($formData->type != "youtube") {
-                        $field->nullable()
-                            ->hide();
-                    } else {
-                        $field->rules('required', 'max:255');
-                    }
-                })
-                ->withMeta([
-                    'extraAttributes' => [
-                        'placeholder' => 'Enter url',
-                    ],
-                ]),
-
-            File::make('Url', 'url')
-                ->path('media')
-                ->disk('public')
-                ->dependsOn(['type'], function (File $field, NovaRequest $request, FormData $formData) {
-                    if ($formData->type == "youtube") {
-                        $field->nullable()
-                            ->hide();
-                    }
-                })
-                ->disableDownload(),
 //            thumb url
-            Image::make('Thumb url', 'thumbnail_url')
+            Image::make('Image url', 'image_url')
                 ->path('media')
                 ->disk('public')
-                ->dependsOn(['type'], function (Image $field, NovaRequest $request, FormData $formData) {
-                    if ($formData->type === "video" || $formData->type === "youtube") {
-                        $field->rules('required');
-                    } else {
-                        $field
-                            ->nullable()
-                            ->hide();
-                    }
-                })
                 ->withMeta([
                     'extraAttributes' => [
-                        'placeholder' => 'Enter thumb url(optional)',
+                        'placeholder' => 'Enter thumb',
                     ],
                 ])
-                ->help("*Optional upload video thumb image.")
                 ->disableDownload(),
 //            date
             DateTime::make('Created At', 'created_at')
@@ -139,7 +95,7 @@ class ProductMedia extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @return array
      */
     public function cards(NovaRequest $request)
@@ -150,7 +106,7 @@ class ProductMedia extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @return array
      */
     public function filters(NovaRequest $request)
@@ -161,7 +117,7 @@ class ProductMedia extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @return array
      */
     public function lenses(NovaRequest $request)
@@ -172,7 +128,7 @@ class ProductMedia extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @return array
      */
     public function actions(NovaRequest $request)

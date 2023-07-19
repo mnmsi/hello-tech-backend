@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 //            BrandSeeder::class,
 //            CategorySeeder::class,
             DeliveryOptionSeeder::class,
-//            PaymentMethodSeeder::class,
+            PaymentMethodSeeder::class,
 //            ShowroomSeeder::class,
 //            TestimonialSeeder::class,
             UserSeeder::class,

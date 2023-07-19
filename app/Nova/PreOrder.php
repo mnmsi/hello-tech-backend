@@ -5,27 +5,28 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use YieldStudio\NovaPhoneField\PhoneNumber;
 
-class DeliveryOption extends Resource
+class PreOrder extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\DeliveryOption>
+     * @var class-string<\App\Models\PreOrder>
      */
-    public static $model = \App\Models\System\DeliveryOption::class;
+    public static $model = \App\Models\PreOrder::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'name';
-    public static $group = 'System';
+    public static $title = 'product_name';
 
     /**
      * The columns that should be searched.
@@ -33,13 +34,13 @@ class DeliveryOption extends Resource
      * @var array
      */
     public static $search = [
-        'name',
+        'product_name', 'email', 'name'
     ];
 
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param NovaRequest $request
      * @return array
      */
     public function fields(NovaRequest $request)
@@ -47,7 +48,7 @@ class DeliveryOption extends Resource
         return [
             ID::make()->sortable(),
 //            name
-            Text::make('Name', 'name')
+            Text::make('Product Name', 'product_name')
                 ->sortable()
                 ->rules('required', 'max:255')
                 ->withMeta([
@@ -55,30 +56,45 @@ class DeliveryOption extends Resource
                         'placeholder' => 'Enter name',
                     ],
                 ]),
-//            bonus
-            Number::make('Amount', 'amount')
+//            image
+            Image::make('Product Image', 'product_image')
+                ->path('pre_order')
+                ->disk('public')
+                ->creationRules('required')
+                ->updateRules('nullable')
+                ->disableDownload(),
+//            quantity
+            Number::make('Quantity', 'product_quantity')
+                ->min(1)
+                ->step('any')
+                ->rules('required'),
+//            name
+            Text::make('Customer Name', 'name')
+                ->sortable()
+                ->rules('required', 'max:255')
+                ->withMeta([
+                    'extraAttributes' => [
+                        'placeholder' => 'Enter name',
+                    ],
+                ]),
+//            email
+            Text::make('Email','email')
+                ->sortable()
+                ->rules('required', 'email', 'max:254'),
+//            number
+            PhoneNumber::make('Phone', 'phone')
+                ->withCustomFormats('880## #### ####')
+                ->onlyCustomFormats()
+                ->help("Ex: 880 #### #####"),
+//            address
+            Textarea::make('Address', 'address')
                 ->sortable()
                 ->rules('required')
                 ->withMeta([
                     'extraAttributes' => [
-                        'placeholder' => 'Enter amount',
+                        'placeholder' => 'Enter address',
                     ],
                 ]),
-
-//              status
-            Select::make('Status', 'is_active')->options([
-                '1' => 'Yes',
-                '0' => 'No',
-            ])->rules('required')
-                ->resolveUsing(function ($value) {
-                    if (!$value) {
-                        return 0;
-                    }
-                    return 1;
-                })
-                ->displayUsing(function ($v) {
-                    return $v ? "Active" : "Inactive";
-                }),
 //            date
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
@@ -97,7 +113,7 @@ class DeliveryOption extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param NovaRequest $request
      * @return array
      */
     public function cards(NovaRequest $request)
@@ -108,7 +124,7 @@ class DeliveryOption extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param NovaRequest $request
      * @return array
      */
     public function filters(NovaRequest $request)
@@ -119,7 +135,7 @@ class DeliveryOption extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param NovaRequest $request
      * @return array
      */
     public function lenses(NovaRequest $request)
@@ -130,16 +146,11 @@ class DeliveryOption extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param NovaRequest $request
      * @return array
      */
     public function actions(NovaRequest $request)
     {
         return [];
-    }
-
-    public static function searchable()
-    {
-        return false;
     }
 }

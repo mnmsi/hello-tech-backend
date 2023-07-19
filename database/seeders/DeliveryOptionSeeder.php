@@ -17,11 +17,11 @@ class DeliveryOptionSeeder extends Seeder
         DB::table('delivery_options')->insert([
             [
                 'name'  => 'Inside Dhaka',
-                'bonus' => null,
+                'amount' => 0,
             ],
             [
                 'name'  => 'Outside Dhaka',
-                'bonus' => null
+                'amount' => 10
             ]
         ]);
     }
