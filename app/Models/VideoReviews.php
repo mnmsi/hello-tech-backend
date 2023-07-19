@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class VideoReviews extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'title',
         'url',

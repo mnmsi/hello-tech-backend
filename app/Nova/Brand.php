@@ -19,7 +19,7 @@ class Brand extends Resource
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Brand>
+     * @var class-string<\App\Models\Product\Brand>
      */
     public static $model = \App\Models\Product\Brand::class;
 
@@ -66,23 +66,12 @@ class Brand extends Resource
                 ->nullable()
                 ->disableDownload(),
 
-            Select::make('Type', 'type')->options([
-                'both' => 'Both',
-                'bike' => 'Bike',
-                'accessory' => 'Accessory',
-            ])->rules('required'),
+            Text::make('Slug', 'slug')
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
             BelongsTo::make('Category', 'category')
-                ->dependsOn(['type'], function (BelongsTo $field, NovaRequest $request, FormData $formData) {
-                    if ($formData->type == "both" || $formData->type == "accessory") {
-                        $field
-                            ->rules('required');
-                    } else {
-                        $field
-                            ->hide()
-                            ->nullable();
-                    }
-                })
+                ->rules('required')
                 ->noPeeking(),
 
             Select::make('Is popular', 'is_popular')->options([

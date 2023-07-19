@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use App\Nova\Filters\BannerStatusFilter;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
@@ -46,6 +47,14 @@ class Banner extends Resource
     {
         return [
             ID::make()->sortable(),
+//            product
+            BelongsTo::make('Product', 'product')
+                ->nullable()
+                ->noPeeking(),
+//            category
+            BelongsTo::make('Category', 'category')
+                ->nullable()
+                ->noPeeking(),
 //          page
             Select::make('Display Page', 'page')->options([
                 'home' => 'Home',
@@ -59,6 +68,7 @@ class Banner extends Resource
                 'all' => 'All',
                 'top' => 'Top',
                 'bottom' => 'Bottom',
+                'detail' => 'Detail',
             ])->rules('required'),
 //            image
             Image::make('Image', 'image_url')

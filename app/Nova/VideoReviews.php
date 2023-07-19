@@ -3,31 +3,29 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Avatar;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
-use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Testimonial extends Resource
+class VideoReviews extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\System\Testimonial>
+     * @var class-string<\App\Models\VideoReviews>
      */
-    public static $model = \App\Models\System\Testimonial::class;
+    public static $model = \App\Models\VideoReviews::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'name';
-    public static $group = 'System';
+    public static $title = 'title';
 
     /**
      * The columns that should be searched.
@@ -35,7 +33,7 @@ class Testimonial extends Resource
      * @var array
      */
     public static $search = [
-        'name',
+        'id', 'title'
     ];
 
     /**
@@ -48,55 +46,33 @@ class Testimonial extends Resource
     {
         return [
             ID::make()->sortable(),
-//            name
-            Text::make('Name', 'name')
+
+            Text::make('Title', 'title')
                 ->sortable()
                 ->rules('required', 'max:255')
                 ->withMeta([
                     'extraAttributes' => [
-                        'placeholder' => 'Enter name',
+                        'placeholder' => 'Enter title',
                     ],
                 ]),
-//            image
-            Image::make('Image', 'image_url')
-                ->path('testimonial')
+
+            URL::make('Video Url', 'video_url')
+                ->showOnPreview()
+                ->required()
+                ->textAlign('left')
+                ->withMeta([
+                    'extraAttributes' => [
+                        'placeholder' => 'Enter video url',
+                    ],
+                ]),
+
+            Image::make('Thumbnail', 'video_thumbnail')
+                ->path('video_review')
                 ->disk('public')
                 ->creationRules('required')
                 ->updateRules('nullable')
-                ->help("*For better view please use image height=48,width=48")
                 ->disableDownload(),
-//            address
-            Text::make('Address', 'address')
-                ->sortable()
-                ->rules('required', 'max:255')
-                ->withMeta([
-                    'extraAttributes' => [
-                        'placeholder' => 'Enter address',
-                    ],
-                ]),
-//            note
-            Textarea::make('Notes', 'note')
-                ->sortable()
-                ->rules('required')
-                ->rows(2)
-                ->alwaysShow(),
-//            status
-            Select::make('Status', 'is_active')
-                ->options([
-                    '1' => 'Yes',
-                    '0' => 'No',
-                ])->rules('required')
-                ->default(1)
-                ->resolveUsing(function ($value) {
-                    if ($value === false) {
-                        return 0;
-                    }
-                    return 1;
-                })
-                ->displayUsing(function ($v) {
-                    return $v ? "Active" : "Inactive";
-                }),
-//            date
+
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
                 ->default(now())

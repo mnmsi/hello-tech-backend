@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Nova\AboutUs;
 use App\Nova\Banner;
 use App\Nova\BikeSellRequest;
 use App\Nova\BodyType;
@@ -31,6 +32,7 @@ use App\Nova\Testimonial;
 use App\Nova\User;
 use App\Nova\UserAddress;
 use App\Nova\UserWishlist;
+use App\Nova\VideoReviews;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
@@ -85,7 +87,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 ])->icon('cube')->collapsable(),
 //                system
                 MenuSection::make('System', [
-                    MenuItem::resource(Showroom::class),
+//                    MenuItem::resource(Showroom::class),
                     MenuItem::resource(Brand::class),
                     MenuItem::resource(Category::class),
                     MenuItem::resource(Banner::class),
@@ -93,6 +95,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(PaymentMethods::class),
                     MenuItem::resource(ShippingCharge::class),
                     MenuItem::resource(DeliveryOption::class),
+                    MenuItem::resource(VideoReviews::class),
                     MenuItem::resource(Notification::class),
                 ])->icon('briefcase')->collapsable(),
 //                settings
@@ -100,9 +103,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(SiteSetting::class),
                     MenuItem::resource(SeoSetting::class),
                     MenuItem::resource(HomeSection::class),
-                    MenuItem::resource(Testimonial::class),
+//                    MenuItem::resource(Testimonial::class),
                     MenuItem::resource(TermsAndCondition::class),
                     MenuItem::resource(PrivacyPolicy::class),
+                    MenuItem::resource(AboutUs::class)->name('About Us'),
                 ])->icon('document-text')->collapsable(),
             ];
         });
