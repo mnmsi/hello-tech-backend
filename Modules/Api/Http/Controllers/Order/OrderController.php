@@ -44,7 +44,11 @@ class OrderController extends Controller
 
     public function order(CreateOrderRequest $request)
     {
-        $order = $this->storeOrder($request);
+        if ($request->cart_id) {
+            $order = $this->storeOrder($request);
+        } else {
+            $order = $this->buyNowOrderStore($request);
+        }
         if ($order) {
             return $this->respondWithSuccessWithData(
                 $order

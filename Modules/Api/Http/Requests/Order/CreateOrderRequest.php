@@ -19,9 +19,15 @@ class CreateOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'cart_id'=>'required|array|exists:App\Models\Order\Cart,id',
+            'cart_id' => 'nullable|array|exists:App\Models\Order\Cart,id',
             'delivery_option_id' => 'required|integer|exists:App\Models\System\DeliveryOption,id',
             'payment_method_id' => 'required|integer|exists:App\Models\System\PaymentMethod,id',
+            'user_address_id' => 'required|integer|exists:App\Models\User\UserAddress,id',
+            'voucher_id' => 'nullable|integer|exists:App\Models\Voucher,id',
+            'product_id' => 'nullable|integer|exists:App\Models\Product\Product,id',
+            'product_color_id' => 'nullable|integer|exists:App\Models\Product\ProductColor,id',
+            'product_feature_id' => 'nullable|array|exists:App\Models\ProductData,id',
+            'quantity' => 'nullable|numeric|min:1',
         ];
     }
 
