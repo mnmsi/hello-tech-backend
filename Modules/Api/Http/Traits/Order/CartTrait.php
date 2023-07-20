@@ -3,6 +3,7 @@
 namespace Modules\Api\Http\Traits\Order;
 
 use App\Models\Order\Cart;
+use App\Models\ProductFeatureValue;
 use Closure;
 use Illuminate\Support\Arr;
 use Modules\Api\Http\Resources\Cart\CartResource;
@@ -92,6 +93,26 @@ trait CartTrait
     public function getSelectedCartProduct()
     {
         return Cart::where('user_id', auth()->id())->with('product')->where('status', '1')->get();
+    }
+
+    public function getSelectectedCartProductTotalPrice($carts){
+//        $carts = $this->getSelectedCartProduct();
+        $total_price = 0;
+        foreach ($carts as $cart){
+            $total_price += $cart->product->price * $cart->quantity;
+        }
+        return $total_price;
+    }
+
+    public function calculateCardAmount($item)
+    {
+        $feature_price = 0;
+        if($this->product_data){
+            $feature_value = ProductFeatureValue::whereIn('id', json_decode($this->product_data,true))->get();
+            $feature_price = $feature_value->sum('price');
+        }
+
+        return ($this->calculateDiscountPrice($item->product->price , $item->product->discount_rate ?? 0)  + $feature_price  + $item->productColor->price ) * $item->quantity;
     }
 
 
