@@ -91,6 +91,11 @@ OrderTrait
 //            $total_discountRate = $products->sum('discount_rate');
 //            $subtotal_price = $carts->sum('price') * $carts->sum('quantity');
 
+            if(!empty($data['voucher_id'])){
+                $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'],$subtotal_price);
+                $subtotal_price = $subtotal_price - $voucher_dis;
+            }
+
             $orderData = [
                 'user_id' => Auth::id(),
                 'transaction_id' => uniqid(),
@@ -205,7 +210,7 @@ OrderTrait
 
             if(!empty($data['voucher_id'])){
                 $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'],$sub_price);
-                dd($voucher_dis);
+                $sub_price = $sub_price - $voucher_dis;
             }
 
             $orderData = [
@@ -395,13 +400,13 @@ OrderTrait
             ->first();
         if($voucher){
             if ($voucher->type == "percentage") {
-                $value -= (($value * $voucher->value) / 100);
+                $value = (($value * $voucher->value) / 100);
             } else {
-                $value -= $voucher->value;
+                $value = $voucher->value;
             }
             return $value;
         } else {
-            return $amount;
+            return 0;
         }
     }
 }
