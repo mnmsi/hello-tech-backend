@@ -80,7 +80,7 @@ class OrderController extends Controller
         if ($cart) {
             return $this->respondWithSuccess([
                 'data' => [new OrderResource($cart)],
-//                'total_price' => $this->buyNowProductPrice($request),
+                'total_price' => $this->buyNowProductPrice($request),
             ]);
         } else {
             return $this->respondError(

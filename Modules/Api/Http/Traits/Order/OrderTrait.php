@@ -207,13 +207,13 @@ OrderTrait
         }
     }
 
-    public function buyNowProductPrice($request)
-    {
-        $buyNowProduct = $this->buyNowProduct($request);
-        $buyNowProductPrice = $buyNowProduct->price;
-        $buyNowProductDiscountRate = $buyNowProduct->discount_rate;
-        return $buyNowProductPrice - ($buyNowProductPrice * $buyNowProductDiscountRate / 100);
-    }
+//    public function buyNowProductPrice($request)
+//    {
+//        $buyNowProduct = $this->buyNowProduct($request);
+//        $buyNowProductPrice = $buyNowProduct->price;
+//        $buyNowProductDiscountRate = $buyNowProduct->discount_rate;
+//        return $buyNowProductPrice - ($buyNowProductPrice * $buyNowProductDiscountRate / 100);
+//    }
 
     public function voucherDiscountCalculate($data)
     {
