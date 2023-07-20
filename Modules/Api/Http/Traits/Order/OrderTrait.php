@@ -6,6 +6,9 @@ use App\Models\Order\Cart;
 use App\Models\Order\Order;
 use App\Models\OrderDetails;
 use App\Models\Product\Product;
+use App\Models\Product\ProductColor;
+use App\Models\ProductData;
+use App\Models\ProductFeatureValue;
 use App\Models\System\DeliveryOption;
 use App\Models\System\PaymentMethod;
 use App\Models\Voucher;
@@ -38,15 +41,57 @@ OrderTrait
     {
         DB::beginTransaction();
         try {
-            $cartIds = $data['cart_id'];
-            $carts = Cart::whereIn('id', $cartIds)
-                ->select('id', 'product_id', 'product_color_id', 'price', 'quantity')->get();
-            $products = Product::whereIn('id', $carts->pluck('product_id'))->with('colors')->get();
-            $total_discountRate = $products->sum('discount_rate');
-            $subtotal_price = $carts->sum('price') * $carts->sum('quantity');
-            $carts->map(function ($value, $key) {
-                return $value['product_id'] == 1;
-            });
+            $total_discountRate = 0;
+            $subtotal_price = 0;
+            $carts = Cart::select('id', 'product_id', 'product_color_id', 'product_data', 'quantity')
+                ->where('user_id', Auth::id())->get();
+
+            foreach ($carts as $c){
+                $product = Product::find($c['product_id']);
+                $product->stock = $product->stock - $c['quantity'];
+                $product->save();
+//                price calculation
+                if ($product->discount_rate) {
+                    if ($product->discount_rate == 100) {
+                        $pp = 0;
+                        $total_discountRate += 100;
+                    } else {
+                        $pp = $product->price - (($product->price * $product->discount_rate) / 100);
+                        $total_discountRate += $product->discount_rate;
+                    }
+                    $subtotal_price = $pp * $c['quantity'];
+                } else {
+                    $subtotal_price = $product->price * $c['quantity'];
+                }
+//                product color price
+                $product_color = ProductColor::find($c['product_color_id']);
+                if ($product_color) {
+                    $subtotal_price += $product_color->price * $c['quantity'];
+                    $product_color->stock = $product_color->stock - $c['quantity'];
+                    $product_color->save();
+                }
+
+//                product feature
+                if (!empty($c['product_data'])) {
+                    $product_feature = ProductFeatureValue::whereIn('id', json_decode($c['product_data']))->get();
+                    if ($product_feature) {
+                        $total_feature = $product_feature->sum('price');
+                        $subtotal_price += $total_feature * $c['quantity'];
+
+                        foreach ($product_feature as $f) {
+                            $ff = ProductFeatureValue::find($f['id']);
+                            $ff->stock = $f['stock'] - $c['quantity'];
+                            $ff->save();
+                        }
+                    }
+                }
+
+            }
+
+//            $products = Product::whereIn('id', $carts->pluck('product_id'))->get();
+//            $total_discountRate = $products->sum('discount_rate');
+//            $subtotal_price = $carts->sum('price') * $carts->sum('quantity');
+
             $orderData = [
                 'user_id' => Auth::id(),
                 'transaction_id' => uniqid(),
@@ -54,13 +99,14 @@ OrderTrait
                 'delivery_option_id' => $data['delivery_option_id'],
                 'payment_method_id' => $data['payment_method_id'],
                 'user_address_id' => $data['user_address_id'],
-                'showroom_id' => $data['showroom_id'],
+                'voucher_id' => $data['voucher_id'] ?? null,
                 'shipping_amount' => $data['shipping_amount'],
                 'subtotal_price' => $subtotal_price,
                 'discount_rate' => $total_discountRate,
                 'total_price' => $subtotal_price + $data['shipping_amount'] ?? 0,
-                'status' => 1,
+                'status' => 'pending',
             ];
+//dd($orderData);
             $order = Order::create($orderData);
             $orderDetails = [];
             foreach ($products as $product) {
@@ -80,7 +126,7 @@ OrderTrait
                 ];
                 if ($order) {
                     OrderDetails::insert($orderDetails);
-                    Cart::whereIn('id', $cartIds)->delete();
+                    Cart::where('user_id', Auth::id())->delete();
                     if ($data['payment_method_id'] == 2) {
                         if ($isProcessPayment = $this->processPayment($orderData)) {
                             DB::commit();
@@ -90,6 +136,7 @@ OrderTrait
                                 'data' => json_decode($isProcessPayment)
                             ];
                         } else {
+                            DB::rollBack();
                             return [
                                 'status' => false,
                                 'message' => 'Order Unsuccessful',
@@ -103,6 +150,7 @@ OrderTrait
                         ];
                     }
                 } else {
+                    DB::rollBack();
                     return [
                         'status' => false,
                         'message' => 'Order Unsuccessful',
@@ -110,6 +158,111 @@ OrderTrait
                 }
             }
 
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    public function buyNowOrderStore($data)
+    {
+        DB::beginTransaction();
+        try {
+            $sub_price = 0;
+            $product = Product::find($data['product_id']);
+            $product->stock = $product->stock - $data['quantity'];
+            $product->save();
+            if ($product->discount_rate) {
+                if ($product->discount_rate == 100) {
+                    $pp = 0;
+                } else {
+                    $pp = $product->price - (($product->price * $product->discount_rate) / 100);
+                }
+                $sub_price = $pp * $data['quantity'];
+            } else {
+                $sub_price = $product->price * $data['quantity'];
+            }
+            $product_color = ProductColor::where('product_id', $data['product_id'])
+                ->where('id', $data['product_color_id'])
+                ->first();
+            if ($product_color) {
+                $sub_price += $product_color->price * $data['quantity'];
+                $product_color->stock = $product_color->stock - $data['quantity'];
+                $product_color->save();
+            }
+            if (!empty($data['product_feature_id'])) {
+                $product_feature = ProductFeatureValue::whereIn('id', $data['product_feature_id'])->get();
+                if ($product_feature) {
+                    $total_feature = $product_feature->sum('price');
+                    $sub_price += $total_feature * $data['quantity'];
+
+                    foreach ($product_feature as $f) {
+                        $ff = ProductFeatureValue::find($f['id']);
+                        $ff->stock = $f['stock'] - $data['quantity'];
+                        $ff->save();
+                    }
+                }
+            }
+
+            $orderData = [
+                'user_id' => Auth::id(),
+                'payment_method_id' => $data['payment_method_id'],
+                'delivery_option_id' => $data['delivery_option_id'],
+                'user_address_id' => $data['user_address_id'],
+                'voucher_id' => $data['voucher_id'] ?? null,
+                'transaction_id' => uniqid(),
+                'order_key' => uniqid(),
+                'discount_rate' => $product->discount_rate,
+                'shipping_amount' => $data['shipping_amount'],
+                'subtotal_price' => $sub_price,
+                'total_price' => $sub_price + $data['shipping_amount'] ?? 0,
+                'order_note' => $data['order_note'] ?? null,
+                'status' => 'pending',
+            ];
+            $order = Order::create($orderData);
+
+            if ($order) {
+                $orderDetails = [
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'product_color_id' => $product_color->id,
+                    'price' => $product->price,
+                    'discount_rate' => $product->discount_rate,
+                    'subtotal_price' => $sub_price,
+                    'quantity' => $data['quantity'],
+                    'total' => $sub_price + $data['shipping_amount'] ?? 0,
+                ];
+                OrderDetails::insert($orderDetails);
+
+                if ($data['payment_method_id'] == 2) {
+                    if ($isProcessPayment = $this->processPayment($orderData)) {
+                        DB::commit();
+                        return [
+                            'status' => true,
+                            'message' => 'Payment Successful',
+                            'data' => json_decode($isProcessPayment)
+                        ];
+                    } else {
+                        DB::rollBack();
+                        return [
+                            'status' => false,
+                            'message' => 'Order Unsuccessful',
+                        ];
+                    }
+                } else {
+                    DB::commit();
+                    return [
+                        'status' => true,
+                        'message' => 'Payment Successful',
+                    ];
+                }
+            } else {
+                DB::rollBack();
+                return [
+                    'status' => false,
+                    'message' => 'Order Unsuccessful',
+                ];
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return $e->getMessage();

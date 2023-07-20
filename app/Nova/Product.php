@@ -6,6 +6,7 @@ use App\Nova\Filters\ProductStatusFilter;
 use App\Nova\Metrics\TotalProduct;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Color;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\HasMany;
@@ -17,8 +18,10 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\Trix;
+use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Query\Search\SearchableRelation;
+use Outl1ne\MultiselectField\Multiselect;
 use Whitecube\NovaFlexibleContent\Flexible;
 use App\Models\Product\ProductColor;
 use App\Models\Product\ProductSpecification;
@@ -68,14 +71,45 @@ class Product extends Resource
             BelongsTo::make('Brand', 'brand')
                 ->rules('required')
                 ->noPeeking(),
+            //            category
+            BelongsTo::make('Category', 'category')
+                ->rules('required')
+                ->noPeeking(),
+            //            meta value
+//            BelongsTo::make('Product Meta Value', 'metaValues')
+//                ->rules('required')
+//                ->noPeeking(),
+//
+//            MultiSelect::make('Sizes')->options([
+//                'S' => 'Small',
+//                'M' => 'Medium',
+//                'L' => 'Large',
+//            ]),
             //            image
             Image::make('Image', 'image_url')
                 ->path('product_image')
                 ->disk('public')
                 ->creationRules('required')
                 ->updateRules('nullable')
-                ->help("*For better view please use image height=200,width=282")
+//                ->help("*For better view please use image height=200,width=282")
                 ->disableDownload(),
+//            hover image
+            Image::make('Hover Image', 'hover_image_url')
+                ->path('product_image')
+                ->disk('public')
+                ->nullable()
+//                ->help("*For better view please use image height=200,width=282")
+                ->disableDownload(),
+//            video
+            URL::make('Video Url', 'video_url')
+                ->showOnPreview()
+                ->nullable()
+                ->textAlign('left')
+                ->withMeta([
+                    'extraAttributes' => [
+                        'placeholder' => 'Enter video url',
+                    ],
+                ]),
             //            badge
             Image::make('Badge Image', 'badge_url')
                 ->path('product_badge')
@@ -128,19 +162,13 @@ class Product extends Resource
                     ],
                 ]),
             //            code
-            Text::make('Product code', 'product_code')
-                ->sortable()
-                ->rules('required', 'max:255')
-                ->withMeta([
-                    'extraAttributes' => [
-                        'placeholder' => 'Enter code',
-                    ],
-                ])
-                ->creationRules('unique:App\Models\Product\Product,product_code')
-                ->updateRules('unique:App\Models\Product\Product,product_code,{{resourceId}}'),
+            Number::make('Stock', 'stock')
+                ->min(0)
+                ->step('any')
+                ->rules('required'),
             //            price
             Number::make('price')
-                ->min(1)
+                ->min(0)
                 ->step('any')
                 ->rules('required'),
             //            discount
@@ -150,7 +178,7 @@ class Product extends Resource
                 ->step('any')
                 ->nullable(),
             //            used or not
-            Select::make('Is Used', 'is_used')->options([
+            Select::make('Is Official', 'is_official')->options([
                 '1' => 'Yes',
                 '0' => 'No',
             ])->rules('required')
@@ -191,12 +219,6 @@ class Product extends Resource
                 ->displayUsing(function ($v) {
                     return $v ? "Active" : "Inactive";
                 }),
-            //              short description
-            Textarea::make('Short description', 'short_description')
-                ->sortable()
-                ->nullable()
-                ->rows(2)
-                ->alwaysShow(),
             //            description
             Trix::make('Description', 'description')
                 ->sortable()
@@ -237,17 +259,15 @@ class Product extends Resource
                                 'placeholder' => 'Enter name',
                             ],
                         ]),
-                    //                  color image
-                    Image::make('Color Image', 'color_image')
-                        ->path('product_color')
-                        ->disk('public')
-                        ->creationRules('required')
-                        ->updateRules('nullable')
-                        ->help("*For better view please use image height=53,width=68")
-                        ->preview(function ($value, $disk) {
-                            return $value ? Storage::disk($disk)->url($value) : null;
-                        })->prunable(),
-                    //                  color stock
+                    //                    color code
+                    Color::make('Color Code', 'color_code')
+                        ->sortable()
+                        ->rules('required'),
+                    //                  color price
+                    Number::make('Color Price', 'color_price')
+                        ->min(0)
+                        ->rules('required'),
+//                    stock
                     Number::make('Color Stock', 'color_stock')
                         ->min(0)
                         ->rules('required'),
@@ -376,11 +396,12 @@ class Product extends Resource
         $specification_data = $request->only('specification_list');
 
         if (isset($formData['color_list'])) {
+            dd($formData['color_list']);
             foreach ($formData['color_list'] as $list) {
                 $product_color = new ProductColor();
                 $product_color->product_id = $model->id;
                 $product_color->name = $list['attributes']['color_name'];
-                $product_color->image_url = $request->{$list['attributes']['color_image']}->store('product_color', 'public');
+                $product_color->image_url = '';
                 $product_color->stock = $list['attributes']['color_stock'];
                 $product_color->save();
             }
