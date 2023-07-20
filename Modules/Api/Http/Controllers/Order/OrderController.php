@@ -79,7 +79,6 @@ class OrderController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'product_color_id' => 'required|exists:product_colors,id',
         ]);
         $cart = $this->buyNowProduct($request);
         if ($cart) {

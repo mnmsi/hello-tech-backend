@@ -26,7 +26,7 @@ OrderTrait
     public function getDeliveryOptions()
     {
         return DeliveryOption::where('is_active', 1)
-            ->select('id', 'name', 'bonus')
+            ->select('id', 'name', 'amount')
             ->get();
     }
 
@@ -190,7 +190,7 @@ OrderTrait
                 $product_color->save();
             }
             if (!empty($data['product_feature_id'])) {
-                $product_feature = ProductFeatureValue::whereIn('id', $data['product_feature_id'])->get();
+                $product_feature = ProductFeatureValue::whereIn('id', json_decode($data['product_feature_id']))->get();
                 if ($product_feature) {
                     $total_feature = $product_feature->sum('price');
                     $sub_price += $total_feature * $data['quantity'];
@@ -364,13 +364,13 @@ OrderTrait
         }
     }
 
-    public function buyNowProductPrice($request)
-    {
-        $buyNowProduct = $this->buyNowProduct($request);
-        $buyNowProductPrice = $buyNowProduct->price;
-        $buyNowProductDiscountRate = $buyNowProduct->discount_rate;
-        return $buyNowProductPrice - ($buyNowProductPrice * $buyNowProductDiscountRate / 100);
-    }
+//    public function buyNowProductPrice($request)
+//    {
+//        $buyNowProduct = $this->buyNowProduct($request);
+//        $buyNowProductPrice = $buyNowProduct->price;
+//        $buyNowProductDiscountRate = $buyNowProduct->discount_rate;
+//        return $buyNowProductPrice - ($buyNowProductPrice * $buyNowProductDiscountRate / 100);
+//    }
 
     public function voucherDiscountCalculate($data)
     {
