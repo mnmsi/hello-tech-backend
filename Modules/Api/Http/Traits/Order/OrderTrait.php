@@ -46,7 +46,7 @@ OrderTrait
             $carts = Cart::select('id', 'product_id', 'product_color_id', 'product_data', 'quantity')
                 ->where('user_id', Auth::id())->get();
 
-            foreach ($carts as $c){
+            foreach ($carts as $c) {
                 $product = Product::find($c['product_id']);
                 $product->stock = $product->stock - $c['quantity'];
                 $product->save();
@@ -85,10 +85,9 @@ OrderTrait
                         }
                     }
                 }
-
             }
 
-            $products = Product::whereIn('id', $carts->pluck('product_id'))->get();
+//            $products = Product::whereIn('id', $carts->pluck('product_id'))->get();
 //            $total_discountRate = $products->sum('discount_rate');
 //            $subtotal_price = $carts->sum('price') * $carts->sum('quantity');
 
@@ -106,58 +105,58 @@ OrderTrait
                 'total_price' => $subtotal_price + $data['shipping_amount'] ?? 0,
                 'status' => 'pending',
             ];
-//dd($orderData);
+
             $order = Order::create($orderData);
             $orderDetails = [];
-            foreach ($products as $product) {
-                $discountRate = $product->discount_rate;
-                $subtotal = $product->price * count($products);
+            foreach ($carts as $p) {
+                $product_p = Product::find($p['product_id']);
+                $subtotal_p = $product_p->price;
+                $product_color_p = ProductColor::find($p['product_color_id']);
+                $subtotal_p += $product_color_p->price * $p['quantity'];
+
                 $orderDetails[] = [
                     'order_id' => $order->id,
-                    'product_id' => $product->id,
-                    'product_color_id' => collect($carts)->filter(function ($value, $key) use ($product) {
-                        return $value['product_id'] == $product->id;
-                    })->first()->product_color_id,
-                    'price' => $product->price,
-                    'discount_rate' => $discountRate,
-                    'subtotal_price' => $subtotal,
-                    'quantity' => count($products),
-                    'total' => $subtotal + $data['shipping_amount'] ?? 0,
+                    'product_id' => $product_p->id,
+                    'product_color_id' => $p['product_color_id'],
+                    'price' => $product_p->price,
+                    'discount_rate' => $product_p->discount_rate,
+                    'subtotal_price' => $subtotal_p,
+                    'quantity' => $p['quantity'],
+                    'total' => $subtotal_p + $data['shipping_amount'] ?? 0,
                 ];
-                if ($order) {
-                    OrderDetails::insert($orderDetails);
-                    Cart::where('user_id', Auth::id())->delete();
-                    if ($data['payment_method_id'] == 2) {
-                        if ($isProcessPayment = $this->processPayment($orderData)) {
-                            DB::commit();
-                            return [
-                                'status' => true,
-                                'message' => 'Payment Successful',
-                                'data' => json_decode($isProcessPayment)
-                            ];
-                        } else {
-                            DB::rollBack();
-                            return [
-                                'status' => false,
-                                'message' => 'Order Unsuccessful',
-                            ];
-                        }
-                    } else {
+            }
+            if ($order) {
+                OrderDetails::insert($orderDetails);
+                Cart::where('user_id', Auth::id())->delete();
+                if ($data['payment_method_id'] == 2) {
+                    if ($isProcessPayment = $this->processPayment($orderData)) {
                         DB::commit();
                         return [
                             'status' => true,
                             'message' => 'Payment Successful',
+                            'data' => json_decode($isProcessPayment)
+                        ];
+                    } else {
+                        DB::rollBack();
+                        return [
+                            'status' => false,
+                            'message' => 'Order Unsuccessful',
                         ];
                     }
                 } else {
-                    DB::rollBack();
+                    DB::commit();
                     return [
-                        'status' => false,
-                        'message' => 'Order Unsuccessful',
+                        'status' => true,
+                        'message' => 'Payment Successful',
                     ];
                 }
+            } else {
+                DB::rollBack();
+                return [
+                    'status' => false,
+                    'message' => 'Order Unsuccessful',
+                ];
             }
-
         } catch (\Exception $e) {
             DB::rollBack();
             return $e->getMessage();
@@ -202,6 +201,11 @@ OrderTrait
                         $ff->save();
                     }
                 }
+            }
+
+            if(!empty($data['voucher_id'])){
+                $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'],$sub_price);
+                dd($voucher_dis);
             }
 
             $orderData = [
@@ -379,6 +383,25 @@ OrderTrait
             return $data;
         } catch (\Exception $e) {
             return false;
+        }
+    }
+
+    public function calculateVoucherDiscount($id, $amount)
+    {
+        $value = $amount;
+        $voucher = Voucher::where('id', $id)
+            ->where('expires_at', '>', Carbon::parse(now()->addHours(6))->format('Y-m-d H:i:s'))
+            ->where('status', 1)
+            ->first();
+        if($voucher){
+            if ($voucher->type == "percentage") {
+                $value -= (($value * $voucher->value) / 100);
+            } else {
+                $value -= $voucher->value;
+            }
+            return $value;
+        } else {
+            return $amount;
         }
     }
 }
