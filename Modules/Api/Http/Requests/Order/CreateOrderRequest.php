@@ -26,7 +26,7 @@ class CreateOrderRequest extends FormRequest
             'voucher_id' => 'nullable|integer|exists:App\Models\Voucher,id',
             'product_id' => 'nullable|integer|exists:App\Models\Product\Product,id',
             'product_color_id' => 'nullable|integer|exists:App\Models\Product\ProductColor,id',
-            'product_feature_id' => 'nullable|array|exists:App\Models\ProductData,id',
+            'product_feature_id' => 'nullable',
             'quantity' => 'nullable|numeric|min:1',
         ];
     }

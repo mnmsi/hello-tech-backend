@@ -191,7 +191,7 @@ OrderTrait
                 $product_color->save();
             }
             if (!empty($data['product_feature_id'])) {
-                $product_feature = ProductFeatureValue::whereIn('id', $data['product_feature_id'])->get();
+                $product_feature = ProductFeatureValue::whereIn('id', json_decode($data['product_feature_id']))->get();
                 if ($product_feature) {
                     $total_feature = $product_feature->sum('price');
                     $sub_price += $total_feature * $data['quantity'];
