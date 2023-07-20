@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Color;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
@@ -51,7 +52,6 @@ class ProductColor extends Resource
 //            product
             BelongsTo::make('Product', 'product')
                 ->rules('required')
-//                ->searchable()
                 ->noPeeking(),
 //            name
             Text::make('Name', 'name')
@@ -62,14 +62,14 @@ class ProductColor extends Resource
                         'placeholder' => 'Enter name',
                     ],
                 ]),
-//            image
-            Image::make('Image', 'image_url')
-                ->path('product_color')
-                ->disk('public')
-                ->creationRules('required')
-                ->updateRules('nullable')
-                ->help("*For better view please use image height=53,width=68")
-                ->disableDownload(),
+//            product color
+            Color::make('Color Code', 'color_code')
+                ->sortable()
+                ->rules('required'),
+//            price
+            Number::make('Product price', 'price')
+                ->min(0)
+                ->rules('required'),
 //            total stock
             Number::make('Stock', 'stock')
                 ->min(0)

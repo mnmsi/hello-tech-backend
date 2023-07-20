@@ -63,7 +63,8 @@ class Brand extends Resource
             Image::make('Image', 'image_url')
                 ->disk('public')
                 ->path('brand')
-                ->nullable()
+                ->creationRules('required')
+                ->updateRules('nullable')
                 ->disableDownload(),
 
             Text::make('Slug', 'slug')

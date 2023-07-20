@@ -168,8 +168,9 @@ class Product extends BaseModel
                     "attributes" => [
                         "color_id" => $l->id,
                         "color_name" => $l->name,
-                        "color_image" => $l->image_url,
+                        "color_code" => $l->color_code,
                         "color_stock" => $l->stock,
+                        "color_price" => $l->price,
                     ]
                 ];
             }
