@@ -88,7 +88,7 @@ OrderTrait
 
             }
 
-//            $products = Product::whereIn('id', $carts->pluck('product_id'))->get();
+            $products = Product::whereIn('id', $carts->pluck('product_id'))->get();
 //            $total_discountRate = $products->sum('discount_rate');
 //            $subtotal_price = $carts->sum('price') * $carts->sum('quantity');
 
