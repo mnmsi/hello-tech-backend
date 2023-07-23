@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductMetaKey extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'category_id',
         'key',
@@ -25,4 +23,24 @@ class ProductMetaKey extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function getMetaListAttribute(): array
+    {
+        if (isset($this->attributes['id'])) {
+            $list = [];
+            $value = ProductMetaValue::where('product_meta_key_id', $this->attributes['id'])->get();
+            foreach ($value as $l) {
+                $list[] = [
+                    "layout" => "meta",
+                    "key" => $l->id,
+                    "attributes" => [
+                        "meta_id" => $l->id,
+                        "meta_name" => $l->value,
+                    ]
+                ];
+            }
+            return $list;
+        } else {
+            return [];
+        }
+    }
 }

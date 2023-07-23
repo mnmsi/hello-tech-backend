@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->double('price', 10, 2, true);
             $table->integer('discount_rate')->default(0);
             $table->tinyInteger('is_featured')->default(0)->comment('0: No, 1: Yes');
+            $table->tinyInteger('is_new_arrival')->default(0)->comment('0: No, 1: Yes');
             $table->tinyInteger('is_active')->default(1)->comment('0: Inactive, 1: Active');
             $table->tinyInteger('is_official')->default(0)->comment('0: No, 1: Yes');
             $table->string('image_url');

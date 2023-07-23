@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductFeatureValue extends Model
 {
-    use HasFactory;
     protected $fillable = [
         'product_feature_key_id',
         'value',
@@ -19,8 +18,8 @@ class ProductFeatureValue extends Model
         return $this->belongsTo(ProductFeatureKey::class);
     }
 
-    public function productDatas()
-    {
-        return $this->hasMany(ProductData::class);
-    }
+//    public function productDatas()
+//    {
+//        return $this->hasMany(ProductData::class);
+//    }
 }
