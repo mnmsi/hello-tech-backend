@@ -271,7 +271,7 @@ OrderTrait
 
     public function getUserOrderList()
     {
-        return Order::where('user_id', Auth::id())->get();
+        return Order::where('user_id', Auth::id())->with(['orderDetails.product'])->get();
     }
 
     public function buyNowProduct($request)
