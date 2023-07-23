@@ -9,7 +9,7 @@ class SiteSettingController extends Controller
 {
     public function siteSettings()
     {
-        $data = SiteSetting::select('name', 'email', 'phone', 'header_logo', 'footer_logo', 'fav_icon', 'dark_fav_icon', 'facebook_url', 'twitter_url', 'youtube_url', 'whatsapp_url','site address AS site_address')
+        $data = SiteSetting::select('name', 'email', 'phone', 'header_logo', 'footer_logo', 'fav_icon', 'dark_fav_icon', 'facebook_url', 'twitter_url', 'youtube_url', 'whatsapp_url','site_address')
             ->first();
         $data['status'] = true;
         $data['header_logo'] = str_contains($data['header_logo'], 'http') ? $data['header_logo'] : asset('storage/' . $data['header_logo']);
