@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Modules\Api\Http\Requests\Order\AddCartRequest;
 use Modules\Api\Http\Requests\Order\CreateOrderRequest;
+use Modules\Api\Http\Resources\Order\OrderListResource;
 use Modules\Api\Http\Resources\Order\OrderResource;
 use Modules\Api\Http\Traits\Order\OrderTrait;
 use Modules\Api\Http\Traits\Payment\PaymentTrait;
@@ -64,9 +65,10 @@ class OrderController extends Controller
     public function orderList()
     {
         $orders = $this->getUserOrderList();
+//        dd($orders->toArray());
         if ($orders) {
             return $this->respondWithSuccessWithData(
-                $orders
+               OrderListResource::collection($orders)
             );
         } else {
             return $this->respondError(

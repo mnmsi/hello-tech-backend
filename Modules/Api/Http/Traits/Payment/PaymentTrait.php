@@ -13,7 +13,8 @@ trait PaymentTrait
         $user                          = User::where('id', $orderData['user_id'])->first();
         $sslc                          = new SslCommerzNotification();
         $orderData['cus_email']        = $user->email ?? "";
-        $orderData['cus_phone']        = $user->phone ?? "";
+//        $orderData['cus_phone']        = null;
+        $orderData['cus_phone']        = $user->phone ?? "8801XXXXXXXXX";
         $orderData['shipping_method']  = "NO";
         $orderData['product_name']     = "Sawari Product";
         $orderData['product_category'] = "Ecommerce";

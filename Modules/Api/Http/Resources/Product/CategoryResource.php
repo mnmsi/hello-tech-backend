@@ -21,7 +21,7 @@ class CategoryResource extends JsonResource
             'name'      => ucwords(strtolower($this->name)),
             'slug'      => $this->slug,
             'icon'      => str_contains($this->icon, 'http') ? $this->icon : asset('storage/' . $this->icon),
-            'count'     => 100 , // $this->products()->count(), change to 100 for testing
+            'count'     => $this->products->count(),
             'image_url' => str_contains($this->image_url, 'http') ? $this->image_url : asset('storage/' . $this->image_url),
         ];
     }

@@ -74,7 +74,7 @@ class Order extends BaseModel
 
     public function orderDetails()
     {
-        return $this->hasMany('App\Models\Order\OrderDetails');
+        return $this->hasMany('App\Models\OrderDetails');
     }
 
 }
