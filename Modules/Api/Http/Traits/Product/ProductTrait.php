@@ -92,4 +92,11 @@ trait ProductTrait
             ->take(4)
             ->get();
     }
+
+    public function getProductByBrandSlug($slug){
+        return Product::where('is_active', 1)
+            ->whereHas('brand', function ($query) use ($slug) {
+                $query->where('slug', $slug);
+            })->get();
+    }
 }

@@ -82,4 +82,11 @@ class ProductController extends Controller
        return $this->respondWithSuccessWithData($price * $request->quantity ?? 1);
 
     }
+
+    public function getProductByBrand($slug)
+    {
+        return $this->respondWithSuccessWithData(
+            ProductResource::collection($this->getProductByBrandSlug($slug))
+        );
+    }
 }
