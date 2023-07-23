@@ -61,19 +61,19 @@ class HomeSection extends Resource
                     ],
                 ]),
 //            sub title
-            Text::make('Section Subtitle', 'section_subtitle')
-                ->sortable()
-                ->rules('required', 'max:255')
-                ->withMeta([
-                    'extraAttributes' => [
-                        'placeholder' => 'Enter sub-title',
-                    ],
-                ]),
+//            Text::make('Section Subtitle', 'section_subtitle')
+//                ->sortable()
+//                ->rules('required', 'max:255')
+//                ->withMeta([
+//                    'extraAttributes' => [
+//                        'placeholder' => 'Enter sub-title',
+//                    ],
+//                ]),
 //            order
-            Number::make('Order', 'section_order')
-                ->min(0)
-                ->step('any')
-                ->rules('required'),
+//            Number::make('Order', 'section_order')
+//                ->min(0)
+//                ->step('any')
+//                ->rules('required'),
 //            date
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()

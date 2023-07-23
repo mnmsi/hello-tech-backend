@@ -23,7 +23,7 @@ class SiteSetting extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -105,14 +105,14 @@ class SiteSetting extends Resource
                     ],
                 ]),
 //          instagram url
-            Text::make('Instagram url', 'instagram_url')
-                ->sortable()
-                ->rules('nullable', 'max:255')
-                ->withMeta([
-                    'extraAttributes' => [
-                        'placeholder' => 'Enter url',
-                    ],
-                ]),
+//            Text::make('Instagram url', 'instagram_url')
+//                ->sortable()
+//                ->rules('nullable', 'max:255')
+//                ->withMeta([
+//                    'extraAttributes' => [
+//                        'placeholder' => 'Enter url',
+//                    ],
+//                ]),
 //          twitter url
             Text::make('Twitter url', 'twitter_url')
                 ->sortable()
@@ -123,7 +123,7 @@ class SiteSetting extends Resource
                     ],
                 ]),
 //          youtube url
-            Text::make('Youtube url', 'youtube_url')
+            Text::make('Youtube url', 'whatsapp_url')
                 ->sortable()
                 ->rules('nullable', 'max:255')
                 ->withMeta([
@@ -132,7 +132,7 @@ class SiteSetting extends Resource
                     ],
                 ]),
 //          linkedin url
-            Text::make('Linkedin url', 'linkedin_url')
+            Text::make('Linkedin url', 'youtube_url')
                 ->sortable()
                 ->rules('nullable', 'max:255')
                 ->withMeta([
@@ -140,36 +140,15 @@ class SiteSetting extends Resource
                         'placeholder' => 'Enter url',
                     ],
                 ]),
-////          facebook logo
-//            Image::make('Facebook Logo', 'facebook_logo')
-//                ->path('site')
-//                ->disk('public')
-//                ->nullable()
-//                ->disableDownload(),
-////          instagram logo
-//            Image::make('Instagram Logo', 'instagram_logo')
-//                ->path('site')
-//                ->disk('public')
-//                ->nullable()
-//                ->disableDownload(),
-////          twitter logo
-//            Image::make('Twitter Logo', 'twitter_logo')
-//                ->path('site')
-//                ->disk('public')
-//                ->nullable()
-//                ->disableDownload(),
-////          youtube logo
-//            Image::make('Youtube logo', 'youtube_logo')
-//                ->path('site')
-//                ->disk('public')
-//                ->nullable()
-//                ->disableDownload(),
-////
-//            Image::make('Linkedin logo', 'linkedin_logo')
-//                ->path('site')
-//                ->disk('public')
-//                ->nullable()
-//                ->disableDownload(),
+//            site address
+            Text::make('Site address', 'site_address')
+                ->sortable()
+                ->rules('nullable', 'max:255')
+                ->withMeta([
+                    'extraAttributes' => [
+                        'placeholder' => 'Enter address',
+                    ],
+                ]),
             //             date
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
