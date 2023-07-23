@@ -55,6 +55,15 @@ class ProductReview extends Resource
             BelongsTo::make('Product', 'product','App\Nova\Product')
                 ->rules('required')
                 ->noPeeking(),
+//            title
+            Text::make('Title', 'title')
+                ->sortable()
+                ->rules('required', 'max:255')
+                ->withMeta([
+                    'extraAttributes' => [
+                        'placeholder' => 'Enter title',
+                    ],
+                ]),
 //            review
             Text::make('Text', 'review')
                 ->sortable()

@@ -76,22 +76,15 @@ class Product extends Resource
                 ->rules('required')
                 ->noPeeking(),
             //            meta value
-//            BelongsTo::make('Product Meta Value', 'metaValues')
-//                ->rules('required')
-//                ->noPeeking(),
-//
-//            MultiSelect::make('Sizes')->options([
-//                'S' => 'Small',
-//                'M' => 'Medium',
-//                'L' => 'Large',
-//            ]),
+            BelongsTo::make('Product Meta Value', 'metaValues','App\Nova\MetaValue')
+                ->rules('required')
+                ->noPeeking(),
             //            image
             Image::make('Image', 'image_url')
                 ->path('product_image')
                 ->disk('public')
                 ->creationRules('required')
                 ->updateRules('nullable')
-//                ->help("*For better view please use image height=200,width=282")
                 ->disableDownload(),
 //            hover image
             Image::make('Hover Image', 'hover_image_url')
@@ -110,48 +103,6 @@ class Product extends Resource
                         'placeholder' => 'Enter video url',
                     ],
                 ]),
-            //            badge
-            Image::make('Badge Image', 'badge_url')
-                ->path('product_badge')
-                ->disk('public')
-                ->nullable()
-                ->help("*For better view please use image height=52,width=52")
-                ->disableDownload(),
-            //              type
-            Select::make('Type', 'type')->options([
-                'bike' => 'Bike',
-                'accessory' => 'Accessory',
-            ])->rules('required'),
-
-            //            bike body type
-            BelongsTo::make('Body Type', 'bodyType')
-                ->dependsOn(['type'], function (BelongsTo $field, NovaRequest $request, FormData $formData) {
-                    if ($formData->type == "bike") {
-                        $field
-                            ->rules('required');
-                    } else {
-                        $field
-                            ->hideWhenCreating()
-                            ->hideWhenUpdating()
-                            ->hide()
-                            ->nullable();
-                    }
-                })
-                ->noPeeking(),
-
-            //            category
-            BelongsTo::make('Category', 'category')
-                ->dependsOn(['type'], function (BelongsTo $field, NovaRequest $request, FormData $formData) {
-                    if ($formData->type == "accessory") {
-                        $field
-                            ->rules('required');
-                    } else {
-                        $field
-                            ->hide()
-                            ->nullable();
-                    }
-                })
-                ->noPeeking(),
             //            name
             Text::make('Name', 'name')
                 ->sortable()
@@ -161,11 +112,6 @@ class Product extends Resource
                         'placeholder' => 'Enter name',
                     ],
                 ]),
-            //            code
-            Number::make('Stock', 'stock')
-                ->min(0)
-                ->step('any')
-                ->rules('required'),
             //            price
             Number::make('price')
                 ->min(0)
@@ -177,6 +123,16 @@ class Product extends Resource
                 ->min(0)
                 ->step('any')
                 ->nullable(),
+//            stock
+            Number::make('Stock', 'stock')
+                ->min(0)
+                ->step('any')
+                ->rules('required'),
+            //            description
+            Trix::make('Description', 'description')
+                ->sortable()
+                ->rules('required')
+                ->alwaysShow(),
             //            used or not
             Select::make('Is Official', 'is_official')->options([
                 '1' => 'Yes',
@@ -211,7 +167,7 @@ class Product extends Resource
                 '0' => 'No',
             ])->rules('required')
                 ->resolveUsing(function ($value) {
-                    if (!$value) {
+                    if ($value === false) {
                         return 0;
                     }
                     return 1;
@@ -219,11 +175,6 @@ class Product extends Resource
                 ->displayUsing(function ($v) {
                     return $v ? "Active" : "Inactive";
                 }),
-            //            description
-            Trix::make('Description', 'description')
-                ->sortable()
-                ->rules('required')
-                ->alwaysShow(),
             //            date
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
@@ -240,7 +191,7 @@ class Product extends Resource
             HasMany::make('Product Color', 'colors'),
             HasMany::make('Product Specifications', 'specifications'),
             HasMany::make('Product Media', 'media', 'App\Nova\ProductMedia'),
-
+//          list
             Flexible::make('Add Color List *', 'color_list')
                 ->button('Add Some Product Color')
                 ->addLayout('Select Color', 'video', [
@@ -301,14 +252,6 @@ class Product extends Resource
                                 'placeholder' => 'Enter specification value',
                             ],
                         ]),
-                    //                    feature
-                    Select::make('Specification Feature', 'is_key_feature')->options([
-                        '1' => 'Yes',
-                        '0' => 'No',
-                    ])->rules('required')
-                        ->displayUsing(function ($v) {
-                            return $v ? "Yes" : "No";
-                        }),
                 ])->hideFromIndex()
                 ->hideFromDetail(),
         ];
@@ -367,7 +310,7 @@ class Product extends Resource
         return [
             'id',
             new SearchableRelation('brand', 'name'),
-            new SearchableRelation('bodyType', 'name'),
+//            new SearchableRelation('bodyType', 'name'),
             new SearchableRelation('category', 'name'),
         ];
     }
@@ -396,13 +339,13 @@ class Product extends Resource
         $specification_data = $request->only('specification_list');
 
         if (isset($formData['color_list'])) {
-            dd($formData['color_list']);
             foreach ($formData['color_list'] as $list) {
                 $product_color = new ProductColor();
                 $product_color->product_id = $model->id;
                 $product_color->name = $list['attributes']['color_name'];
-                $product_color->image_url = '';
+                $product_color->color_code = $list['attributes']['color_code'];
                 $product_color->stock = $list['attributes']['color_stock'];
+                $product_color->price = $list['attributes']['color_price'];
                 $product_color->save();
             }
         }
@@ -413,7 +356,6 @@ class Product extends Resource
                 $specification->product_id = $model->id;
                 $specification->title = $s['attributes']['specification_title'];
                 $specification->value = $s['attributes']['specification_value'];
-                $specification->is_key_feature = $s['attributes']['is_key_feature'];
                 $specification->save();
             }
         }
@@ -436,24 +378,19 @@ class Product extends Resource
             foreach ($color_list['color_list'] as $list) {
                 if ($list['attributes']['color_id']) {
                     $check = ProductColor::find($list['attributes']['color_id']);
-                    if (isset($list['attributes']['color_image'])) {
-                        $check->update([
-                            'name' => $list['attributes']['color_name'],
-                            'stock' => $list['attributes']['color_stock'],
-                            'image_url' => $request->{$list['attributes']['color_image']}->store('product_color', 'public'),
-                        ]);
-                    } else {
-                        $check->update([
-                            'name' => $list['attributes']['color_name'],
-                            'stock' => $list['attributes']['color_stock'],
-                        ]);
-                    }
+                    $check->update([
+                        'name' => $list['attributes']['color_name'],
+                        'color_code' => $list['attributes']['color_code'],
+                        'price' => $list['attributes']['color_price'],
+                        'stock' => $list['attributes']['color_stock'],
+                    ]);
                 } else {
                     $productColors->create([
                         'product_id' => $model->id,
                         'name' => $list['attributes']['color_name'],
+                        'color_code' => $list['attributes']['color_code'],
+                        'price' => $list['attributes']['color_price'],
                         'stock' => $list['attributes']['color_stock'],
-                        'image_url' => $request->{$list['attributes']['color_image']}->store('product_color', 'public'),
                     ]);
                 }
             }
@@ -479,14 +416,12 @@ class Product extends Resource
                     $check_spe->update([
                         'title' => $list['attributes']['specification_title'],
                         'value' => $list['attributes']['specification_value'],
-                        'is_key_feature' => $list['attributes']['is_key_feature']
                     ]);
                 } else {
                     $specification_model->create([
                         'product_id' => $model->id,
                         'title' => $list['attributes']['specification_title'],
                         'value' => $list['attributes']['specification_value'],
-                        'is_key_feature' => $list['attributes']['is_key_feature']
                     ]);
                 }
             }

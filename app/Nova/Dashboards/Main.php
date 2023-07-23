@@ -25,8 +25,8 @@ class Main extends Dashboard
             new OrderTotalPayment(),
             new TotalProduct(),
             new OrderPerDay(),
-            new BikeSellRequestPerDay(),
-            new ShowroomPerCity(),
+//            new BikeSellRequestPerDay(),
+//            new ShowroomPerCity(),
         ];
     }
 

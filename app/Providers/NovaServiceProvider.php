@@ -4,13 +4,13 @@ namespace App\Providers;
 
 use App\Nova\AboutUs;
 use App\Nova\Banner;
-use App\Nova\BikeSellRequest;
-use App\Nova\BodyType;
 use App\Nova\Brand;
 use App\Nova\Category;
 use App\Nova\Dashboards\Main;
 use App\Nova\DeliveryOption;
+use App\Nova\FeatureKey;
 use App\Nova\HomeSection;
+use App\Nova\MetaKey;
 use App\Nova\Notification;
 use App\Nova\Order;
 use App\Nova\OrderDetail;
@@ -23,13 +23,9 @@ use App\Nova\ProductColor;
 use App\Nova\ProductMedia;
 use App\Nova\ProductReview;
 use App\Nova\ProductSpecification;
-use App\Nova\SellBike;
 use App\Nova\SeoSetting;
-use App\Nova\ShippingCharge;
-use App\Nova\Showroom;
 use App\Nova\SiteSetting;
 use App\Nova\TermsAndCondition;
-use App\Nova\Testimonial;
 use App\Nova\User;
 use App\Nova\UserAddress;
 use App\Nova\UserWishlist;
@@ -71,6 +67,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 //                product
                 MenuSection::make('Products', [
                     MenuItem::resource(Product::class),
+                    MenuItem::resource(FeatureKey::class)->name('Product Feature Key'),
+                    MenuItem::resource(MetaKey::class)->name('Product Meta key'),
                     MenuItem::resource(ProductColor::class),
                     MenuItem::resource(ProductSpecification::class),
                     MenuItem::resource(ProductMedia::class),
