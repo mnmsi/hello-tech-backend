@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('twitter_url')->nullable();
             $table->string('whatsapp_url')->nullable();
             $table->string('youtube_url')->nullable();
-            $table->string('site address')->nullable();
+            $table->string('site_address')->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
         });

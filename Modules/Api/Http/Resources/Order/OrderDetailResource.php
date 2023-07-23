@@ -8,6 +8,10 @@ class OrderDetailResource extends JsonResource{
     {
        return [
            'id' => $this->id,
+           'quantity' => $this->quantity,
+           'price' => $this->price,
+           'name' => $this->product->name,
+           'product_image_url' => str_contains($this->product->image_url, 'http') ? $this->product->image_url : asset('storage/'.$this->product->image_url),
        ];
     }
 }

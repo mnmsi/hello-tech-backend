@@ -9,7 +9,9 @@ class OrderListResource extends JsonResource{
         return [
             'id' => $this->id,
             'order_key' => $this->order_key,
-//            'price'=> $this->order_->product_id ?? null,
+            'total_price' => $this->total_price,
+            'status' => $this->status,
+            'created_at' => $this->created_at->format('d M Y'),
 //            'quantity' => $this->quantity,
 //            'total' => $this->total,
 //            'product_color_id' => $this->product_color_id,
@@ -19,6 +21,7 @@ class OrderListResource extends JsonResource{
 //            'image' => asset('storage/'.$this->product->image_url),
 //            'color' => $this->product_color->name,
 //            'color_image' => asset('storage/'.$this->product_color->image_url),
+            'orders'=> OrderDetailResource::collection($this->orderDetails),
         ];
     }
 }

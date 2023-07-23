@@ -65,7 +65,7 @@ class OrderController extends Controller
     public function orderList()
     {
         $orders = $this->getUserOrderList();
-        dd($orders->toArray());
+//        dd($orders->toArray());
         if ($orders) {
             return $this->respondWithSuccessWithData(
                OrderListResource::collection($orders)
