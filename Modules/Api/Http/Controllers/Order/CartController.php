@@ -85,9 +85,9 @@ class CartController extends Controller
     public function getSelectedProduct()
     {
         $product = $this->getSelectedCartProduct();
+        $cartData = CartResource::collection($product);
         return $this->respondWithSuccess([
-            'data' => CartResource::collection($product),
-            'total_price' => null,
+            'data' => $cartData,
         ]);
     }
 }
