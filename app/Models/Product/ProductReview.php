@@ -11,6 +11,7 @@ class ProductReview extends BaseModel
     protected $fillable = [
         'user_id',
         'product_id',
+        'title',
         'review',
         'rate',
         'created_at',

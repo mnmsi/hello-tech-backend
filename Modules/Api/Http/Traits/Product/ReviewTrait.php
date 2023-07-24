@@ -18,4 +18,9 @@ trait ReviewTrait
         $data['user_id'] = Auth::id();
         return ProductReview::create($data);
     }
+
+    public function getTotalReview($id)
+    {
+        return ProductReview::where('product_id', $id)->get();
+    }
 }

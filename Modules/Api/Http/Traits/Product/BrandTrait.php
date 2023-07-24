@@ -52,4 +52,6 @@ trait BrandTrait
         }
 
     }
+
+
 }

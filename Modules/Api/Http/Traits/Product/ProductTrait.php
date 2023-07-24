@@ -92,4 +92,28 @@ trait ProductTrait
             ->take(4)
             ->get();
     }
+
+    public function getProductByBrandSlug($slug){
+        return Product::where('is_active', 1)
+            ->whereHas('brand', function ($query) use ($slug) {
+                $query->where('slug', $slug);
+            })->get();
+    }
+
+    public function getNewArrivals(){
+       return Product::where('is_active', 1)
+            ->where('is_new_arrival', 1)
+            ->orderBy('id', 'desc')
+            ->get();
+
+    }
+
+    public function getFeaturedNewArrivals(){
+       return Product::where('is_active', 1)
+            ->where('is_new_arrival', 1)
+            ->where('is_featured', 1)
+            ->orderBy('id', 'desc')
+            ->get();
+
+    }
 }
