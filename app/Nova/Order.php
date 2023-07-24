@@ -5,6 +5,7 @@ namespace App\Nova;
 use App\Nova\Filters\OrderByDateFilter;
 use App\Nova\Filters\OrderStatusFilter;
 use App\Nova\Metrics\OrderPerDay;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
@@ -12,6 +13,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Query\Search\SearchableRelation;
 
@@ -56,27 +58,27 @@ class Order extends Resource
     {
         return [
             ID::make()->sortable(),
-//            user
+            //            user
             BelongsTo::make('User', 'user', 'App\Nova\User')
                 ->rules('required')
                 ->noPeeking(),
-//            payment method
+            //            payment method
             BelongsTo::make('Payment Method', 'paymentMethod', 'App\Nova\PaymentMethods')
                 ->rules('required')
                 ->noPeeking(),
-//            delivery
+            //            delivery
             BelongsTo::make('Delivery Type', 'deliveryOption', 'App\Nova\DeliveryOption')
                 ->rules('required')
                 ->noPeeking(),
-//            user address
+            //            user address
             BelongsTo::make('User address', 'userAddress', 'App\Nova\UserAddress')
                 ->nullable()
                 ->noPeeking(),
-//            showroom
-            BelongsTo::make('Showroom', 'showRooms', 'App\Nova\Showroom')
+            //            Voucher
+            BelongsTo::make('Voucher', 'voucher', 'App\Nova\Voucher')
                 ->nullable()
                 ->noPeeking(),
-//            transaction id
+            //            transaction id
             Text::make('Transaction key', 'transaction_id')
                 ->sortable()
                 ->nullable()
@@ -85,7 +87,7 @@ class Order extends Resource
                         'placeholder' => 'Enter key',
                     ],
                 ]),
-//            order key
+            //            order key
             Text::make('Order key', 'order_key')
                 ->sortable()
                 ->nullable()
@@ -94,27 +96,36 @@ class Order extends Resource
                         'placeholder' => 'Enter key',
                     ],
                 ]),
-//            discount
+            //            discount
             Number::make('Discount', 'discount_rate')
                 ->min(0)
                 ->step('any')
                 ->nullable(),
-//            shipping amount
+            //            shipping amount
             Number::make('Shipping amount', 'shipping_amount')
                 ->min(0)
                 ->step('any')
                 ->nullable(),
-//            sub total
+            //            sub total
             Number::make('Sub total', 'subtotal_price')
                 ->min(0)
                 ->step('any')
                 ->rules('required'),
-//            total
+            //            total
             Number::make('Total', 'total_price')
                 ->min(0)
                 ->step('any')
                 ->rules('required'),
-//            status
+            //            order note
+            Textarea::make('Order note', 'order_note')
+                ->sortable()
+                ->nullable()
+                ->withMeta([
+                    'extraAttributes' => [
+                        'placeholder' => 'Enter note(optional)',
+                    ],
+                ]),
+            //            status
             Select::make('Status', 'status')->options([
                 'pending' => 'Pending',
                 'processing' => 'Processing',
@@ -122,18 +133,20 @@ class Order extends Resource
                 'delivered' => 'Delivered',
                 'cancelled' => 'Cancelled',
             ])->rules('required'),
-//            date
-            DateTime::make('Created At', 'created_at')
+            //            date
+            DateTime::make('Order date', 'created_at')
                 ->default(now())
                 ->hideWhenCreating()
-                ->hideWhenUpdating(),
+                ->hideWhenUpdating()
+                ->displayUsing(function ($v) {
+                    return Carbon::parse($v)->format('Y-m-d H:i:s');
+                }),
 
             DateTime::make('Updated At', 'updated_at')
                 ->hideFromIndex()
                 ->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->default(now()),
-
         ];
     }
 

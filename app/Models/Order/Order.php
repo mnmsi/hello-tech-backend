@@ -4,8 +4,10 @@ namespace App\Models\Order;
 
 use App\Models\System\Showroom;
 use App\Models\User\User;
+use App\Models\Voucher;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Order extends BaseModel
 {
@@ -14,14 +16,14 @@ class Order extends BaseModel
         'payment_method_id',
         'delivery_option_id',
         'user_address_id',
-        'showroom_id',
+        'voucher_id',
         'transaction_id',
         'order_key',
-        'price',
         'discount_rate',
         'shipping_amount',
         'subtotal_price',
         'total_price',
+        'order_note',
         'status',
         'created_at',
         'updated_at'
@@ -75,6 +77,11 @@ class Order extends BaseModel
     public function orderDetails()
     {
         return $this->hasMany('App\Models\OrderDetails');
+    }
+
+    public function voucher(): BelongsTo
+    {
+        return $this->belongsTo(Voucher::class,'voucher_id','id');
     }
 
 }

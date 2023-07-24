@@ -5,6 +5,7 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -39,20 +40,45 @@ class SeoSetting extends Resource
      * @param NovaRequest $request
      * @return array
      */
-    public function fields(NovaRequest $request)
+    public function fields(NovaRequest $request): array
     {
         return [
             ID::make()->sortable(),
-//            page title
-            Text::make('Page Tile', 'page_title')
-                ->sortable()
-                ->rules('required', 'max:255')
-                ->withMeta([
-                    'extraAttributes' => [
-                        'placeholder' => 'Enter page title',
-                    ],
-                ]),
-//          page description
+            //          page title
+            Select::make('Page Title', 'page_title')->options([
+                'default' => 'Default',
+                'about' => 'About',
+                'brands' => 'Brands',
+                'cart' => 'Cart',
+                'checkout' => 'Checkout',
+                'forget-password' => 'Forget Password',
+                'otp' => 'OTP',
+                'reset-password' => 'Reset Password',
+                'login' => 'Login',
+                'registration' => 'Registration',
+                'new-arrivals' => 'New Arrivals',
+                'order' => 'Order',
+                'order-success' => 'Order Success',
+                'pre-order' => 'Pre Order',
+                'privacy-policy' => 'Privacy Policy',
+                'product' => 'Product',
+                'gadgets' => 'Gadgets',
+                'home-page' => 'Home Page',
+                'profile' => 'Profile',
+                'address' => 'Address',
+                'change-password' => 'Change Password',
+                'terms-and-conditions' => 'Terms-and-conditions',
+                'wishlist' => 'Wishlist',
+            ])->rules('required'),
+//            Text::make('Page Title', 'page_title')
+//                ->sortable()
+//                ->rules('required', 'max:255')
+//                ->withMeta([
+//                    'extraAttributes' => [
+//                        'placeholder' => 'Enter page title',
+//                    ],
+//                ]),
+            //          page description
             Text::make('Page Description', 'page_description')
                 ->sortable()
                 ->rules('required')
@@ -61,23 +87,14 @@ class SeoSetting extends Resource
                         'placeholder' => 'Enter description',
                     ],
                 ]),
-//            page keywords
+            //            page keywords
             Text::make('Page Keywords', 'page_keywords')
                 ->sortable()
                 ->rules('required')
-                ->help("use coma between words for SEO purpose.")
+                ->help("*use coma between words for SEO purpose.")
                 ->withMeta([
                     'extraAttributes' => [
                         'placeholder' => 'Enter seo keywords',
-                    ],
-                ]),
-//            page url
-            Text::make('Page url', 'page_url')
-                ->sortable()
-                ->rules('required', 'max:255')
-                ->withMeta([
-                    'extraAttributes' => [
-                        'placeholder' => 'Enter url',
                     ],
                 ]),
             //             date
@@ -101,7 +118,7 @@ class SeoSetting extends Resource
      * @param NovaRequest $request
      * @return array
      */
-    public function cards(NovaRequest $request)
+    public function cards(NovaRequest $request): array
     {
         return [];
     }
@@ -112,7 +129,7 @@ class SeoSetting extends Resource
      * @param NovaRequest $request
      * @return array
      */
-    public function filters(NovaRequest $request)
+    public function filters(NovaRequest $request): array
     {
         return [];
     }
@@ -123,7 +140,7 @@ class SeoSetting extends Resource
      * @param NovaRequest $request
      * @return array
      */
-    public function lenses(NovaRequest $request)
+    public function lenses(NovaRequest $request): array
     {
         return [];
     }
@@ -134,12 +151,12 @@ class SeoSetting extends Resource
      * @param NovaRequest $request
      * @return array
      */
-    public function actions(NovaRequest $request)
+    public function actions(NovaRequest $request): array
     {
         return [];
     }
 
-    public static function searchable()
+    public static function searchable(): bool
     {
         return false;
     }

@@ -163,7 +163,6 @@ class PaymentDetails extends Resource
                 ->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->default(now()),
-
         ];
     }
 
