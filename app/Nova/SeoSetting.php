@@ -45,39 +45,14 @@ class SeoSetting extends Resource
         return [
             ID::make()->sortable(),
             //          page title
-            Select::make('Page Title', 'page_title')->options([
-                'default' => 'Default',
-                'about' => 'About',
-                'brands' => 'Brands',
-                'cart' => 'Cart',
-                'checkout' => 'Checkout',
-                'forget-password' => 'Forget Password',
-                'otp' => 'OTP',
-                'reset-password' => 'Reset Password',
-                'login' => 'Login',
-                'registration' => 'Registration',
-                'new-arrivals' => 'New Arrivals',
-                'order' => 'Order',
-                'order-success' => 'Order Success',
-                'pre-order' => 'Pre Order',
-                'privacy-policy' => 'Privacy Policy',
-                'product' => 'Product',
-                'gadgets' => 'Gadgets',
-                'home-page' => 'Home Page',
-                'profile' => 'Profile',
-                'address' => 'Address',
-                'change-password' => 'Change Password',
-                'terms-and-conditions' => 'Terms-and-conditions',
-                'wishlist' => 'Wishlist',
-            ])->rules('required'),
-//            Text::make('Page Title', 'page_title')
-//                ->sortable()
-//                ->rules('required', 'max:255')
-//                ->withMeta([
-//                    'extraAttributes' => [
-//                        'placeholder' => 'Enter page title',
-//                    ],
-//                ]),
+            Text::make('Page Title', 'page_title')
+                ->sortable()
+                ->rules('required', 'max:255')
+                ->withMeta([
+                    'extraAttributes' => [
+                        'placeholder' => 'Enter page title',
+                    ],
+                ]),
             //          page description
             Text::make('Page Description', 'page_description')
                 ->sortable()
@@ -91,10 +66,18 @@ class SeoSetting extends Resource
             Text::make('Page Keywords', 'page_keywords')
                 ->sortable()
                 ->rules('required')
-                ->help("*use coma between words for SEO purpose.")
+                ->help("use coma between words for SEO purpose.")
                 ->withMeta([
                     'extraAttributes' => [
                         'placeholder' => 'Enter seo keywords',
+                    ],
+                ]),
+            Text::make('Page URL', 'page_url')
+                ->sortable()
+                ->rules('required', 'max:255')
+                ->withMeta([
+                    'extraAttributes' => [
+                        'placeholder' => 'Enter page url',
                     ],
                 ]),
             //             date
