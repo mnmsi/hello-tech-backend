@@ -99,4 +99,21 @@ trait ProductTrait
                 $query->where('slug', $slug);
             })->get();
     }
+
+    public function getNewArrivals(){
+       return Product::where('is_active', 1)
+            ->where('is_new_arrival', 1)
+            ->orderBy('id', 'desc')
+            ->get();
+
+    }
+
+    public function getFeaturedNewArrivals(){
+       return Product::where('is_active', 1)
+            ->where('is_new_arrival', 1)
+            ->where('is_featured', 1)
+            ->orderBy('id', 'desc')
+            ->get();
+
+    }
 }

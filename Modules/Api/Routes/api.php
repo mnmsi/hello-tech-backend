@@ -173,9 +173,9 @@ Route::middleware('guest')->group(function () {
     });
 
     //        Sell Bike
-    Route::controller(SellBikeController::class)->prefix('sell')->group(function () {
-        Route::get('bike/{brand_id}', 'bikeByBrand');
-    });
+//    Route::controller(SellBikeController::class)->prefix('sell')->group(function () {
+//        Route::get('bike/{brand_id}', 'bikeByBrand');
+//    });
 
     Route::get('shipping-charges/{name?}', [ShippingChargeController::class, 'shippingCharges']);
 });
@@ -191,9 +191,10 @@ Route::middleware('product')->group(function () {
         Route::get('related', 'relatedProduct');// Related Product
         Route::get('total-review/{id}',[ReviewController::class, 'totalReview']); // Product Review
         Route::get('get-product-by-brand/{slug}','getProductByBrand'); // Product Review
+        Route::get('/new-arrivals','newArrivals'); // Product Review
+        Route::get('featured-new-arrivals','featuredNewArrivals'); // Product Review
     });
-    Route::controller(HomePageSectionController::class)->prefix('new-arrivals')->group(function () {
+    Route::controller(HomePageSectionController::class)->prefix('dynamic-section')->group(function () {
         Route::get('/', 'homePageSections');   // feature new arrivals
-        Route::get('featured', 'featured');   // feature new arrivals
     });
 });

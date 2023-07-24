@@ -89,4 +89,19 @@ class ProductController extends Controller
             ProductResource::collection($this->getProductByBrandSlug($slug))
         );
     }
+
+//    new arrivals
+    public function newArrivals()
+    {
+        return $this->respondWithSuccessWithData(
+            ProductResource::collection($this->getNewArrivals())
+        );
+    }
+
+    public function featuredNewArrivals()
+    {
+        return $this->respondWithSuccessWithData(
+            ProductResource::collection($this->getFeaturedNewArrivals())
+        );
+    }
 }
