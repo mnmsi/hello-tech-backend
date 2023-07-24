@@ -48,6 +48,9 @@ OrderTrait
 
             foreach ($carts as $c) {
                 $product = Product::find($c['product_id']);
+                if ($product->stock < $c['quantity']) {
+                    throw new \Exception('Product out of stock.');
+                }
                 $product->stock = $product->stock - $c['quantity'];
                 $product->save();
 //                price calculation
@@ -67,6 +70,9 @@ OrderTrait
                 $product_color = ProductColor::find($c['product_color_id']);
                 if ($product_color) {
                     $subtotal_price += $product_color->price * $c['quantity'];
+                    if ($product_color->stock < $c['quantity']) {
+                        throw new \Exception('Product color out of stock.');
+                    }
                     $product_color->stock = $product_color->stock - $c['quantity'];
                     $product_color->save();
                 }
@@ -80,6 +86,9 @@ OrderTrait
 
                         foreach ($product_feature as $f) {
                             $ff = ProductFeatureValue::find($f['id']);
+                            if ($f['stock'] < $c['quantity']) {
+                                throw new \Exception('Feature Product out of stock.');
+                            }
                             $ff->stock = $f['stock'] - $c['quantity'];
                             $ff->save();
                         }
@@ -91,8 +100,8 @@ OrderTrait
 //            $total_discountRate = $products->sum('discount_rate');
 //            $subtotal_price = $carts->sum('price') * $carts->sum('quantity');
 
-            if(!empty($data['voucher_id'])){
-                $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'],$subtotal_price);
+            if (!empty($data['voucher_id'])) {
+                $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'], $subtotal_price);
                 $subtotal_price = $subtotal_price - $voucher_dis;
             }
 
@@ -174,6 +183,9 @@ OrderTrait
         try {
             $sub_price = 0;
             $product = Product::find($data['product_id']);
+            if ($product->stock < $data['quantity']) {
+                throw new \Exception('Product out of stock.');
+            }
             $product->stock = $product->stock - $data['quantity'];
             $product->save();
             if ($product->discount_rate) {
@@ -191,6 +203,9 @@ OrderTrait
                 ->first();
             if ($product_color) {
                 $sub_price += $product_color->price * $data['quantity'];
+                if ($product_color->stock < $data['quantity']) {
+                    throw new \Exception('Product color out of stock.');
+                }
                 $product_color->stock = $product_color->stock - $data['quantity'];
                 $product_color->save();
             }
@@ -202,14 +217,17 @@ OrderTrait
 
                     foreach ($product_feature as $f) {
                         $ff = ProductFeatureValue::find($f['id']);
+                        if ($f['stock'] < $data['quantity']) {
+                            throw new \Exception('Feature product color out of stock.');
+                        }
                         $ff->stock = $f['stock'] - $data['quantity'];
                         $ff->save();
                     }
                 }
             }
 
-            if(!empty($data['voucher_id'])){
-                $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'],$sub_price);
+            if (!empty($data['voucher_id'])) {
+                $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'], $sub_price);
                 $sub_price = $sub_price - $voucher_dis;
             }
 
@@ -398,7 +416,7 @@ OrderTrait
             ->where('expires_at', '>', Carbon::parse(now()->addHours(6))->format('Y-m-d H:i:s'))
             ->where('status', 1)
             ->first();
-        if($voucher){
+        if ($voucher) {
             if ($voucher->type == "percentage") {
                 $value = (($value * $voucher->value) / 100);
             } else {
