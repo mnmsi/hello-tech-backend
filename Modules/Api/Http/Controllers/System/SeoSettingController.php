@@ -11,9 +11,8 @@ class SeoSettingController extends Controller
 {
     public function seoSettings(Request $request)
     {
-        $name = $request->name ?? 'default';
-        $data = SeoSetting::select('page_title', 'page_description', 'page_keywords')
-            ->where('page_title', 'LIKE', '%' . $name . '%')
+        $data = SeoSetting::select('page_description', 'page_keywords', 'page_url', 'page_title')
+            ->where('page_url', $request->page_url)
             ->first();
         return $this->respondWithSuccessWithData($data);
     }
