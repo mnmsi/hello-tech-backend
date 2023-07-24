@@ -7,6 +7,7 @@ use App\Models\Order\Order;
 use App\Models\PaymentDetails;
 use DGvai\SSLCommerz\SSLCommerz;
 use Illuminate\Http\Request;
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\DB;
 
 class PaymentController
@@ -75,11 +76,10 @@ class PaymentController
             $payment->amount = $request->amount;
             $payment->risk_title = $request->risk_title;
             $payment->save();
-            if($request->status == 'VALID'){
+            if ($request->status == 'VALID') {
                 DB::commit();
-//                return redirect()->away('http://localhost:3000/success');
-                return redirect()->away('http://localhost:3000/order/success');
-            }else{
+                return redirect()->away(Env::get('FRONT_END') . 'order/success');
+            } else {
                 return view('api::payment.failure');
             }
         } catch (\Exception $exception) {
