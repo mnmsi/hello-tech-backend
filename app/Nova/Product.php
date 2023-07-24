@@ -134,6 +134,19 @@ class Product extends Resource
                 ->rules('required')
                 ->alwaysShow(),
             //            used or not
+            Select::make('New Arrival', 'is_new_arrival')->options([
+                '1' => 'Yes',
+                '0' => 'No',
+            ])->rules('required')
+                ->resolveUsing(function ($value) {
+                    if (!$value) {
+                        return 0;
+                    }
+                    return 1;
+                })
+                ->displayUsing(function ($v) {
+                    return $v ? "New" : "Not new";
+                }),
             Select::make('Is Official', 'is_official')->options([
                 '1' => 'Yes',
                 '0' => 'No',

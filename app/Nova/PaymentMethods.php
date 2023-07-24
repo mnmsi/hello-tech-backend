@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Models\System\PaymentMethod;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
@@ -14,9 +15,9 @@ class PaymentMethods extends Resource
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\System\PaymentMethod>
+     * @var class-string<PaymentMethod>
      */
-    public static $model = \App\Models\System\PaymentMethod::class;
+    public static $model = PaymentMethod::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -38,7 +39,7 @@ class PaymentMethods extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
      */
     public function fields(NovaRequest $request)
@@ -60,7 +61,7 @@ class PaymentMethods extends Resource
                 '0' => 'No',
             ])->rules('required')
                 ->resolveUsing(function ($value) {
-                    if (!$value) {
+                    if ($value === false) {
                         return 0;
                     }
                     return 1;
@@ -86,7 +87,7 @@ class PaymentMethods extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
      */
     public function cards(NovaRequest $request)
@@ -97,7 +98,7 @@ class PaymentMethods extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
      */
     public function filters(NovaRequest $request)
@@ -108,7 +109,7 @@ class PaymentMethods extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
      */
     public function lenses(NovaRequest $request)
@@ -119,7 +120,7 @@ class PaymentMethods extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
      */
     public function actions(NovaRequest $request)
