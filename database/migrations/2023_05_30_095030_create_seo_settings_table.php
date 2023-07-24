@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('seo_settings', function (Blueprint $table) {
             $table->id();
-            $table->mediumText('page_title');
+            $table->string('page_title');
             $table->mediumText('page_description');
             $table->mediumText('page_keywords');
+            $table->mediumText('page_url');
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
         });
