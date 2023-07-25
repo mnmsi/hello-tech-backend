@@ -67,7 +67,7 @@ class ProductColor extends Resource
                 ->sortable()
                 ->rules('required'),
 //            price
-            Number::make('Product price', 'price')
+            Number::make('Color price', 'price')
                 ->min(0)
                 ->rules('required'),
 //            total stock

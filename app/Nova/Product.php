@@ -121,10 +121,10 @@ class Product extends Resource
                 ->step('any')
                 ->nullable(),
 //            stock
-            Number::make('Stock', 'stock')
-                ->min(0)
-                ->step('any')
-                ->rules('required'),
+//            Number::make('Stock', 'stock')
+//                ->min(0)
+//                ->step('any')
+//                ->rules('required'),
             //            description
             Trix::make('Description', 'description')
                 ->sortable()
