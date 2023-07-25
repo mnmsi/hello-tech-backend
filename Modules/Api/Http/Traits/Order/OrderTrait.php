@@ -51,8 +51,8 @@ OrderTrait
 //                if ($product->stock < $c['quantity']) {
 //                    throw new \Exception('Product out of stock.');
 //                }
-                $product->stock = $product->stock - $c['quantity'];
-                $product->save();
+//                $product->stock = $product->stock - $c['quantity'];
+//                $product->save();
 //                price calculation
                 if ($product->discount_rate) {
                     if ($product->discount_rate == 100) {
@@ -186,8 +186,8 @@ OrderTrait
 //            if ($product->stock < $data['quantity']) {
 //                throw new \Exception('Product out of stock.');
 //            }
-            $product->stock = $product->stock - $data['quantity'];
-            $product->save();
+//            $product->stock = $product->stock - $data['quantity'];
+//            $product->save();
             if ($product->discount_rate) {
                 if ($product->discount_rate == 100) {
                     $pp = 0;
