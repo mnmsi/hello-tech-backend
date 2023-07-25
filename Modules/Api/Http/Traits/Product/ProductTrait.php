@@ -29,7 +29,9 @@ trait ProductTrait
 
     public function featuredProduct($categoryId)
     {
-        return Product::where('category_id', $categoryId)->where('is_featured', 1)->get();
+        return Product::wherehas('colors',function ($q){
+            $q->where('stock','>',0);
+        })->where('category_id', $categoryId)->where('is_featured', 1)->get();
     }
 
     public function initializeFilterData($request)
@@ -49,7 +51,9 @@ trait ProductTrait
         if ($params['category'] == 'gadgets') {
             $params['category'] = null;
         }
-        return Product::where('is_active', 1)
+        return Product::wherehas('colors',function ($q){
+            $q->where('stock','>',0);
+        })->where('is_active', 1)
             ->when($params['name'], function ($query) use ($params) {
                 $query->where('name', 'like', '%' . $params['name'] . '%');
             })
@@ -88,20 +92,22 @@ trait ProductTrait
 
     public function productDataById($id)
     {
-        return ProductData::where('product_feature_value_id', $id)->orWhere('product_color_id', $id)->first();
+        return ProductData::wherehas('colors',function ($q){
+            $q->where('stock','>',0);
+        })->where('product_feature_value_id', $id)->orWhere('product_color_id', $id)->first();
     }
 
     public function getRelatedProduct()
     {
-        return Product::where('is_active', 1)
-            ->inRandomOrder()
-            ->take(4)
-            ->get();
+        return Product::where('is_active', 1)->whereHas('colors', function ($query) {
+            $query->where('stock', '>', 0);
+        })->inRandomOrder()->take(4)->get();
     }
-
     public function getProductByBrandSlug($slug)
     {
-        return Product::where('is_active', 1)
+        return Product::wherehas('colors',function ($q){
+            $q->where('stock','>',0);
+        })->where('is_active', 1)
             ->whereHas('brand', function ($query) use ($slug) {
                 $query->where('slug', $slug);
             })->get();
@@ -109,7 +115,9 @@ trait ProductTrait
 
     public function getNewArrivals()
     {
-        return Product::where('is_active', 1)
+        return Product::wherehas('colors',function ($q){
+            $q->where('stock','>',0);
+        })->where('is_active', 1)
             ->where('is_new_arrival', 1)
             ->orderBy('id', 'desc')
             ->get();
@@ -118,8 +126,9 @@ trait ProductTrait
 
     public function getFeaturedNewArrivals()
     {
-        return Product::where('is_active', 1)
-            ->where('is_new_arrival', 1)
+        return Product::wherehas('colors',function ($q){
+            $q->where('stock','>',0);
+        })->where('is_new_arrival', 1)
             ->where('is_featured', 1)
             ->orderBy('id', 'desc')
             ->get();

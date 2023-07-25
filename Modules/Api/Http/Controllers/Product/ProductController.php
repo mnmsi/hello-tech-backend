@@ -21,15 +21,6 @@ class ProductController extends Controller
     /**
      * @return JsonResponse
      */
-    public function totalProductType()
-    {
-        return $this->respondWithSuccessWithData([
-            'total_new_bikes' => $this->totalNewBikes(),
-            'total_used_bikes' => $this->totalUsedBikes(),
-            'total_accessories' => $this->totalAccessories(),
-            'total_shops' => $this->totalShops(),
-        ]);
-    }
 
     public function getFeaturedProduct($categoryId)
     {

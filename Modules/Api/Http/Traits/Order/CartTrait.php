@@ -24,7 +24,9 @@ trait CartTrait
      */
     public function getCartedData()
     {
-        return Cart::with(['product', 'productColor',])->where('user_id', auth()->id())->get();
+        return Cart::wherehas('productColor', function ($q) {
+            $q->where('stock', '>', 0);
+        })->with(['product'])->where('user_id', auth()->id())->get();
 
     }
 
@@ -92,13 +94,16 @@ trait CartTrait
      */
     public function getSelectedCartProduct()
     {
-        return Cart::where('user_id', auth()->id())->with('product')->where('status', '1')->get();
+        return Cart::wherehas('productColor', function ($q) {
+            $q->where('stock', '>', 0);
+        })->where('user_id', auth()->id())->with('product')->where('status', '1')->get();
     }
 
-    public function getSelectectedCartProductTotalPrice($carts){
+    public function getSelectectedCartProductTotalPrice($carts)
+    {
 //        $carts = $this->getSelectedCartProduct();
         $total_price = 0;
-        foreach ($carts as $cart){
+        foreach ($carts as $cart) {
             $total_price += $cart->product->price * $cart->quantity;
         }
         return $total_price;
@@ -107,12 +112,12 @@ trait CartTrait
     public function calculateCardAmount($item)
     {
         $feature_price = 0;
-        if($this->product_data){
-            $feature_value = ProductFeatureValue::whereIn('id', json_decode($this->product_data,true))->get();
+        if ($this->product_data) {
+            $feature_value = ProductFeatureValue::whereIn('id', json_decode($this->product_data, true))->get();
             $feature_price = $feature_value->sum('price');
         }
 
-        return ($this->calculateDiscountPrice($item->product->price , $item->product->discount_rate ?? 0)  + $feature_price  + $item->productColor->price ) * $item->quantity;
+        return ($this->calculateDiscountPrice($item->product->price, $item->product->discount_rate ?? 0) + $feature_price + $item->productColor->price) * $item->quantity;
     }
 
 
