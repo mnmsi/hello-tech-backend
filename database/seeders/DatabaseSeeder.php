@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             DivisionSeeder::class,
             CitySeeder::class,
             AreaSeeder::class,
+            SiteSettingSeeder::class,
 //            BannerSeeder::class,
 //            BikeBodyTypeSeeder::class,
 //            BrandSeeder::class,

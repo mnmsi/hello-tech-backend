@@ -58,17 +58,15 @@ class Banner extends Resource
 //          page
             Select::make('Display Page', 'page')->options([
                 'home' => 'Home',
-                'all-bikes' => 'All Bike',
-                'popular-brands' => 'Popular Brand',
-                'bike-accessories' => 'Bike Accessories',
-                'our-showrooms' => 'Our Showrooms',
+                'new-arrivals' => 'New Arrivals',
+                'product-detail' => 'Product Details',
             ])->rules('required'),
 //            show on
             Select::make('Page Place', 'show_on')->options([
                 'all' => 'All',
                 'top' => 'Top',
                 'bottom' => 'Bottom',
-                'detail' => 'Detail',
+                'detail' => 'Details',
             ])->rules('required'),
 //            image
             Image::make('Image', 'image_url')

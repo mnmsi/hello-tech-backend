@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('product_meta_values', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_meta_key_id')->constrained('product_meta_keys')->cascadeOnDelete();
+            $table->mediumInteger('product_id')->nullable();
             $table->string('value');
             $table->timestamps();
         });

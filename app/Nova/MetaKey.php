@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Models\Product\Product;
 use App\Models\ProductMetaKey;
 use App\Models\ProductMetaValue;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Hidden;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Flexible;
@@ -36,7 +38,7 @@ class MetaKey extends Resource
      * @var array
      */
     public static $search = [
-        'id','key'
+        'id', 'key'
     ];
 
     /**
@@ -64,7 +66,7 @@ class MetaKey extends Resource
                 ->rules('required')
                 ->noPeeking(),
 //            key value
-            HasMany::make('Product Meta Value','productMetaValues','App\Nova\MetaValue'),
+            HasMany::make('Product Meta Value', 'productMetaValues', 'App\Nova\MetaValue'),
             //            date
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
@@ -96,6 +98,12 @@ class MetaKey extends Resource
                                 'placeholder' => 'Enter value',
                             ],
                         ]),
+                    //                    product
+                    Select::make('Product', 'meta_product')->options(
+                        Product::where('is_active', 1)->pluck('name', 'id')
+                    )->nullable()
+                        ->searchable()
+                        ->displayUsingLabels(),
                 ])->hideFromIndex()
                 ->hideFromDetail(),
         ];
@@ -171,6 +179,7 @@ class MetaKey extends Resource
                 $value_list = new ProductMetaValue();
                 $value_list->product_meta_key_id = $model->id;
                 $value_list->value = $list['attributes']['meta_name'];
+                $value_list->product_id = $list['attributes']['meta_product'];
                 $value_list->save();
             }
         }
@@ -195,11 +204,13 @@ class MetaKey extends Resource
                     $check = ProductMetaValue::find($list['attributes']['meta_id']);
                     $check->update([
                         'value' => $list['attributes']['meta_name'],
+                        'product_id' => $list['attributes']['meta_product'],
                     ]);
                 } else {
                     $metaList->create([
                         'product_meta_key_id' => $model->id,
                         'value' => $list['attributes']['meta_name'],
+                        'product_id' => $list['attributes']['meta_product'],
                     ]);
                 }
             }

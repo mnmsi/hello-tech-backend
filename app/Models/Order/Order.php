@@ -29,10 +29,10 @@ class Order extends BaseModel
         'updated_at'
     ];
 
-    public function showRooms()
-    {
-        return $this->belongsTo(ShowRoom::class, 'showroom_id', 'id');
-    }
+//    public function showRooms()
+//    {
+//        return $this->belongsTo(ShowRoom::class, 'showroom_id', 'id');
+//    }
 
     public function product()
     {

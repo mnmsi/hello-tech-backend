@@ -57,6 +57,10 @@ class MetaValue extends Resource
                         'placeholder' => 'Enter value',
                     ],
                 ]),
+            //            product
+            BelongsTo::make('Product', 'product')
+                ->nullable()
+                ->noPeeking(),
             //            date
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
