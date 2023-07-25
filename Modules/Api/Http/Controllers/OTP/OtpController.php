@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\SendOtpRequest;
 use App\Mail\OtpMail;
 use App\Models\User\PhoneVerification;
 use App\Models\User\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Modules\Api\Http\Traits\OTP\OtpTrait;
@@ -17,8 +18,11 @@ class OtpController extends Controller
     // Use OtpTrait for generate and send otp
     use OtpTrait;
 
-    public function sendOtp(SendOtpRequest $request)
+    public function sendOtp(Request $request)
     {
+        $request->validate([
+            'user' => 'required',
+        ]);
         $otp = $this->generateOtp();
         $message = "This is your IOTAIT otp: $otp"; // Message to send with OTP
         if ($request->user == "phone") {
