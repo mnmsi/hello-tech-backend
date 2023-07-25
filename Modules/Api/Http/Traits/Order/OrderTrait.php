@@ -48,9 +48,9 @@ OrderTrait
 
             foreach ($carts as $c) {
                 $product = Product::find($c['product_id']);
-                if ($product->stock < $c['quantity']) {
-                    throw new \Exception('Product out of stock.');
-                }
+//                if ($product->stock < $c['quantity']) {
+//                    throw new \Exception('Product out of stock.');
+//                }
                 $product->stock = $product->stock - $c['quantity'];
                 $product->save();
 //                price calculation
@@ -183,9 +183,9 @@ OrderTrait
         try {
             $sub_price = 0;
             $product = Product::find($data['product_id']);
-            if ($product->stock < $data['quantity']) {
-                throw new \Exception('Product out of stock.');
-            }
+//            if ($product->stock < $data['quantity']) {
+//                throw new \Exception('Product out of stock.');
+//            }
             $product->stock = $product->stock - $data['quantity'];
             $product->save();
             if ($product->discount_rate) {
