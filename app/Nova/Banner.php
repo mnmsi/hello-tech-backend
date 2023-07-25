@@ -6,6 +6,7 @@ use App\Nova\Filters\BannerStatusFilter;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Select;
@@ -47,27 +48,68 @@ class Banner extends Resource
     {
         return [
             ID::make()->sortable(),
+            Select::make('Type', 'type')->options([
+                'product' => 'For Products',
+                'category' => 'For Categories',
+                'page' => 'For Pages',
+            ])->rules('required'),
 //            product
             BelongsTo::make('Product', 'product')
-                ->nullable()
+                ->dependsOn(['type'], function (BelongsTo $field, NovaRequest $request, FormData $formData) {
+                    if ($formData->type == "product") {
+                        $field
+                            ->rules('required');
+                    } else {
+                        $field
+                            ->hide()
+                            ->nullable();
+                    }
+                })
                 ->noPeeking(),
 //            category
             BelongsTo::make('Category', 'category')
-                ->nullable()
+                ->dependsOn(['type'], function (BelongsTo $field, NovaRequest $request, FormData $formData) {
+                    if ($formData->type == "category") {
+                        $field
+                            ->rules('required');
+                    } else {
+                        $field
+                            ->hide()
+                            ->nullable();
+                    }
+                })
                 ->noPeeking(),
 //          page
             Select::make('Display Page', 'page')->options([
                 'home' => 'Home',
                 'new-arrivals' => 'New Arrivals',
                 'product-detail' => 'Product Details',
-            ])->rules('required'),
+            ])->dependsOn(['type'], function (Select $field, NovaRequest $request, FormData $formData) {
+                if ($formData->type == "page") {
+                    $field
+                        ->rules('required');
+                } else {
+                    $field
+                        ->hide()
+                        ->nullable();
+                }
+            }),
 //            show on
             Select::make('Page Place', 'show_on')->options([
                 'all' => 'All',
                 'top' => 'Top',
                 'bottom' => 'Bottom',
                 'detail' => 'Details',
-            ])->rules('required'),
+            ])->dependsOn(['type'], function (Select $field, NovaRequest $request, FormData $formData) {
+                if ($formData->type == "page") {
+                    $field
+                        ->rules('required');
+                } else {
+                    $field
+                        ->hide()
+                        ->nullable();
+                }
+            }),
 //            image
             Image::make('Image', 'image_url')
                 ->path('banner')

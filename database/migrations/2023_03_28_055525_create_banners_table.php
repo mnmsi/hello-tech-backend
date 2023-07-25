@@ -12,10 +12,11 @@ return new  class extends Migration {
     {
         Schema::create('banners', function (Blueprint $table) {
             $table->id();
+            $table->string('type')->nullable();
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('cascade');
             $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
-            $table->enum('page', ['home', 'new-arrivals', 'product-detail']);
-            $table->enum('show_on', ['top', 'bottom', 'all', 'detail']);
+            $table->enum('page', ['home', 'new-arrivals', 'product-detail'])->nullable();
+            $table->enum('show_on', ['top', 'bottom', 'all', 'detail'])->nullable();
             $table->string('image_url');
             $table->tinyInteger('is_active')->default(1)->comment('0: Inactive, 1: Active');
             $table->dateTime('created_at')->useCurrent();

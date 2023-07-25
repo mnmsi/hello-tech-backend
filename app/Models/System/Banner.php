@@ -11,6 +11,7 @@ class Banner extends BaseModel
 {
     protected $fillable = [
         'page',
+        'type',
         'show_on',
         'category_id',
         'image_url',
