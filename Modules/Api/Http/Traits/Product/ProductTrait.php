@@ -65,7 +65,7 @@ trait ProductTrait
             ->when($params['is_official'], function ($query) use ($params) {
                 $query->where('is_official', $params['is_official']);
             })->when($params['value'], function ($query) use ($params) {
-                $query->whereHas('metaValues', function ($query) use ($params) {
+                $query->whereHas('metaValue', function ($query) use ($params) {
                     $query->whereIn('id', [$params['value']]);
                 });
             })
