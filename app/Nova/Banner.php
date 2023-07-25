@@ -72,6 +72,7 @@ class Banner extends Resource
             Image::make('Image', 'image_url')
                 ->path('banner')
                 ->disk('public')
+                ->deletable(false)
                 ->creationRules('required')
                 ->updateRules('nullable')
                 ->disableDownload(),
