@@ -28,6 +28,7 @@ class Product extends BaseModel
         'price',
         'discount_rate',
         'shipping_charge',
+        'product_code',
         'is_used',
         'is_featured',
         'is_active',
