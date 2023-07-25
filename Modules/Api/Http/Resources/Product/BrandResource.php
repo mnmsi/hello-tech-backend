@@ -20,7 +20,7 @@ class BrandResource extends JsonResource
             'id'        => $this->id,
             'name'      => $this->name,
             'slug'      => $this->slug,
-            'image_url' => str_contains($this->image_url, 'http') ? $this->image_url : asset($this->image_url),
+            'image_url' => str_contains($this->image_url, 'http') ? $this->image_url : asset('storage/' . $this->image_url),
         ];
     }
 }
