@@ -75,10 +75,7 @@ class Product extends Resource
             BelongsTo::make('Category', 'category')
                 ->rules('required')
                 ->noPeeking(),
-            //            meta value
-            BelongsTo::make('Product Meta Value', 'metaValues','App\Nova\MetaValue')
-                ->rules('required')
-                ->noPeeking(),
+
             //            image
             Image::make('Image', 'image_url')
                 ->path('product_image')

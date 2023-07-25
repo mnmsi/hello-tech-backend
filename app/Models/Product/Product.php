@@ -22,7 +22,6 @@ class Product extends BaseModel
     protected $fillable = [
         'brand_id',
         'body_type_id',
-        'product_meta_value_id',
         'type',
         'category_id',
         'name',
@@ -103,11 +102,6 @@ class Product extends BaseModel
         return $this->hasOne(Banner::class);
     }
 
-    public function metaValues()
-    {
-        return $this->belongsTo(ProductMetaValue::class ,'product_meta_value_id');
-    }
-
     public function productData()
     {
         return $this->hasMany(ProductData::class);
@@ -149,6 +143,11 @@ class Product extends BaseModel
     public function getProductColorsIdAttribute()
     {
         return $this->colors->pluck('id');
+    }
+
+    public function metaValue()
+    {
+        return $this->hasMany(ProductMetaValue::class);
     }
 
     //    list

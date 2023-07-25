@@ -35,6 +35,7 @@ class ProductMetaKey extends Model
                     "attributes" => [
                         "meta_id" => $l->id,
                         "meta_name" => $l->value,
+                        "meta_product" => $l->product_id,
                     ]
                 ];
             }

@@ -206,7 +206,6 @@ class Order extends Resource
             new SearchableRelation('user', 'email'),
             new SearchableRelation('paymentMethod', 'name'),
             new SearchableRelation('deliveryOption', 'name'),
-            new SearchableRelation('showRooms', 'name'),
         ];
     }
 
