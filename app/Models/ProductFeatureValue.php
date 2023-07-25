@@ -11,6 +11,7 @@ class ProductFeatureValue extends Model
         'product_feature_key_id',
         'value',
         'price',
+        'stock',
     ];
 
     public function productFeatureKey()
