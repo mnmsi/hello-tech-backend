@@ -77,7 +77,7 @@ trait ProductTrait
 
     public function getProductDetailsBySlug($slug)
     {
-        return Product::where('slug', $slug)->with(['productFeatureKeys', 'banner','colors'])->whereHas('productFeatureValues', function ($query) {
+        return Product::where('slug', $slug)->with(['productFeatureKeys', 'banner','colors'])->whereHas('productFeatureKeys', function ($query) {
             $query->whereHas('featureValues', function ($query) {
                 $query->where('stock', '>', 0);
             });
