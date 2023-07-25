@@ -72,7 +72,7 @@ trait ProductTrait
             ->when($params['short_by'], function ($query) use ($params) {
                 $query->orderBy('price', $params['short_by']);
             })->orderBy('created_at', 'desc')
-            ->paginate(3);
+            ->paginate(12);
     }
 
     public function getProductDetailsBySlug($slug)

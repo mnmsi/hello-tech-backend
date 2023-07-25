@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->tinyInteger('is_new_arrival')->default(0)->comment('0: No, 1: Yes');
             $table->tinyInteger('is_active')->default(1)->comment('0: Inactive, 1: Active');
             $table->tinyInteger('is_official')->default(0)->comment('0: No, 1: Yes');
+            $table->string('product_code')->nullable()->unique();
             $table->string('image_url');
             $table->string('hover_image_url')->nullable();
             $table->string('video_url')->nullable();
