@@ -77,7 +77,13 @@ trait ProductTrait
 
     public function getProductDetailsBySlug($slug)
     {
-        return Product::where('slug', $slug)->with(['productFeatureKeys', 'banner','colors'])->first();
+        return Product::where('slug', $slug)->with(['productFeatureKeys' => function ($q) {
+            $q->with(['productFeatureValues' => function ($q) {
+                $q->where('stock', '>', 0);
+            }]);
+        }, 'banner', 'colors' => function ($c) {
+            $c->where('stock', '>', 0);
+        }])->first();
     }
 
     public function productDataById($id)
@@ -93,23 +99,26 @@ trait ProductTrait
             ->get();
     }
 
-    public function getProductByBrandSlug($slug){
+    public function getProductByBrandSlug($slug)
+    {
         return Product::where('is_active', 1)
             ->whereHas('brand', function ($query) use ($slug) {
                 $query->where('slug', $slug);
             })->get();
     }
 
-    public function getNewArrivals(){
-       return Product::where('is_active', 1)
+    public function getNewArrivals()
+    {
+        return Product::where('is_active', 1)
             ->where('is_new_arrival', 1)
             ->orderBy('id', 'desc')
             ->get();
 
     }
 
-    public function getFeaturedNewArrivals(){
-       return Product::where('is_active', 1)
+    public function getFeaturedNewArrivals()
+    {
+        return Product::where('is_active', 1)
             ->where('is_new_arrival', 1)
             ->where('is_featured', 1)
             ->orderBy('id', 'desc')
