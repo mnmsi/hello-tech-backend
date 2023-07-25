@@ -93,12 +93,10 @@ trait ProductTrait
 
     public function getRelatedProduct()
     {
-        return Product::where('is_active', 1)
-            ->inRandomOrder()
-            ->take(4)
-            ->get();
+        return Product::where('is_active', 1)->whereHas('colors', function ($query) {
+            $query->where('stock', '>', 0);
+        })->inRandomOrder()->take(4)->get();
     }
-
     public function getProductByBrandSlug($slug)
     {
         return Product::where('is_active', 1)
