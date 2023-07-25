@@ -109,6 +109,15 @@ class Product extends Resource
                         'placeholder' => 'Enter name',
                     ],
                 ]),
+            //            product code
+            Text::make('Product Code', 'product_code')
+                ->sortable()
+                ->rules('required', 'max:255')
+                ->withMeta([
+                    'extraAttributes' => [
+                        'placeholder' => 'Enter product code',
+                    ],
+                ]),
             //            price
             Number::make('price')
                 ->min(0)
