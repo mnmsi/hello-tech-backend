@@ -15,7 +15,7 @@ trait ProductTrait
      */
     public function calculateDiscountPrice($price, $discountRate)
     {
-        return $price - ($price * $discountRate / 100);
+        return round($price - ($price * $discountRate / 100));
     }
 
     /**
