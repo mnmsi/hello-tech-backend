@@ -13,6 +13,7 @@ class Brand extends BaseModel
     protected $fillable = [
         'name',
         'image_url',
+        'slug',
         'is_popular',
         'is_active',
         'created_at',
