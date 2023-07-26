@@ -2,6 +2,8 @@
 
 namespace App\Nova;
 
+use App\Exceptions\CustomException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
@@ -167,5 +169,9 @@ class Brand extends Resource
         return ['id', new SearchableRelation('category', 'name')];
     }
 
+//    public function authorizedToDelete(Request $request): bool
+//    {
+//        return false;
+//    }
 
 }
