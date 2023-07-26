@@ -50,15 +50,22 @@ class OrderController extends Controller
         } else {
             $order = $this->buyNowOrderStore($request);
         }
-        if ($order) {
-            return $this->respondWithSuccessWithData(
-                $order
-            );
-        } else {
-            return $this->respondError(
-                "Something went wrong"
-            );
-        }
+
+        return $order;
+//        if ($order) {
+//            if($order['status']===false){
+//                return $this->respondError(
+//                    $order['message']
+//                );
+//            } else {
+//                return $order;
+//
+//            }
+//        } else {
+//            return $this->respondError(
+//                "Something went wrong"
+//            );
+//        }
 
     }
 

@@ -173,7 +173,10 @@ OrderTrait
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return $e->getMessage();
+            return [
+                'status' => false,
+                'message' => $e->getMessage(),
+            ];
         }
     }
 
@@ -292,7 +295,10 @@ OrderTrait
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return $e->getMessage();
+            return [
+                'status' => false,
+                'message' => $e->getMessage(),
+            ];
         }
     }
 
