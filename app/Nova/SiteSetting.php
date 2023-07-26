@@ -212,4 +212,9 @@ class SiteSetting extends Resource
     {
         return false;
     }
+
+    public static function authorizedToCreate(Request $request): bool
+    {
+        return false;
+    }
 }

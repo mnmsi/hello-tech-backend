@@ -79,6 +79,7 @@ class Product extends Resource
             //            image
             Image::make('Image', 'image_url')
                 ->path('product_image')
+                ->help('use size 295X330 and image should be transparent')
                 ->disk('public')
                 ->creationRules('required')
                 ->updateRules('nullable')
@@ -86,6 +87,7 @@ class Product extends Resource
 //            hover image
             Image::make('Hover Image', 'hover_image_url')
                 ->path('product_image')
+                ->help('use size 295X330 and image should be transparent')
                 ->disk('public')
                 ->nullable()
 //                ->help("*For better view please use image height=200,width=282")
@@ -124,7 +126,7 @@ class Product extends Resource
                 ->step('any')
                 ->rules('required'),
             //            discount
-            Number::make('Discount', 'discount_rate')
+            Number::make('Discount Percent(%)', 'discount_rate')
                 ->default(0)
                 ->min(0)
                 ->step('any')

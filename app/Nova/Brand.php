@@ -62,6 +62,7 @@ class Brand extends Resource
 
             Image::make('Image', 'image_url')
                 ->disk('public')
+                ->help("use image size 70x70 background transparent and extension .png")
                 ->path('brand')
                 ->creationRules('required')
                 ->updateRules('nullable')
@@ -165,4 +166,6 @@ class Brand extends Resource
     {
         return ['id', new SearchableRelation('category', 'name')];
     }
+
+
 }

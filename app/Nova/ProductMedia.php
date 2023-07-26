@@ -70,6 +70,7 @@ class ProductMedia extends Resource
 //            thumb url
             Image::make('Image url', 'image_url')
                 ->path('media')
+                ->help('use image Size Max Height 650 and Width Relevant to the height')
                 ->disk('public')
                 ->withMeta([
                     'extraAttributes' => [
