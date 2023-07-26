@@ -32,7 +32,7 @@ class AddCartRequest extends FormRequest
     {
         return [
             'product_id'       => 'required|integer|exists:App\Models\Product\Product,id',
-            'quantity'         => 'required|integer|min:1',
+            'quantity'         => 'required|integer|min:1|max:5',
             'product_color_id' => 'integer|exists:App\Models\Product\ProductColor,id',
         ];
     }

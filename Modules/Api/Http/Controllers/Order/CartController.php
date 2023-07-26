@@ -67,6 +67,7 @@ class CartController extends Controller
     {
         $request->validate([
             'id' => 'required|exists:carts,id',
+            'quantity' => 'required|numeric|min:1|max:5',
         ]);
         $cart = $this->updateCartProduct($request);
         if ($cart) {
