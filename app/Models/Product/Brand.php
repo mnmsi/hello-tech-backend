@@ -25,9 +25,12 @@ class Brand extends BaseModel
         'is_active' => 'boolean'
     ];
 
-    public function setSlugAttribute($value): void
+    protected static function boot()
     {
-        $this->attributes['slug'] = Str::slug($value);
+        parent::boot();
+        static::creating(function ($model) {
+            $model->slug = Str::slug($model->name);
+        });
     }
 
     public function category(): BelongsTo
