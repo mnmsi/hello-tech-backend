@@ -74,6 +74,7 @@ class Banner extends Resource
                             ->rules('required');
                     } else {
                         $field
+                            ->hideFromIndex()
                             ->hide()
                             ->nullable();
                     }
@@ -83,7 +84,6 @@ class Banner extends Resource
             Select::make('Display Page', 'page')->options([
                 'home' => 'Home',
                 'new-arrivals' => 'New Arrivals',
-                'product-detail' => 'Product Details',
             ])->dependsOn(['type'], function (Select $field, NovaRequest $request, FormData $formData) {
                 if ($formData->type == "page") {
                     $field
@@ -99,7 +99,6 @@ class Banner extends Resource
                 'all' => 'All',
                 'top' => 'Top',
                 'bottom' => 'Bottom',
-                'detail' => 'Details',
             ])->dependsOn(['type'], function (Select $field, NovaRequest $request, FormData $formData) {
                 if ($formData->type == "page") {
                     $field
