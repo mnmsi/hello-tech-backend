@@ -2,28 +2,21 @@
 
 namespace App\Nova;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Attachments\Attachment;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\File;
-use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Image;
-use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Query\Search\SearchableRelation;
 
-class ProductMedia extends Resource
+class DynamicPageBrand extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Product\ProductMedia>
+     * @var class-string<\App\Models\Dynamic\DynamicPageBrand>
      */
-    public static $model = \App\Models\Product\ProductMedia::class;
+    public static $model = \App\Models\Dynamic\DynamicPageBrand::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -31,7 +24,6 @@ class ProductMedia extends Resource
      * @var string
      */
     public static $title = 'id';
-    public static $group = 'Product';
 
     /**
      * The columns that should be searched.
@@ -52,37 +44,19 @@ class ProductMedia extends Resource
     {
         return [
             ID::make()->sortable(),
-//            product
-            BelongsTo::make('Product', 'product')
-                ->searchable()
+
+            BelongsTo::make('Dynamic Page', 'dynamicPage')
                 ->rules('required')
                 ->noPeeking(),
-//            color
 
-            BelongsTo::make('Color', 'color', 'App\Nova\ProductColor')
+            BelongsTo::make('Select Brand', 'brand',"App\Nova\Brand")
                 ->rules('required')
-                ->dependsOn(['product'], function (BelongsTo $field, NovaRequest $request, FormData $formData) {
-                    $field->relatableQueryUsing(function (NovaRequest $request, Builder $query) use ($formData) {
-                        $query->where('product_id', $formData->product);
-                    });
-                })
                 ->noPeeking(),
 
-//            thumb url
-            Image::make('Image url', 'image_url')
-                ->path('media')
-                ->help('use image Size Max Height 650 and Width Relevant to the height')
-                ->disk('public')
-                ->creationRules('required')
-                ->updateRules('nullable')
-                ->acceptedTypes('.png,.jpg,.svg,.jpeg')
-                ->withMeta([
-                    'extraAttributes' => [
-                        'placeholder' => 'Enter thumb',
-                    ],
-                ])
-                ->disableDownload(),
-//            date
+            Number::make('No of product from brand', 'product_count')
+                ->min(0)
+                ->nullable(),
+
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
                 ->default(now())
@@ -139,14 +113,5 @@ class ProductMedia extends Resource
     public function actions(NovaRequest $request)
     {
         return [];
-    }
-
-    public static function searchableColumns()
-    {
-        return [
-            'id',
-            new SearchableRelation('product', 'name'),
-            new SearchableRelation('color', 'name'),
-        ];
     }
 }

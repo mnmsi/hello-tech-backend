@@ -65,6 +65,7 @@ class ProductColor extends Resource
 //            product color
             Color::make('Color Code', 'color_code')
                 ->sortable()
+                ->default('#000000')
                 ->rules('required'),
 //            price
             Number::make('Color price', 'price')

@@ -8,6 +8,7 @@ use App\Nova\Brand;
 use App\Nova\Category;
 use App\Nova\Dashboards\Main;
 use App\Nova\DeliveryOption;
+use App\Nova\DynamicPage;
 use App\Nova\FeatureKey;
 use App\Nova\HomeSection;
 use App\Nova\MetaKey;
@@ -82,34 +83,29 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(PreOrder::class),
                     MenuItem::resource(Voucher::class),
                 ])->icon('shopping-cart')->collapsable(),
-//                bike sell
-//                MenuSection::make('Bike Sell', [
-//                    MenuItem::resource(SellBike::class),
-//                    MenuItem::resource(BikeSellRequest::class),
-//                ])->icon('cube')->collapsable(),
 //                system
                 MenuSection::make('System', [
-//                    MenuItem::resource(Showroom::class),
                     MenuItem::resource(Brand::class),
                     MenuItem::resource(Category::class),
                     MenuItem::resource(Banner::class),
-//                    MenuItem::resource(BodyType::class),
                     MenuItem::resource(PaymentMethods::class),
-//                    MenuItem::resource(ShippingCharge::class),
                     MenuItem::resource(DeliveryOption::class),
                     MenuItem::resource(VideoReviews::class),
                     MenuItem::resource(Notification::class),
                 ])->icon('briefcase')->collapsable(),
+//                dynamic page
+                MenuSection::make('Promotional Pages', [
+                    MenuItem::resource(DynamicPage::class)->name('Promotional Page List'),
+                ])->icon('adjustments')->collapsable(),
 //                settings
                 MenuSection::make('Settings', [
                     MenuItem::resource(SiteSetting::class),
                     MenuItem::resource(SeoSetting::class),
                     MenuItem::resource(HomeSection::class),
-//                    MenuItem::resource(Testimonial::class),
                     MenuItem::resource(TermsAndCondition::class),
                     MenuItem::resource(PrivacyPolicy::class),
                     MenuItem::resource(AboutUs::class)->name('About Us'),
-                ])->icon('document-text')->collapsable(),
+                ])->icon('cog')->collapsable(),
             ];
         });
     }
