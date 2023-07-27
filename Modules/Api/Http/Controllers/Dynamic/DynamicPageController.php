@@ -22,7 +22,7 @@ class DynamicPageController extends Controller
                 $result = [];
                 $brand_list = $this->getPageBrandProduct($check->id);
 
-                if ($brand_list->all_brand !== 0) {
+                if ($brand_list->all_brand === 0) {
                     foreach ($brand_list->pageBrand as $l) {
                         $products = Product::where('brand_id', $l['brand_id'])
                             ->where('is_active', 1)

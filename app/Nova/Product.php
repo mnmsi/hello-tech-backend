@@ -48,7 +48,7 @@ class Product extends Resource
      * @var array
      */
     public static $search = [
-        'name',
+        'id','name'
     ];
 
     public static function label()
@@ -329,8 +329,8 @@ class Product extends Resource
     {
         return [
             'id',
+            'name',
             new SearchableRelation('brand', 'name'),
-//            new SearchableRelation('bodyType', 'name'),
             new SearchableRelation('category', 'name'),
         ];
     }
