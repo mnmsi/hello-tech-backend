@@ -31,7 +31,7 @@ trait ProductTrait
     {
         return Product::wherehas('colors',function ($q){
             $q->where('stock','>',0);
-        })->where('category_id', $categoryId)->where('is_featured', 1)->get();
+        })->where('category_id', $categoryId)->where('is_featured', 1)->orderBy('order_no')->get();
     }
 
     public function initializeFilterData($request)
@@ -75,7 +75,7 @@ trait ProductTrait
             })
             ->when($params['short_by'], function ($query) use ($params) {
                 $query->orderBy('price', $params['short_by']);
-            })->orderBy('created_at', 'desc')
+            })->orderBy('order_no')
             ->paginate(12);
     }
 
@@ -110,7 +110,7 @@ trait ProductTrait
         })->where('is_active', 1)
             ->whereHas('brand', function ($query) use ($slug) {
                 $query->where('slug', $slug);
-            })->get();
+            })->orderBy('order_no')->get();
     }
 
     public function getNewArrivals()
@@ -119,7 +119,7 @@ trait ProductTrait
             $q->where('stock','>',0);
         })->where('is_active', 1)
             ->where('is_new_arrival', 1)
-            ->orderBy('id', 'desc')
+            ->orderBy('order_no')
             ->get();
 
     }
@@ -130,8 +130,7 @@ trait ProductTrait
             $q->where('stock','>',0);
         })->where('is_new_arrival', 1)
             ->where('is_featured', 1)
-            ->orderBy('id', 'desc')
+            ->orderBy('order_no')
             ->get();
-
     }
 }

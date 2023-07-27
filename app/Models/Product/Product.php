@@ -51,6 +51,9 @@ class Product extends BaseModel
         static::creating(function ($model) {
             $model->slug = Str::slug($model->name);
         });
+        static::updating(function ($model) {
+            $model->slug = Str::slug($model->name);
+        });
     }
 
     protected $appends = ['is_favorite', 'product_colors_id','is_cart'];
