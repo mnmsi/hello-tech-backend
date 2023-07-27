@@ -38,7 +38,7 @@ class DynamicPage extends Resource
      * @var array
      */
     public static $search = [
-        'id',"title"
+        'id', "title"
     ];
 
     /**
@@ -71,14 +71,17 @@ class DynamicPage extends Resource
                     'extraAttributes' => [
                         'placeholder' => 'Enter slug',
                     ],
-                ]),
+                ])
+                ->displayUsing(function ($v) {
+                    return "<a href='http://18.119.163.171/promotional-product/$v' class='' target='_blank'> http://18.119.163.171/promotional-product/$v</a>";
+                })->asHtml(),
 
             Select::make('Select Brand', 'all_brand')->options([
                 '1' => 'All brand',
                 '0' => 'Selected brand only',
             ])->rules('required')
-            ->hideFromDetail()
-            ->hideFromIndex(),
+                ->hideFromDetail()
+                ->hideFromIndex(),
 
             Select::make('Status', 'status')->options([
                 '1' => 'Yes',
@@ -94,7 +97,7 @@ class DynamicPage extends Resource
                     return $v ? "Active" : "Inactive";
                 }),
 
-            HasMany::make('Pages Brand', 'pageBrand',"App\Nova\DynamicPageBrand"),
+            HasMany::make('Pages Brand', 'pageBrand', "App\Nova\DynamicPageBrand"),
 
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
@@ -144,7 +147,7 @@ class DynamicPage extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
      */
     public function cards(NovaRequest $request)
@@ -155,7 +158,7 @@ class DynamicPage extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
      */
     public function filters(NovaRequest $request)
@@ -166,7 +169,7 @@ class DynamicPage extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
      */
     public function lenses(NovaRequest $request)
@@ -177,7 +180,7 @@ class DynamicPage extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
      */
     public function actions(NovaRequest $request)
