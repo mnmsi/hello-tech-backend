@@ -54,6 +54,7 @@ class ProductMedia extends Resource
             ID::make()->sortable(),
 //            product
             BelongsTo::make('Product', 'product')
+                ->searchable()
                 ->rules('required')
                 ->noPeeking(),
 //            color

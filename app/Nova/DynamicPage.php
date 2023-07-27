@@ -75,7 +75,7 @@ class DynamicPage extends Resource
 
             Select::make('Select Brand', 'all_brand')->options([
                 '1' => 'All brand',
-                '0' => 'Choose brand',
+                '0' => 'Selected brand only',
             ])->rules('required')
             ->hideFromDetail()
             ->hideFromIndex(),

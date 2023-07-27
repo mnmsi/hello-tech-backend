@@ -75,7 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::controller(UserController::class)->group(function () {
             Route::get('me', 'user');                     // User Info Routes
             Route::post('update', 'update');
-            Route::post('change-password','changePassword');
+            Route::post('change-password', 'changePassword');
         });;  // User Address Routes
     });
 
@@ -83,7 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserAddressController::class)->prefix('address')->group(function () {
         Route::get('/', 'addresses');                // Address List Routes
         Route::post('store', 'store');
-        Route::get('edit/{id}','edit');// Address Store Routes
+        Route::get('edit/{id}', 'edit');// Address Store Routes
         Route::post('update/{id}', 'update');         // Address Update Routes
         Route::delete('delete/{id}', 'delete');      // Address Delete Routes
         Route::get('selected-address/{id?}', 'getSelectedAddress');      // Address Delete Routes
@@ -187,14 +187,17 @@ Route::middleware('product')->group(function () {
         Route::get('/', 'getProduct');  // Feature product
         Route::get('details/{name}', 'details');  // Product Details
         Route::get('get-data/{id}', 'getProductDataById');
-        Route::post('calculate_product_price','calculatePrice');
+        Route::post('calculate_product_price', 'calculatePrice');
         Route::get('related', 'relatedProduct');// Related Product
-        Route::get('total-review/{id}',[ReviewController::class, 'totalReview']); // Product Review
-        Route::get('get-product-by-brand/{slug}','getProductByBrand'); // Product Review
-        Route::get('/new-arrivals','newArrivals'); // Product Review
-        Route::get('featured-new-arrivals','featuredNewArrivals'); // Product Review
+        Route::get('total-review/{id}', [ReviewController::class, 'totalReview']); // Product Review
+        Route::get('get-product-by-brand/{slug}', 'getProductByBrand'); // Product Review
+        Route::get('/new-arrivals', 'newArrivals'); // Product Review
+        Route::get('featured-new-arrivals', 'featuredNewArrivals'); // Product Review
     });
     Route::controller(HomePageSectionController::class)->prefix('dynamic-section')->group(function () {
         Route::get('/', 'homePageSections');   // feature new arrivals
     });
 });
+
+// dynamic page api
+Route::get('dynamic-page/{slug}', [\Modules\Api\Http\Controllers\Dynamic\DynamicPageController::class, 'allBrandProduct']);

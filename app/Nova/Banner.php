@@ -113,6 +113,7 @@ class Banner extends Resource
             Image::make('Image', 'image_url')
                 ->path('banner')
                 ->disk('public')
+                ->help("*only for category please give banner size height = 472px and width is relevant to height")
                 ->deletable(false)
                 ->creationRules('required')
                 ->updateRules('nullable')
