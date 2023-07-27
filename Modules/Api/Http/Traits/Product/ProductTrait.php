@@ -76,7 +76,7 @@ trait ProductTrait
             ->when($params['short_by'], function ($query) use ($params) {
                 $query->orderBy('price', $params['short_by']);
             })->orderBy('order_no')
-            ->paginate(12);
+            ->paginate(9);
     }
 
     public function getProductDetailsBySlug($slug)
