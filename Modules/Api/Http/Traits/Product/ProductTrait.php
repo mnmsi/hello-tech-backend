@@ -132,6 +132,5 @@ trait ProductTrait
             ->where('is_featured', 1)
             ->orderBy('order_no')
             ->get();
-
     }
 }
