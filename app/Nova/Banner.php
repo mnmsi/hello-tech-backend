@@ -53,7 +53,7 @@ class Banner extends Resource
                 'category' => 'For Categories',
                 'page' => 'For Pages',
             ])->rules('required'),
-//            product
+            //            product
             BelongsTo::make('Product', 'product')
                 ->dependsOn(['type'], function (BelongsTo $field, NovaRequest $request, FormData $formData) {
                     if ($formData->type == "product") {
@@ -66,7 +66,7 @@ class Banner extends Resource
                     }
                 })
                 ->noPeeking(),
-//            category
+            //            category
             BelongsTo::make('Category', 'category')
                 ->dependsOn(['type'], function (BelongsTo $field, NovaRequest $request, FormData $formData) {
                     if ($formData->type == "category") {
@@ -80,7 +80,7 @@ class Banner extends Resource
                     }
                 })
                 ->noPeeking(),
-//          page
+            //          page
             Select::make('Display Page', 'page')->options([
                 'home' => 'Home',
                 'new-arrivals' => 'New Arrivals',
@@ -94,7 +94,7 @@ class Banner extends Resource
                         ->nullable();
                 }
             }),
-//            show on
+            //            show on
             Select::make('Page Place', 'show_on')->options([
                 'all' => 'All',
                 'top' => 'Top',
@@ -109,7 +109,7 @@ class Banner extends Resource
                         ->nullable();
                 }
             }),
-//            image
+            //            image
             Image::make('Image', 'image_url')
                 ->path('banner')
                 ->disk('public')
@@ -117,7 +117,7 @@ class Banner extends Resource
                 ->creationRules('required')
                 ->updateRules('nullable')
                 ->disableDownload(),
-//            status
+            //            status
             Select::make('Status', 'is_active')->options([
                 '1' => 'Yes',
                 '0' => 'No',
@@ -131,7 +131,7 @@ class Banner extends Resource
                 ->displayUsing(function ($v) {
                     return $v ? "Active" : "Inactive";
                 }),
-//            date
+            //            date
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
                 ->default(now())

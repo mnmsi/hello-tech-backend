@@ -2,7 +2,6 @@
 
 namespace App\Nova;
 
-use App\Exceptions\CustomException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;

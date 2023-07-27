@@ -72,6 +72,9 @@ class ProductMedia extends Resource
                 ->path('media')
                 ->help('use image Size Max Height 650 and Width Relevant to the height')
                 ->disk('public')
+                ->creationRules('required')
+                ->updateRules('nullable')
+                ->acceptedTypes('.png,.jpg,.svg,.jpeg')
                 ->withMeta([
                     'extraAttributes' => [
                         'placeholder' => 'Enter thumb',
