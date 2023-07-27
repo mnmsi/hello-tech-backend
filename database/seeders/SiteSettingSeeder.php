@@ -13,7 +13,7 @@ class SiteSettingSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('testimonials')->insert([
+        DB::table('site_settings')->insert([
             [
                 'name' => 'Hello Tech',
                 'email' => 'sales@hellotech.com',

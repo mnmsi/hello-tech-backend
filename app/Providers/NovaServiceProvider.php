@@ -8,6 +8,7 @@ use App\Nova\Brand;
 use App\Nova\Category;
 use App\Nova\Dashboards\Main;
 use App\Nova\DeliveryOption;
+use App\Nova\DynamicPage;
 use App\Nova\FeatureKey;
 use App\Nova\HomeSection;
 use App\Nova\MetaKey;
@@ -99,6 +100,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(DeliveryOption::class),
                     MenuItem::resource(VideoReviews::class),
                     MenuItem::resource(Notification::class),
+                ])->icon('briefcase')->collapsable(),
+//                dynamic page
+                MenuSection::make('Dynamic Pages', [
+                    MenuItem::resource(DynamicPage::class)->name('Dynamic Page List'),
                 ])->icon('briefcase')->collapsable(),
 //                settings
                 MenuSection::make('Settings', [

@@ -131,11 +131,9 @@ class Product extends Resource
                 ->min(0)
                 ->step('any')
                 ->nullable(),
-//            stock
-//            Number::make('Stock', 'stock')
-//                ->min(0)
-//                ->step('any')
-//                ->rules('required'),
+            //            stock
+            Number::make('Product Order Number', 'order_no')
+                ->nullable(),
             //            description
             Trix::make('Description', 'description')
                 ->sortable()
@@ -234,6 +232,7 @@ class Product extends Resource
                     //                    color code
                     Color::make('Color Code', 'color_code')
                         ->sortable()
+                        ->default('#000000')
                         ->rules('required'),
                     //                  color price
                     Number::make('Color Price', 'color_price')

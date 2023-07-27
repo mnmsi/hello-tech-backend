@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('category_id')->nullable();
             $table->string('name');
             $table->string('slug')->unique();
+            $table->integer('order_no')->nullable();
             $table->double('price', 10, 2, true);
             $table->integer('discount_rate')->default(0);
             $table->tinyInteger('is_featured')->default(0)->comment('0: No, 1: Yes');
