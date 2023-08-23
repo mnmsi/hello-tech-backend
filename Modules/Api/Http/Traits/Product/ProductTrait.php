@@ -130,6 +130,7 @@ trait ProductTrait
             $q->where('stock','>',0);
         })->where('is_new_arrival', 1)
             ->where('is_featured', 1)
+            ->limit(4)
             ->orderBy('order_no')
             ->get();
     }
