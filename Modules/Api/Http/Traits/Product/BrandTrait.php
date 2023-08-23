@@ -26,6 +26,7 @@ trait BrandTrait
     {
         return Brand::where('is_active', 1)
             ->where('is_popular', 1)
+            ->limit(14)
             ->orderBy('id', 'asc')
             ->get();
     }
