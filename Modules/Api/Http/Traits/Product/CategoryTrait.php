@@ -13,6 +13,9 @@ trait CategoryTrait
     public function getCategories()
     {
         return Category::where('is_active', 1)
+            ->whereHas('products', function ($q) {
+                $q->count() > 0;
+            })
             ->orderBy('name', 'asc')
             ->get();
     }
