@@ -55,7 +55,7 @@ trait ProductTrait
             $q->where('stock','>',0);
         })->where('is_active', 1)
             ->when($params['name'], function ($query) use ($params) {
-                $query->where('name', 'like', '%' . $params['name'] . '%');
+                $query->whereRaw('LOWER(name) LIKE ?', '%' . strtolower($params['name']) . '%');
             })
             ->when($params['category'], function ($query) use ($params) {
 //                $query->where('category_id', $id);
