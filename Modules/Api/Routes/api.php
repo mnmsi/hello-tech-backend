@@ -3,6 +3,7 @@
 use App\Mail\OtpMail;
 use Illuminate\Support\Facades\Route;
 use Modules\Api\Http\Controllers\Auth\ApiAuthController;
+use Modules\Api\Http\Controllers\Dynamic\DynamicPageController;
 use Modules\Api\Http\Controllers\Order\CartController;
 use Modules\Api\Http\Controllers\Order\OrderController;
 use Modules\Api\Http\Controllers\Order\ShippingChargeController;
@@ -200,4 +201,4 @@ Route::middleware('product')->group(function () {
 });
 
 // dynamic page api
-Route::get('dynamic-page/{slug}', [\Modules\Api\Http\Controllers\Dynamic\DynamicPageController::class, 'allBrandProduct']);
+Route::get('dynamic-page/{slug}', [DynamicPageController::class, 'allBrandProduct']);
