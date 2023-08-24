@@ -29,8 +29,8 @@ trait ProductTrait
 
     public function featuredProduct($categoryId)
     {
-        return Product::wherehas('colors',function ($q){
-            $q->where('stock','>',0);
+        return Product::wherehas('colors', function ($q) {
+            $q->where('stock', '>', 0);
         })->where('category_id', $categoryId)->where('is_featured', 1)->limit(4)->orderBy('order_no')->get();
     }
 
@@ -51,14 +51,14 @@ trait ProductTrait
         if ($params['category'] == 'gadgets') {
             $params['category'] = null;
         }
-        return Product::wherehas('colors',function ($q){
-            $q->where('stock','>',0);
+        return Product::wherehas('colors', function ($q) {
+            $q->where('stock', '>', 0);
         })->where('is_active', 1)
             ->when($params['name'], function ($query) use ($params) {
                 $query->whereRaw('LOWER(name) LIKE ?', '%' . strtolower($params['name']) . '%');
             })
             ->when($params['category'], function ($query) use ($params) {
-//                $query->where('category_id', $id);
+                //                $query->where('category_id', $id);
                 $query->whereHas('category', function ($query) use ($params) {
                     $query->where('slug', $params['category']);
                 });
@@ -92,8 +92,8 @@ trait ProductTrait
 
     public function productDataById($id)
     {
-        return ProductData::wherehas('colors',function ($q){
-            $q->where('stock','>',0);
+        return ProductData::wherehas('colors', function ($q) {
+            $q->where('stock', '>', 0);
         })->where('product_feature_value_id', $id)->orWhere('product_color_id', $id)->first();
     }
 
@@ -105,8 +105,8 @@ trait ProductTrait
     }
     public function getProductByBrandSlug($slug)
     {
-        return Product::wherehas('colors',function ($q){
-            $q->where('stock','>',0);
+        return Product::wherehas('colors', function ($q) {
+            $q->where('stock', '>', 0);
         })->where('is_active', 1)
             ->whereHas('brand', function ($query) use ($slug) {
                 $query->where('slug', $slug);
@@ -115,19 +115,18 @@ trait ProductTrait
 
     public function getNewArrivals()
     {
-        return Product::wherehas('colors',function ($q){
-            $q->where('stock','>',0);
+        return Product::wherehas('colors', function ($q) {
+            $q->where('stock', '>', 0);
         })->where('is_active', 1)
             ->where('is_new_arrival', 1)
             ->orderBy('order_no')
             ->get();
-
     }
 
     public function getFeaturedNewArrivals()
     {
-        return Product::wherehas('colors',function ($q){
-            $q->where('stock','>',0);
+        return Product::wherehas('colors', function ($q) {
+            $q->where('stock', '>', 0);
         })->where('is_new_arrival', 1)
             ->where('is_featured', 1)
             ->limit(4)

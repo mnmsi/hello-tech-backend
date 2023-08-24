@@ -12,7 +12,7 @@ trait CategoryTrait
      */
     public function getCategories()
     {
-        return Category::where('is_active', 1)
+        return Category::has('products')->where('is_active', 1)
             ->orderBy('name', 'asc')
             ->get();
     }
