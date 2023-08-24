@@ -22,7 +22,7 @@ trait CategoryTrait
      */
     public function getPopularCategories()
     {
-        return Category::where('is_active', 1)
+        return Category::has('products')->where('is_active', 1)
             ->where('is_popular', 1)
             ->with('products')
             ->limit(5)
