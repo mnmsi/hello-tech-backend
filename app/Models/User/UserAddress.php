@@ -15,10 +15,10 @@ class UserAddress extends BaseModel
         'name',
         'type',
         'phone',
-        'email',
-        'zip_code',
         'address_line',
         'division_id',
+        'city_id',
+        'area_id',
         'is_default',
         'created_at',
         'updated_at'
@@ -37,6 +37,7 @@ class UserAddress extends BaseModel
     {
         return $this->belongsTo(Division::class, 'division_id', 'id');
     }
+
     public function testDivision()
     {
         return $this->belongsToMany(Division::class, 'division_id', 'id');

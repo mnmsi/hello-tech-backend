@@ -56,7 +56,7 @@ class Product extends BaseModel
         });
     }
 
-    protected $appends = ['is_favorite', 'product_colors_id','is_cart'];
+    protected $appends = ['is_favorite', 'product_colors_id', 'is_cart'];
 
 
     public function brand()
@@ -115,7 +115,7 @@ class Product extends BaseModel
     }
     public function productFeatureValues()
     {
-        return $this->hasManyThrough(ProductFeatureValue::class,ProductFeatureKey::class);
+        return $this->hasManyThrough(ProductFeatureValue::class, ProductFeatureKey::class);
     }
 
     public function getIsFavoriteAttribute()

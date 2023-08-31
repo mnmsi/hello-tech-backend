@@ -16,10 +16,10 @@ return new class extends Migration {
             $table->enum('type', ['home', 'work', 'other'])->default('home');
             $table->string('name');
             $table->string('address_line', 255);
-            $table->string('zip_code', 10);
             $table->string('phone', 14);
-            $table->string('email', 100)->nullable();
             $table->unsignedBigInteger('division_id');
+            $table->unsignedBigInteger('city_id');
+            $table->unsignedBigInteger('area_id');
             $table->tinyInteger('is_default')->default(0)->comment('0: No, 1: Yes');
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
