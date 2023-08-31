@@ -43,14 +43,18 @@ trait ProductTrait
             'is_official' => $request->is_official ?? null,
             'value' => $request->value ?? null,
             'short_by' => $request->short_by ?? null,
+            'price_from' => $request->price_from ?? null,
+            'price_to' => $request->price_to ?? null,
         ];
     }
 
     public function getProductsQuery($params)
     {
+
         if ($params['category'] == 'gadgets') {
             $params['category'] = null;
         }
+
         return Product::wherehas('colors', function ($q) {
             $q->where('stock', '>', 0);
         })->where('is_active', 1)
@@ -70,8 +74,12 @@ trait ProductTrait
                 $query->where('is_official', $params['is_official']);
             })->when($params['value'], function ($query) use ($params) {
                 $query->whereHas('metaValue', function ($query) use ($params) {
-                    $query->whereIn('id', [$params['value']]);
+                    $query->whereIn('id', explode(',', $params['value']));
                 });
+            })->when($params['price_from'], function ($query) use ($params) {
+                $query->where('price', '>=', $params['price_from']);
+            })->when($params['price_to'], function ($query) use ($params) {
+                $query->where('price', '<=', $params['price_to']);
             })
             ->when($params['short_by'], function ($query) use ($params) {
                 $query->orderBy('price', $params['short_by']);

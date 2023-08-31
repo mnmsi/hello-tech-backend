@@ -40,7 +40,7 @@ class ProductController extends Controller
 
     public function details($name)
     {
-//        $data = $this->getProductDetailsBySlug($name);
+        //        $data = $this->getProductDetailsBySlug($name);
         return $this->respondWithSuccessWithData(
             new ProductDetailsResource($this->getProductDetailsBySlug($name))
         );
@@ -62,16 +62,15 @@ class ProductController extends Controller
 
     public function calculatePrice(Request $request)
     {
-       $product_feature_id = $request->feature_value_id;
-       if(isset( $request->feature_value_id)){
-           foreach ($product_feature_id as $key => $value){
-               $product_feature_id[$key] = (int)$value;
-           }
-       }
-        $product = Product::with(['productFeatureValues','colors'])->where('id',$request->product_id)->first();
-       $price =  $this->calculateDiscountPrice($product->price,$product->discount_rate) +  $product->productFeatureValues->whereIn('id',$product_feature_id)->sum('price') + $product->colors->whereIn('id',$request->color_id)->sum('price');
-       return $this->respondWithSuccessWithData($price * $request->quantity ?? 1);
-
+        $product_feature_id = $request->feature_value_id;
+        if (isset($request->feature_value_id)) {
+            foreach ($product_feature_id as $key => $value) {
+                $product_feature_id[$key] = (int)$value;
+            }
+        }
+        $product = Product::with(['productFeatureValues', 'colors'])->where('id', $request->product_id)->first();
+        $price =  $this->calculateDiscountPrice($product->price, $product->discount_rate) +  $product->productFeatureValues->whereIn('id', $product_feature_id)->sum('price') + $product->colors->whereIn('id', $request->color_id)->sum('price');
+        return $this->respondWithSuccessWithData($price * $request->quantity ?? 1);
     }
 
     public function getProductByBrand($slug)
@@ -81,7 +80,7 @@ class ProductController extends Controller
         );
     }
 
-//    new arrivals
+    //    new arrivals
     public function newArrivals()
     {
         return $this->respondWithSuccessWithData(

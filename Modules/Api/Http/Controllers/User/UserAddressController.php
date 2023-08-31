@@ -54,21 +54,14 @@ class UserAddressController extends Controller
      */
     public function update(UserAddressRequest $request, $id)
     {
-        return $this->respondWithSuccessWithData(
-            $request->all()
-        );
-
         // Update address
         $address = $this->updateAddress($id, $request->all());
-
         if ($address) {
             // Return response with user addresses
             return $this->respondWithSuccessWithData(
-//                UserAddressResource::collection($this->getAddresses())
-                $address->toArray()
+                UserAddressResource::collection($this->getAddresses())
             );
         }
-
         return $this->respondNotFound("Something went wrong!");
     }
 
@@ -99,8 +92,12 @@ class UserAddressController extends Controller
 
     public function getSelectedAddress($id = null)
     {
+        $collection = collect($this->selectedAddress($id));
         return $this->respondWithSuccessWithData(
-            new UserAddressResource($this->selectedAddress($id))
+            [
+                'address' => new UserAddressResource($collection->first()),
+                'price' => $collection->last(),
+            ]
         );
     }
 }
