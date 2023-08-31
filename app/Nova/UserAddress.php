@@ -54,6 +54,11 @@ class UserAddress extends Resource
             BelongsTo::make('User', 'user')
                 ->rules('required')
                 ->noPeeking(),
+            Select::make('Type', 'type')->options([
+                'home' => 'Home',
+                'work' => 'Work',
+                'other' => 'Other',
+            ])->rules('required'),
 //            name
             Text::make('Name', 'name')
                 ->sortable()
@@ -61,6 +66,14 @@ class UserAddress extends Resource
                 ->withMeta([
                     'extraAttributes' => [
                         'placeholder' => 'Enter name',
+                    ],
+                ]),
+            Text::make('Address Line', 'address_line')
+                ->sortable()
+                ->rules('required', 'max:255')
+                ->withMeta([
+                    'extraAttributes' => [
+                        'placeholder' => 'Enter address line',
                     ],
                 ]),
 //            phone
@@ -72,29 +85,16 @@ class UserAddress extends Resource
                         'placeholder' => 'Enter number',
                     ],
                 ]),
-//            address
-            Text::make('Address', 'address')
-                ->sortable()
-                ->rules('required', 'max:255')
-                ->withMeta([
-                    'extraAttributes' => [
-                        'placeholder' => 'Enter address',
-                    ],
-                ]),
 //            division
-
             BelongsTo::make('Division', 'division','App\Nova\Others\Division')
                 ->rules('required')
                 ->searchable()
                 ->noPeeking(),
-
 //            city
-
             BelongsTo::make('City', 'city','App\Nova\Others\City')
                 ->rules('required')
                 ->searchable()
                 ->noPeeking(),
-
 //            area
             BelongsTo::make('Area', 'area','App\Nova\Others\Area')
                 ->rules('required')
