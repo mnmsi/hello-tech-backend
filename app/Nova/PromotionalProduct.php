@@ -60,7 +60,7 @@ class PromotionalProduct extends Resource
                 )
                 ->placeholder('Select product for promotions')
 //                ->saveAsJSON()
-                ->optionsLimit(8),
+                ->optionsLimit(30),
             //            status
             Select::make('Status', 'status')->options([
                 '1' => 'Yes',

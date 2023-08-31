@@ -5,8 +5,10 @@ namespace App\Nova;
 use App\Models\Product\Product;
 use App\Models\ProductMetaKey;
 use App\Models\ProductMetaValue;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Hidden;
 use Laravel\Nova\Fields\ID;
@@ -62,7 +64,7 @@ class MetaKey extends Resource
                 ]),
 //            product
             BelongsTo::make('Category', 'category')
-                ->searchable()
+                //->searchable()
                 ->rules('required')
                 ->noPeeking(),
 //            key value
@@ -80,7 +82,15 @@ class MetaKey extends Resource
                 ->hideWhenUpdating()
                 ->default(now()),
             //            meta value add
-            Flexible::make('Add Some Meta Value*', 'meta_list')
+            Flexible::make('Add Some Meta Value', 'meta_list')
+                ->dependsOn(['category'], function (Flexible $field, NovaRequest $request, FormData $formData) {
+                    if ($formData->category != null) {
+                        $field->rules('required');
+                    } else {
+                        $field->hide()
+                            ->nullable();
+                    }
+                })
                 ->button('Add More Meta')
                 ->addLayout('Fill up all data', 'meta', [
                     // id
@@ -99,11 +109,17 @@ class MetaKey extends Resource
                             ],
                         ]),
                     //                    product
+//                    Select::make('Product', 'meta_product')
+//                        ->dependsOn(['category'], function (Select $field, NovaRequest $request, FormData $formData) {
+//                            $field->options(Product::where('category_id', re)->pluck('name', 'id'));
+//                        })->rules('required')
+////                        ->searchable()
+//                        ->displayUsingLabels(),
+
                     Select::make('Product', 'meta_product')->options(
-                        Product::where('is_active', 1)->pluck('name', 'id')
-                    )->nullable()
-                        ->searchable()
-                        ->displayUsingLabels(),
+                        Product::where('category_id', request()->category)->pluck('name', 'id')
+                    )->rules('required'),
+
                 ])->hideFromIndex()
                 ->hideFromDetail(),
         ];
