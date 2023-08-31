@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('hps_products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hps_section_id')->constrained('home_page_sections');
+            $table->foreignId('hps_section_id')->constrained('home_page_sections')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('products');
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
