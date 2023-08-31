@@ -5,7 +5,6 @@ namespace App\Nova;
 use App\Models\Product\Product;
 use App\Models\ProductMetaKey;
 use App\Models\ProductMetaValue;
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;

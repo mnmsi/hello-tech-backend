@@ -67,6 +67,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 ])->icon('users')->collapsable(),
 //                product
                 MenuSection::make('Products', [
+                    MenuItem::resource(Brand::class),
+                    MenuItem::resource(Category::class),
                     MenuItem::resource(Product::class),
                     MenuItem::resource(FeatureKey::class)->name('Product Feature Key'),
                     MenuItem::resource(MetaKey::class)->name('Product Meta key'),
@@ -85,8 +87,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 ])->icon('shopping-cart')->collapsable(),
 //                system
                 MenuSection::make('System', [
-                    MenuItem::resource(Brand::class),
-                    MenuItem::resource(Category::class),
+//                    MenuItem::resource(Brand::class),
+//                    MenuItem::resource(Category::class),
                     MenuItem::resource(Banner::class),
                     MenuItem::resource(PaymentMethods::class),
                     MenuItem::resource(DeliveryOption::class),
