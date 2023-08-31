@@ -36,7 +36,7 @@ class ProductColor extends Resource
      * @var array
      */
     public static $search = [
-        'name',
+        'id', 'name',
     ];
 
     /**
@@ -51,6 +51,7 @@ class ProductColor extends Resource
             ID::make()->sortable(),
 //            product
             BelongsTo::make('Product', 'product')
+                ->searchable()
                 ->rules('required')
                 ->noPeeking(),
 //            name
@@ -143,6 +144,7 @@ class ProductColor extends Resource
     {
         return [
             'id',
+            'name',
             new SearchableRelation('product', 'name'),
         ];
     }

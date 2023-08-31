@@ -49,6 +49,7 @@ class ProductSpecification extends Resource
             ID::make()->sortable(),
 //            product
             BelongsTo::make('Product', 'product','App\Nova\Product')
+                ->searchable()
                 ->rules('required')
                 ->noPeeking(),
 //            name

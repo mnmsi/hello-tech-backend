@@ -38,7 +38,7 @@ class Brand extends Resource
      * @var array
      */
     public static $search = [
-        'name',
+        'id', 'name',
     ];
 
     /**
@@ -165,7 +165,7 @@ class Brand extends Resource
 
     public static function searchableColumns()
     {
-        return ['id', new SearchableRelation('category', 'name')];
+        return ['id', 'name', new SearchableRelation('category', 'name')];
     }
 
 //    public function authorizedToDelete(Request $request): bool

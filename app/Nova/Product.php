@@ -69,10 +69,12 @@ class Product extends Resource
             ID::make()->sortable(),
             //            brand
             BelongsTo::make('Brand', 'brand')
+                ->searchable()
                 ->rules('required')
                 ->noPeeking(),
             //            category
             BelongsTo::make('Category', 'category')
+                ->searchable()
                 ->rules('required')
                 ->noPeeking(),
 

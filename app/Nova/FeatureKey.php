@@ -62,6 +62,7 @@ class FeatureKey extends Resource
                 ]),
 //            product
             BelongsTo::make('Product', 'product')
+                ->searchable()
                 ->rules('required')
                 ->noPeeking(),
 //            key value

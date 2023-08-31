@@ -63,6 +63,7 @@ class MetaKey extends Resource
                 ]),
 //            product
             BelongsTo::make('Category', 'category')
+                ->searchable()
                 ->rules('required')
                 ->noPeeking(),
 //            key value
