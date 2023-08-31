@@ -74,6 +74,7 @@ class Brand extends Resource
                 ->hideWhenUpdating(),
 
             BelongsTo::make('Category', 'category')
+                ->searchable()
                 ->rules('required')
                 ->noPeeking(),
 

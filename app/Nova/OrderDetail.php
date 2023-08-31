@@ -48,14 +48,18 @@ class OrderDetail extends Resource
             ID::make()->sortable(),
 //            order
             BelongsTo::make('Order', 'order')
+                ->searchable()
+                ->help("Search by order id")
                 ->rules('required')
                 ->noPeeking(),
 //            product
             BelongsTo::make('Product', 'product')
+                ->searchable()
                 ->rules('required')
                 ->noPeeking(),
 //            product color
             BelongsTo::make('Product Color', 'product_color')
+                ->searchable()
                 ->rules('required')
                 ->noPeeking(),
 //            price
