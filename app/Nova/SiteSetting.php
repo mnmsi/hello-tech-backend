@@ -71,6 +71,13 @@ class SiteSetting extends Resource
                         'placeholder' => 'Enter number',
                     ],
                 ]),
+//          popup logo
+            Image::make('Welcome Popup Logo', 'welcome_popup_image')
+                ->path('site')
+                ->disk('public')
+                ->creationRules('required')
+                ->updateRules('nullable')
+                ->disableDownload(),
 //          header logo
             Image::make('Header Logo', 'header_logo')
                 ->path('site')
