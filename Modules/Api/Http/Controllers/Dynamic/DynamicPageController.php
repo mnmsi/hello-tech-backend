@@ -68,4 +68,18 @@ class DynamicPageController extends Controller
         ];
     }
 
+    public function allPromotionalProduct(Request $request)
+    {
+        try {
+            return [
+                'status' => true,
+                'data' => $this->getAllPromotionalProduct()
+            ];
+        } catch (\Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }

@@ -24,6 +24,7 @@ use App\Nova\ProductColor;
 use App\Nova\ProductMedia;
 use App\Nova\ProductReview;
 use App\Nova\ProductSpecification;
+use App\Nova\PromotionalProduct;
 use App\Nova\SeoSetting;
 use App\Nova\SiteSetting;
 use App\Nova\TermsAndCondition;
@@ -96,8 +97,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(Notification::class),
                 ])->icon('briefcase')->collapsable(),
 //                dynamic page
-                MenuSection::make('Promotional Pages', [
-                    MenuItem::resource(DynamicPage::class)->name('Promotional Page List'),
+                MenuSection::make('Promotional Product', [
+//                    MenuItem::resource(DynamicPage::class)->name('Promotional Page List'),
+                    MenuItem::resource(PromotionalProduct::class)->name('Promotional Product List'),
                 ])->icon('adjustments')->collapsable(),
 //                settings
                 MenuSection::make('Settings', [

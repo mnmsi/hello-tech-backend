@@ -202,3 +202,4 @@ Route::middleware('product')->group(function () {
 
 // dynamic page api
 Route::get('dynamic-page/{slug}', [DynamicPageController::class, 'allBrandProduct']);
+Route::get('promotional-products', [DynamicPageController::class, 'allPromotionalProduct']);
