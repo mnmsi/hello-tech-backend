@@ -19,6 +19,6 @@ trait DynamicPageTrait
 
     public function getAllPromotionalProduct()
     {
-        return PromotionalProduct::select('id','title','product_list')->where("status", 1)->first();
+        return PromotionalProduct::select('id','title','product_list')->where("status", 1)->get();
     }
 }

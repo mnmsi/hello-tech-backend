@@ -198,8 +198,9 @@ Route::middleware('product')->group(function () {
     Route::controller(HomePageSectionController::class)->prefix('dynamic-section')->group(function () {
         Route::get('/', 'homePageSections');   // feature new arrivals
     });
+    Route::get('promotional-products', [DynamicPageController::class, 'allPromotionalProduct']);
 });
 
 // dynamic page api
 Route::get('dynamic-page/{slug}', [DynamicPageController::class, 'allBrandProduct']);
-Route::get('promotional-products', [DynamicPageController::class, 'allPromotionalProduct']);
+

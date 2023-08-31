@@ -96,7 +96,7 @@ class UserAddressController extends Controller
         return $this->respondWithSuccessWithData(
             [
                 'address' => new UserAddressResource($collection->first()),
-                'price' => $collection->last(),
+                'options' => $collection->last(),
             ]
         );
     }

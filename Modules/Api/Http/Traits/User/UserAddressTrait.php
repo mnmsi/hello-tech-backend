@@ -72,12 +72,18 @@ trait UserAddressTrait
         if ($division_id === 3) {
             return [
                 'address' => $address,
-                'delivery_charge' => DeliveryOption::where('id', 1)->pluck('amount')->first()
+                'delivery_options' => [
+                    'shipping_id' => '1',
+                    'shipping_fee' => DeliveryOption::where('id', 1)->pluck('amount')->first()
+                ]
             ];
         } else {
             return [
                 'address' => $address,
-                'delivery_charge' => DeliveryOption::where('id', 2)->pluck('amount')->first()
+                'delivery_options' => [
+                    'shipping_id' => '2',
+                    'shipping_fee' => DeliveryOption::where('id', 2)->pluck('amount')->first()
+                ]
             ];
         }
 
