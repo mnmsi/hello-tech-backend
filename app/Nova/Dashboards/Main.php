@@ -2,8 +2,11 @@
 
 namespace App\Nova\Dashboards;
 
+use App\Nova\Metrics\BannerCount;
 use App\Nova\Metrics\BikeSellRequestPerDay;
+use App\Nova\Metrics\BrandCount;
 use App\Nova\Metrics\CancelledOrder;
+use App\Nova\Metrics\CategoryCount;
 use App\Nova\Metrics\DeliveriedOrder;
 use App\Nova\Metrics\OrderPerDay;
 use App\Nova\Metrics\OrderTotalPayment;
@@ -29,6 +32,9 @@ class Main extends Dashboard
             new TotalProduct(),
             new OrderTotalPayment(),
             new OrderPerDay(),
+            new BrandCount(),
+            new CategoryCount(),
+            new BannerCount(),
             new PendingOrder(),
             new DeliveriedOrder(),
             new CancelledOrder(),
