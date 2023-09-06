@@ -3,8 +3,12 @@
 namespace App\Nova\Dashboards;
 
 use App\Nova\Metrics\BikeSellRequestPerDay;
+use App\Nova\Metrics\CancelledOrder;
+use App\Nova\Metrics\DeliveriedOrder;
 use App\Nova\Metrics\OrderPerDay;
 use App\Nova\Metrics\OrderTotalPayment;
+use App\Nova\Metrics\PendingOrder;
+use App\Nova\Metrics\RecentOrder;
 use App\Nova\Metrics\RegisteredUsers;
 use App\Nova\Metrics\ShowroomPerCity;
 use App\Nova\Metrics\TotalProduct;
@@ -22,9 +26,13 @@ class Main extends Dashboard
     {
         return [
             new RegisteredUsers(),
-            new OrderTotalPayment(),
             new TotalProduct(),
+            new OrderTotalPayment(),
             new OrderPerDay(),
+            new PendingOrder(),
+            new DeliveriedOrder(),
+            new CancelledOrder(),
+            (new RecentOrder())->width("full"),
         ];
     }
 
