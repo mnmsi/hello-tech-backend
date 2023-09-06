@@ -2,11 +2,19 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\Order\OrderCancelledActions;
+use App\Nova\Actions\Order\OrderCompletedActions;
+use App\Nova\Actions\Order\OrderDeliveredActions;
+use App\Nova\Actions\Order\OrderPendingActions;
+use App\Nova\Actions\Order\OrderProcessingActions;
 use App\Nova\Filters\OrderByDateFilter;
 use App\Nova\Filters\OrderStatusFilter;
 use App\Nova\Metrics\OrderPerDay;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Exceptions\HelperNotSupported;
+use Laravel\Nova\Fields\Badge;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
@@ -53,6 +61,7 @@ class Order extends Resource
      *
      * @param NovaRequest $request
      * @return array
+     * @throws HelperNotSupported
      */
     public function fields(NovaRequest $request)
     {
@@ -132,7 +141,17 @@ class Order extends Resource
                 'completed' => 'Completed',
                 'delivered' => 'Delivered',
                 'cancelled' => 'Cancelled',
-            ])->rules('required'),
+            ])->rules('required')->hideFromIndex()
+                ->hideFromDetail(),
+
+            Badge::make('Status','status')->map([
+                'pending' => 'warning',
+                'processing' => 'info',
+                'completed' => 'success',
+                'delivered' => 'success',
+                'cancelled' => 'danger',
+            ]),
+
             //            date
             DateTime::make('Order date', 'created_at')
                 ->default(now())
@@ -196,7 +215,19 @@ class Order extends Resource
      */
     public function actions(NovaRequest $request)
     {
-        return [];
+        return [
+            new OrderPendingActions(),
+            new OrderProcessingActions(),
+            new OrderCompletedActions(),
+            new OrderDeliveredActions(),
+            new OrderCancelledActions(),
+
+            (new OrderPendingActions())->onlyOnTableRow(),
+            (new OrderProcessingActions())->onlyOnTableRow(),
+            (new OrderCompletedActions())->onlyOnTableRow(),
+            (new OrderDeliveredActions())->onlyOnTableRow(),
+            (new OrderCancelledActions())->onlyOnTableRow(),
+        ];
     }
 
     public static function searchableColumns()
