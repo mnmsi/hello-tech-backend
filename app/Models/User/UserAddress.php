@@ -15,10 +15,10 @@ class UserAddress extends BaseModel
         'name',
         'type',
         'phone',
-        'email',
-        'zip_code',
         'address_line',
         'division_id',
+        'city_id',
+        'area_id',
         'is_default',
         'created_at',
         'updated_at'
