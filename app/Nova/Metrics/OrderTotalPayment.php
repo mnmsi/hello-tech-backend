@@ -5,15 +5,17 @@ namespace App\Nova\Metrics;
 use App\Models\PaymentDetails;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Metrics\Value;
+use Laravel\Nova\Metrics\ValueResult;
 use Laravel\Nova\Nova;
 
 class OrderTotalPayment extends Value
 {
+    public $name ="Total Payment";
     /**
      * Calculate the value of the metric.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @return mixed
+     * @param NovaRequest $request
+     * @return ValueResult
      */
     public function calculate(NovaRequest $request)
     {

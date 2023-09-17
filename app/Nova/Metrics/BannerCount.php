@@ -2,14 +2,14 @@
 
 namespace App\Nova\Metrics;
 
-use App\Models\Order\Order;
+use App\Models\System\Banner;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Metrics\Trend;
+use Laravel\Nova\Metrics\Value;
 use Laravel\Nova\Nova;
 
-class OrderPerDay extends Trend
+class BannerCount extends Value
 {
-    public $name = "Total Order by days";
+    public $name = "Total Banner";
     /**
      * Calculate the value of the metric.
      *
@@ -18,8 +18,7 @@ class OrderPerDay extends Trend
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->countByDays($request, Order::class)
-            ->showSumValue();
+        return $this->count($request, Banner::class);
     }
 
     /**
@@ -32,7 +31,11 @@ class OrderPerDay extends Trend
         return [
             30 => Nova::__('30 Days'),
             60 => Nova::__('60 Days'),
-            90 => Nova::__('90 Days'),
+            365 => Nova::__('365 Days'),
+            'TODAY' => Nova::__('Today'),
+            'MTD' => Nova::__('Month To Date'),
+            'QTD' => Nova::__('Quarter To Date'),
+            'YTD' => Nova::__('Year To Date'),
         ];
     }
 
@@ -44,15 +47,5 @@ class OrderPerDay extends Trend
     public function cacheFor()
     {
         // return now()->addMinutes(5);
-    }
-
-    /**
-     * Get the URI key for the metric.
-     *
-     * @return string
-     */
-    public function uriKey()
-    {
-        return 'order-per-day';
     }
 }
