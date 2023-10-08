@@ -229,12 +229,10 @@ OrderTrait
                     }
                 }
             }
-
             if (!empty($data['voucher_id'])) {
                 $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'], $sub_price);
                 $sub_price = $sub_price - $voucher_dis;
             }
-
             $orderData = [
                 'user_id' => Auth::id(),
                 'payment_method_id' => $data['payment_method_id'],
@@ -263,14 +261,14 @@ OrderTrait
                     'total' => $sub_price + $data['shipping_amount'] ?? 0,
                 ];
                 OrderDetails::insert($orderDetails);
-
+                $sslc = new AmarPayController();
                 if ($data['payment_method_id'] == 2) {
-                    if ($isProcessPayment = $this->processPayment($orderData)) {
+                    if ($isProcessPayment = $sslc->payment($orderData)) {
                         DB::commit();
                         return [
                             'status' => true,
                             'message' => 'Payment Successful',
-                            'data' => json_decode($isProcessPayment)
+                            'data' => $isProcessPayment->getTargetUrl()
                         ];
                     } else {
                         DB::rollBack();
@@ -360,13 +358,14 @@ OrderTrait
             ];
             if ($order) {
                 OrderDetails::create($orderDetails);
+                $sslc = new AmarPayController();
                 if ($data['payment_method_id'] == 2) {
-                    if ($isProcessPayment = $this->processPayment($orderData)) {
+                    if ($isProcessPayment = $sslc->payment($orderData)) {
                         DB::commit();
                         return [
                             'status' => true,
                             'message' => 'Payment Successful',
-                            'data' => json_decode($isProcessPayment)
+                            'data' => $isProcessPayment->getTargetUrl()
                         ];
                     } else {
                         return [

@@ -16,7 +16,7 @@ trait PaymentTrait
 //        $orderData['cus_phone']        = null;
         $orderData['cus_phone']        = $user->phone ?? "8801XXXXXXXXX";
         $orderData['shipping_method']  = "NO";
-        $orderData['product_name']     = "Sawari Product";
+        $orderData['product_name']     = "Test Product";
         $orderData['product_category'] = "Ecommerce";
         $orderData['product_profile']  = "general";
         $orderData['success_url']      = url('/payment/success');
