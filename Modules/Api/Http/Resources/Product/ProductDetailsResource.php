@@ -25,6 +25,7 @@ class ProductDetailsResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'price' => $this->price,
+            'is_favorite' => $this->is_favorite,
             'offer_price' => $this->discount_rate ? $this->calculateDiscountPrice($this->price,$this->discount_rate) : 0,
             'product_code' => $this->product_code,
             'image_url' => str_contains($this->image_url, 'http') ? $this->image_url : asset('storage/' . $this->image_url),
@@ -36,6 +37,8 @@ class ProductDetailsResource extends JsonResource
             'description' => $this->description,
             'video_url' => $this->video_url ? $this->video_url : '',
             'banner' => $this->banner ? new BannerResource($this->banner) : [],
+            'category' => new CategoryResource($this->category),
+
         ];
     }
 }

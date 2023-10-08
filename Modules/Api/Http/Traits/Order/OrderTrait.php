@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\Api\Http\Traits\Payment\PaymentTrait;
 use Modules\Api\Http\Traits\Product\ProductTrait;
+use App\Http\Controllers\AmarPayController;
 
 trait
 OrderTrait
@@ -250,7 +251,6 @@ OrderTrait
                 'status' => 'pending',
             ];
             $order = Order::create($orderData);
-
             if ($order) {
                 $orderDetails = [
                     'order_id' => $order->id,
@@ -304,7 +304,7 @@ OrderTrait
 
     public function getUserOrderList()
     {
-        return Order::where('user_id', Auth::id())->with(['orderDetails.product'])->get();
+         return Order::where('user_id', Auth::id())->with(['orderDetails.product','userAddress'])->latest()->get();
     }
 
     public function buyNowProduct($request)

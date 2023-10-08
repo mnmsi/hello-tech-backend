@@ -39,7 +39,7 @@ Route::controller(ApiAuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('forgot-password', 'forgotPassword');
     Route::post('reset-password', 'resetPassword');
-//    social login
+    //    social login
     Route::post('google-login', 'googleLogin');
     Route::get('logout', 'logout')->middleware('auth:sanctum');
 });
@@ -49,7 +49,6 @@ Route::post('verify-otp', [OtpController::class, 'verifyOtp']); // Verify OTP Ro
 
 // System Routes (Public) or (Guest) Mode
 Route::middleware('guest')->group(function () {
-
     Route::get('site-settings', [SiteSettingController::class, 'siteSettings']);
     Route::get('seo-settings', [SeoSettingController::class, 'seoSettings']);
     Route::get('about', [AboutController::class, 'index']);
@@ -84,10 +83,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserAddressController::class)->prefix('address')->group(function () {
         Route::get('/', 'addresses');                // Address List Routes
         Route::post('store', 'store');
-        Route::get('edit/{id}', 'edit');// Address Store Routes
+        Route::get('edit/{id}', 'edit'); // Address Store Routes
         Route::post('update/{id}', 'update');         // Address Update Routes
         Route::delete('delete/{id}', 'delete');      // Address Delete Routes
-        Route::get('selected-address/{id?}', 'getSelectedAddress');      // Address Delete Routes
+        Route::get('selected-address/', 'getSelectedAddress');      // Address Delete Routes
     });
 
     //   System Address Routes
@@ -128,13 +127,13 @@ Route::middleware('auth:sanctum')->group(function () {
 // Product Routes (Auth) or (Guest) Mode
 Route::middleware('guest')->group(function () {
 
-//   product meta
+    //   product meta
     Route::controller(ProductMetaController::class)->prefix('product-meta')->group(function () {
         Route::get('category/{slug}', 'productMeta');
     });
 
 
-//    Route on Banner
+    //    Route on Banner
     Route::controller(BannerController::class)->prefix('banners')->group(function () {
         Route::get('/', 'banners');
         Route::get('category/{id}', 'getBannerByCategory');
@@ -174,9 +173,9 @@ Route::middleware('guest')->group(function () {
     });
 
     //        Sell Bike
-//    Route::controller(SellBikeController::class)->prefix('sell')->group(function () {
-//        Route::get('bike/{brand_id}', 'bikeByBrand');
-//    });
+    //    Route::controller(SellBikeController::class)->prefix('sell')->group(function () {
+    //        Route::get('bike/{brand_id}', 'bikeByBrand');
+    //    });
 
     Route::get('shipping-charges/{name?}', [ShippingChargeController::class, 'shippingCharges']);
 });
@@ -189,7 +188,7 @@ Route::middleware('product')->group(function () {
         Route::get('details/{name}', 'details');  // Product Details
         Route::get('get-data/{id}', 'getProductDataById');
         Route::post('calculate_product_price', 'calculatePrice');
-        Route::get('related', 'relatedProduct');// Related Product
+        Route::get('related', 'relatedProduct'); // Related Product
         Route::get('total-review/{id}', [ReviewController::class, 'totalReview']); // Product Review
         Route::get('get-product-by-brand/{slug}', 'getProductByBrand'); // Product Review
         Route::get('/new-arrivals', 'newArrivals'); // Product Review
@@ -203,4 +202,3 @@ Route::middleware('product')->group(function () {
 
 // dynamic page api
 Route::get('dynamic-page/{slug}', [DynamicPageController::class, 'allBrandProduct']);
-

@@ -21,14 +21,12 @@ trait UserAddressTrait
      */
     public function storeAddress($data)
     {
-        $addressCount = Auth::user()->addresses()->count();
-        if ($addressCount <= 1) {
-            $data['is_default'] = 1;
-        }
-
-        return Auth::user()
+        Auth::user()->addresses()->update(['is_default' => 0]);
+        $data['is_default'] = 1;
+        Auth::user()
             ->addresses()
             ->create($data);
+        return Auth::user()->addresses()->latest()->first();
     }
 
     /**
@@ -61,13 +59,9 @@ trait UserAddressTrait
 
 // selected address
 
-    public function selectedAddress($id = null)
+    public function selectedAddress()
     {
-        if ($id == null) {
-            $address = Auth::user()->addresses()->where('is_default', 1)->first();
-        } else {
-            $address = Auth::user()->addresses()->where('id', $id)->first();
-        }
+        $address = Auth::user()->addresses()->where('is_default', 1)->first();
         $division_id = $address->division_id;
         if ($division_id === 3) {
             return [

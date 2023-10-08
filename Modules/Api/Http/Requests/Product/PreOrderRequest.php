@@ -18,11 +18,11 @@ class PreOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_name'=>'required|string|max:255',
-            'product_image'=>'required|file|mimes:jpeg,jpg,png|max:2048',
-            'product_quantity'=>'required|integer',
-            'name'=>'required|string|max:255',
-            'phone'=>'required|string|max:255',
+            'product_name' => 'required|string|max:255',
+            'product_image' => 'required|file|mimes:jpeg,jpg,png|max:2048',
+            'product_quantity' => 'required|integer',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
         ];
     }
 

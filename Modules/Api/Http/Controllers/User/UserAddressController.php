@@ -32,21 +32,22 @@ class UserAddressController extends Controller
     {
         // Store new address
         $address = $this->storeAddress($request->validated());
-
         // Return response with user addresses
-        return $this->respondWithSuccess(['message' => 'Address added successfully']);
+        return $this->respondWithSuccess(['message' => 'Address added successfully',
+            'data' => new UserAddressResource($address)
+        ]);
     }
 
     public function edit($id)
     {
-       $address = $this->editAddress($id);
-         if (!$address) {
-              return $this->respondNotFound('Address not found');
-         }else{
+        $address = $this->editAddress($id);
+        if (!$address) {
+            return $this->respondNotFound('Address not found');
+        } else {
             return $this->respondWithSuccessWithData(
                 new UserAddressResource($address)
             );
-         }
+        }
     }
 
     /**
@@ -75,7 +76,6 @@ class UserAddressController extends Controller
             ->addresses()
             ->where('id', $id)
             ->delete();
-
         if (!$address) {
             return $this->respondNotFound('Address not found');
         }

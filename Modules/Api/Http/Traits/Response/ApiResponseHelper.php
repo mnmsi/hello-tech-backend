@@ -24,8 +24,7 @@ trait ApiResponseHelper
     public function respondNotFound(
         $message,
         ?string $key = 'message'
-    ): JsonResponse
-    {
+    ): JsonResponse {
         return $this->apiResponse(
             [$key => $this->morphMessage($message)],
             Response::HTTP_NOT_FOUND
@@ -142,8 +141,7 @@ trait ApiResponseHelper
     public function respondFailedValidation(
         $message,
         ?string $key = 'message'
-    ): JsonResponse
-    {
+    ): JsonResponse {
         return $this->apiResponse(
             [$key => $this->morphMessage($message)],
             Response::HTTP_UNPROCESSABLE_ENTITY
