@@ -67,8 +67,9 @@ trait ProductTrait
                 $query->whereRaw('LOWER(name) LIKE ?', '%' . strtolower($params['name']) . '%');
             })
             ->when($params['category'], function ($query) use ($params) {
-                //                $query->where('category_id', $id);
                 $query->whereHas('category', function ($query) use ($params) {
+                    $query->where('slug', $params['category']);
+                })->orWhereHas('subCategory', function ($query) use ($params) {
                     $query->where('slug', $params['category']);
                 });
             })
