@@ -116,7 +116,6 @@ trait CartTrait
             $feature_value = ProductFeatureValue::whereIn('id', json_decode($this->product_data, true))->get();
             $feature_price = $feature_value->sum('price');
         }
-
         return ($this->calculateDiscountPrice($item->product->price, $item->product->discount_rate ?? 0) + $feature_price + $item->productColor->price) * $item->quantity;
     }
 

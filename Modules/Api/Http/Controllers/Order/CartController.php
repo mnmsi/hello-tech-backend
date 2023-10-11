@@ -13,7 +13,7 @@ use Modules\Api\Http\Traits\Product\ProductTrait;
 
 class CartController extends Controller
 {
-    use CartTrait, ProductTrait;
+    use CartTrait, ProductTrait, CartTrait;
 
     /**
      * @return JsonResponse

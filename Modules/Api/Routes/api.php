@@ -3,6 +3,7 @@
 use App\Mail\OtpMail;
 use Illuminate\Support\Facades\Route;
 use Modules\Api\Http\Controllers\Auth\ApiAuthController;
+use Modules\Api\Http\Controllers\Cart\GuestCartController;
 use Modules\Api\Http\Controllers\Dynamic\DynamicPageController;
 use Modules\Api\Http\Controllers\Order\CartController;
 use Modules\Api\Http\Controllers\Order\OrderController;
@@ -58,12 +59,12 @@ Route::middleware('guest')->group(function () {
     Route::get('colors', [ColorController::class, 'colors']); // Color Routes
     //    route for video review
     Route::get('video-review', [VideoReviewController::class, 'index']);
-
     // Routes on OrderController
     Route::controller(OrderController::class)->group(function () {
         Route::get('delivery-options', 'deliveryOptions'); // Delivery Options
         Route::get('payment-methods', 'paymentMethods');   // Payment Methods// Shipping Charges
     });
+
 });
 
 // User Routes (Auth) or (User) Mode
@@ -206,3 +207,11 @@ Route::get('dynamic-page/{slug}', [DynamicPageController::class, 'allBrandProduc
 //Search Suggestions
 Route::get('search-suggestions/{name}', [ProductController::class, 'searchSuggestions']);
 
+// guest cart
+Route::prefix('guest-cart')->middleware('api-session')->as('guest-cart.')->controller(GuestCartController::class)->group(function () {
+    Route::post('add', 'store')->name('add');
+    Route::get('list', 'getCartProduct')->name('list');
+    Route::delete('remove/{id}', 'delete')->name('remove');
+    Route::post('update', 'updateCart')->name('update');
+    Route::get('selected-product', 'getSelectedProduct')->name('selected-product');
+});
