@@ -29,4 +29,11 @@ trait CategoryTrait
             ->orderBy('id', 'desc')
             ->get();
     }
+
+    public function getCategoryWithSubCategory(){
+        return Category::where('is_active', 1)
+            ->with('subCategories')
+            ->orderBy('name', 'asc')
+            ->get();
+    }
 }

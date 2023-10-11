@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('product_meta_keys', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
+            $table->foreignId('sub_category_id')->constrained('sub_categories')->cascadeOnDelete();
             $table->string('key');
             $table->timestamps();
         });

@@ -18,6 +18,11 @@ trait ProductTrait
         return round($price - ($price * $discountRate / 100));
     }
 
+    public function getSearchSuggestions($search)
+    {
+        return Product::where('name', 'LIKE', '%' . $search . '%')->take(5)->get();
+    }
+
     /**
      * @param $productId
      * @return mixed
@@ -111,6 +116,7 @@ trait ProductTrait
             $query->where('stock', '>', 0);
         })->inRandomOrder()->take(4)->get();
     }
+
     public function getProductByBrandSlug($slug)
     {
         return Product::wherehas('colors', function ($q) {

@@ -8,6 +8,7 @@ use App\Models\ProductFeatureKey;
 use App\Models\ProductFeatureValue;
 use App\Models\ProductMetaKey;
 use App\Models\ProductMetaValue;
+use App\Models\SubCategory;
 use App\Models\System\Banner;
 use App\Models\System\BikeBodyType;
 use App\Models\User\UserWishlist;
@@ -72,6 +73,11 @@ class Product extends BaseModel
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function subCategory()
+    {
+        return $this->belongsTo(SubCategory::class);
     }
 
     public function colors()

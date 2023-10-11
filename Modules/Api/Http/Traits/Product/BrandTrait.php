@@ -38,7 +38,7 @@ trait BrandTrait
     public function getCategoryBrands($slug)
     {
         if($slug == 'gadgets'){
-            return Brand::where('is_active', 1)->inRandomOrder()->limit(14)->get();
+            return Brand::where('is_active', 1)->inRandomOrder()->get();
         }
         if ($slug == 'all') {
             return Brand::where('is_active', 1)

@@ -95,4 +95,11 @@ class ProductController extends Controller
             ProductResource::collection($this->getFeaturedNewArrivals())
         );
     }
+
+    public function searchSuggestions($name)
+    {
+        return $this->respondWithSuccessWithData(
+            ProductResource::collection($this->getSearchSuggestions($name))
+        );
+    }
 }

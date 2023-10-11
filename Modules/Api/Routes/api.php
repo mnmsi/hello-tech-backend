@@ -44,7 +44,7 @@ Route::controller(ApiAuthController::class)->group(function () {
     Route::get('logout', 'logout')->middleware('auth:sanctum');
 });
 
-Route::post('send-otp', [OtpController::class, 'sendOtp']); // Send OTP Routes
+Route::post('send-otp', [OtpController::class, 'sendOtp'])->name('send-otp'); // Send OTP Routes
 Route::post('verify-otp', [OtpController::class, 'verifyOtp']); // Verify OTP Routes
 
 // System Routes (Public) or (Guest) Mode
@@ -151,6 +151,7 @@ Route::middleware('guest')->group(function () {
     Route::controller(CategoryController::class)->prefix('categories')->group(function () {
         Route::get('/', 'categories');                // Product Categories
         Route::get('popular-categories', 'popularCategories'); // Product Popular Categories
+        Route::get('/subcategory', 'subCategories'); // Product Sub Categories
     });
     //    Routes on Pre-Order
     Route::controller(PreOrderController::class)->prefix('pre-order')->group(function () {
@@ -202,3 +203,6 @@ Route::middleware('product')->group(function () {
 
 // dynamic page api
 Route::get('dynamic-page/{slug}', [DynamicPageController::class, 'allBrandProduct']);
+//Search Suggestions
+Route::get('search-suggestions/{name}', [ProductController::class, 'searchSuggestions']);
+

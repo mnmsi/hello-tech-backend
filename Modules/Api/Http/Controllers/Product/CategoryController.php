@@ -30,4 +30,10 @@ class CategoryController extends Controller
             CategoryResource::collection($this->getPopularCategories())
         );
     }
+
+    public function subCategories(){
+        return $this->respondWithSuccessWithData(
+            CategoryResource::collection($this->getCategoryWithSubCategory())
+        );
+    }
 }

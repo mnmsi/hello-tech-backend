@@ -23,6 +23,11 @@ class ProductMetaKey extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function subCategory()
+    {
+        return $this->belongsTo(SubCategory::class);
+    }
+
     public function getMetaListAttribute(): array
     {
         if (isset($this->attributes['id'])) {

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique()->nullable();
             $table->string('image_url');
             $table->unsignedBigInteger('category_id')->nullable();
+            $table->foreignId('sub_category_id')->nullable()->constrained('sub_categories')->cascadeOnDelete();
             $table->tinyInteger('is_popular')->default(0)->comment('0: Not Popular, 1: Popular');
             $table->tinyInteger('is_active')->default(1)->comment('0: Inactive, 1: Active');
             $table->dateTime('created_at')->useCurrent();

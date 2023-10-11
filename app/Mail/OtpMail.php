@@ -17,9 +17,10 @@ class OtpMail extends Mailable
      * Create a new message instance.
      */
     public $otp;
-    public function __construct($otp)
+    public function __construct($otp,$expireTime)
     {
         $this->otp = $otp;
+        $this->expireTime = $expireTime;
     }
 
     /**
@@ -28,7 +29,7 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Otp Mail',
+            subject: 'HelloTech OTP',
         );
     }
 
@@ -41,6 +42,7 @@ class OtpMail extends Mailable
             view: 'view.otp',
             with: [
                 'otp' => $this->otp,
+                'expireTime' => $this->expireTime,
             ]
         );
     }

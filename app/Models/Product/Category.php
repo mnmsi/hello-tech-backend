@@ -3,6 +3,7 @@
 namespace App\Models\Product;
 
 use App\Models\BaseModel;
+use App\Models\SubCategory;
 use App\Models\System\Banner;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
@@ -45,5 +46,10 @@ class Category extends BaseModel
     public function banner()
     {
         return $this->hasOne(Banner::class);
+    }
+
+    public function subCategories()
+    {
+        return $this->hasMany(SubCategory::class);
     }
 }

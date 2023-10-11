@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\SendOtpRequest;
 use App\Mail\OtpMail;
 use App\Models\User\PhoneVerification;
 use App\Models\User\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -44,10 +45,10 @@ class OtpController extends Controller
                     'otp' => $otp,
                     'expires_at' => now()->addMinutes(10),
                 ]);
-                Mail::to($request->user)->send(new OtpMail($otp));
+                Mail::to($request->user)->send(new OtpMail($otp, 10));
                 return $this->respondWithSuccess([
                     'message' => 'OTP sent successfully',
-                    'expires_at' => now()->addMinutes(10)->format('i'),
+                    'expires_at' =>  10,
                     'otp' => $otp,
                 ]);
             } catch (\Exception $e) {
