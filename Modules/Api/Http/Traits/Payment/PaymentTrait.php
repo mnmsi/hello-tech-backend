@@ -23,7 +23,6 @@ trait PaymentTrait
         return $sslc->makePayment($orderData, 'checkout', 'json');
 
     }
-
     public function success(Request $request)
     {
         return view('api::payment.success');
