@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Api\Http\Controllers\Auth\ApiAuthController;
 use Modules\Api\Http\Controllers\Cart\GuestCartController;
 use Modules\Api\Http\Controllers\Dynamic\DynamicPageController;
+use Modules\Api\Http\Controllers\Guest\GuestOrderController;
 use Modules\Api\Http\Controllers\Order\CartController;
 use Modules\Api\Http\Controllers\Order\OrderController;
 use Modules\Api\Http\Controllers\Order\ShippingChargeController;
@@ -214,4 +215,9 @@ Route::prefix('guest-cart')->middleware('api-session')->as('guest-cart.')->contr
     Route::delete('remove/{id}', 'delete')->name('remove');
     Route::post('update', 'updateCart')->name('update');
     Route::get('selected-product', 'getSelectedProduct')->name('selected-product');
+});
+
+Route::prefix('guest-order')->middleware('api-session')->as('guest-order.')->controller(GuestOrderController::class)->group(function () {
+    Route::post('buy-now', 'buyNow')->name('buy-now');
+    Route::post('/cart/buy-now','buyNowFromCart')->name('buy-now-from-cart');
 });

@@ -20,16 +20,16 @@ return new class extends Migration {
             $table->string('area');
             $table->string('delivery_option');
             $table->string('payment_method');
-            $table->string('address_line');
-            $table->string('order_note');
-            $table->string('voucher_code');
+            $table->string('address_line')->nullable();
+            $table->string('order_note')->nullable();
+            $table->string('voucher_code')->nullable();
             $table->string('transaction_id');
             $table->string('order_key');
-            $table->string('discount_rate');
+            $table->string('discount_rate')->default(0);
             $table->string('shipping_amount');
             $table->string('subtotal_price');
             $table->string('total_price');
-            $table->string('status');
+            $table->tinyInteger('status')->default(0)->comment('0=Pending, 1=Processing, 2=Completed, 3=Cancelled');
             $table->timestamps();
         });
     }

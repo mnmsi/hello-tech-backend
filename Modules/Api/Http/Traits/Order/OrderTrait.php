@@ -313,6 +313,10 @@ OrderTrait
                     $query->where('id', $request->product_color_id);
                 })->with(['colors' => function ($query) use ($request) {
                     $query->where('id', $request->product_color_id);
+                }])->whereHas('productFeatureValues', function ($query) use ($request) {
+                    $query->whereIn('id', json_decode($request->product_feature_id));
+                })->with(['productFeatureValues' => function ($query) use ($request) {
+                    $query->whereIn('id', json_decode($request->product_feature_id));
                 }])->first();
             if ($buyNowProduct) {
                 return $buyNowProduct;
@@ -350,6 +354,7 @@ OrderTrait
                 'order_id' => $order->id,
                 'product_id' => $products->id,
                 'product_color_id' => $data['product_color_id'],
+                'product_data' => $data['product_feature_id'] ?? '',
                 'price' => $products->price,
                 'discount_rate' => $total_discountRate,
                 'subtotal_price' => $subtotal_price,
