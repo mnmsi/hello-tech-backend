@@ -17,6 +17,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/socialite": "^5.6",
         "laravel/tinker": "^2.8",
+        "maatwebsite/excel": "^3.1",
         "nwidart/laravel-modules": "^10.0",
         "outl1ne/nova-multiselect-field": "^4.3",
         "spatie/laravel-mail-preview": "^6.0",
