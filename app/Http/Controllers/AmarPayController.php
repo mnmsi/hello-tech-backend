@@ -16,14 +16,10 @@ class AmarPayController extends Controller
     public function payment($orderData)
     {
 
-        if (isset($orderData['user_id'])) {
-            $user = User::where('id', $orderData['user_id'])->first();
-            $address = UserAddress::where([['user_id', $user->id], ['is_default', 1]])->first();
-            $user_address = $address->load('division', 'city', 'area');
+        if (isset($orderData['transaction_id'])) {
             $tran_id = $orderData['transaction_id'];
             $currency = "BDT"; //aamarPay support Two type of currency USD & BDT
-            $amount = $orderData['total_price'];   //10 taka is the minimum amount for show card option in aamarPay payment gateway
-            //For live Store Id & Signature Key please mail to support@aamarpay.com
+            $amount = $orderData['total_price'];
             $store_id = "aamarpaytest";
             $signature_key = "dbb74894e82415a2f7ff0ec3a97e4183";
             $url = "https://sandbox.aamarpay.com/jsonpost.php"; // for Live Transection use "https://secure.aamarpay.com/jsonpost.php"
@@ -38,68 +34,25 @@ class AmarPayController extends Controller
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
                 CURLOPT_POSTFIELDS => '{
-            "store_id": "' . $store_id . '",
-            "tran_id": "' . $tran_id . '",
-            "success_url": "' . route('success') . '",
-            "fail_url": "' . route('fail') . '",
-            "cancel_url": "' . route('cancel') . '",
-            "amount": "' . $amount . '",
-            "currency": "' . $currency . '",
-            "signature_key": "' . $signature_key . '",
-            "desc": "Merchant Registration Payment",
-            "cus_name": "' . $user->name . '",
-            "cus_email": "' . $user->email . '",
-            "cus_add1": "' . $address->address_line . '",
-            "cus_add2": "",
-            "cus_city": "' . $user_address->city->name . '",
-            "cus_state": "' . $user_address->division->name . '",
-            "cus_postcode": "1206",
-            "cus_country": "Bangladesh",
-            "cus_phone": "' . $user_address->phone . '",
-            "type": "json"
-        }',
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/json'
-                ),
-            ));
-        } else {
-            $tran_id = $orderData['transaction_id'];
-            $currency = "BDT"; //aamarPay support Two type of currency USD & BDT
-            $amount = $orderData['total_price'];   //10 taka is the minimum amount for show card option in aamarPay payment gateway
-            //For live Store Id & Signature Key please mail to support@aamarpay.com
-            $store_id = "aamarpaytest";
-            $signature_key = "dbb74894e82415a2f7ff0ec3a97e4183";
-            $url = "https://sandbox.aamarpay.com/jsonpost.php"; // for Live Transection use "https://secure.aamarpay.com/jsonpost.php"
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => '{
-            "store_id": "' . $store_id . '",
-            "tran_id": "' . $tran_id . '",
-            "success_url": "' . route('success') . '",
-            "fail_url": "' . route('fail') . '",
-            "cancel_url": "' . route('cancel') . '",
-            "amount": "' . $amount . '",
-            "currency": "' . $currency . '",
-            "signature_key": "' . $signature_key . '",
-            "desc": "Merchant Registration Payment",
-            "cus_name": "' . $orderData['name'] . '",
-            "cus_email": "' . $orderData['email'] ?? null . '",
-            "cus_add1": "' . $orderData['address_line'] . '",
-            "cus_add2": "",
-            "cus_city": "' . $orderData['city'] . '",
-            "cus_state": "' . $orderData['division'] . '",
-            "cus_postcode": "",
-            "cus_country": "Bangladesh",
-            "cus_phone": "' . $orderData['phone'] . '",
-            "type": "json"
+                "store_id": "' . $store_id . '",
+                "tran_id": "' . $tran_id . '",
+                "success_url": "' . route('success') . '",
+                "fail_url": "' . route('fail') . '",
+                "cancel_url": "' . route('cancel') . '",
+                "amount": "' . $amount . '",
+                "currency": "' . $currency . '",
+                "signature_key": "' . $signature_key . '",
+                "desc": "Merchant Registration Payment",
+                "cus_name": "' . $orderData['name'] . '",
+                "cus_email": "' . $orderData['email'] ?? null . '",
+                "cus_add1": "' . $orderData['address_line'] . '",
+                "cus_add2": "",
+                "cus_city": "' . $orderData['city'] . '",
+                "cus_state": "' . $orderData['division'] . '",
+                "cus_postcode": "",
+                "cus_country": "Bangladesh",
+                "cus_phone": "' . $orderData['phone'] . '",
+                "type": "json"
         }',
                 CURLOPT_HTTPHEADER => array(
                     'Content-Type: application/json'
@@ -121,7 +74,6 @@ class AmarPayController extends Controller
         } else {
             echo $response;
         }
-
 
     }
 

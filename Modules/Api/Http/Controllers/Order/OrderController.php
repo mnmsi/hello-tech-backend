@@ -106,6 +106,8 @@ class OrderController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'product_color_id' => 'required|exists:product_colors,id',
+            'quantity' => 'required|numeric',
+            'voucher_id' => 'nullable|exists:vouchers,id',
         ]);
         $order = $this->buyNowRequest($request);
         if ($order) {

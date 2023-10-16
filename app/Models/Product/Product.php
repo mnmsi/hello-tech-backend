@@ -2,6 +2,7 @@
 
 namespace App\Models\Product;
 
+use App\Models\GuestCart;
 use App\Models\Order\Cart;
 use App\Models\ProductData;
 use App\Models\ProductFeatureKey;
@@ -156,6 +157,10 @@ class Product extends BaseModel
     public function metaValue()
     {
         return $this->hasMany(ProductMetaValue::class);
+    }
+
+    public function guestCart (){
+        return $this->hasMany(GuestCart::class);
     }
 
     //    list

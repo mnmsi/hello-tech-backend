@@ -9,6 +9,11 @@ use App\Models\GuestOrderDetails;
 use App\Models\Product\Product;
 use App\Models\Product\ProductColor;
 use App\Models\ProductFeatureValue;
+use App\Models\System\Area;
+use App\Models\System\City;
+use App\Models\System\DeliveryOption;
+use App\Models\System\Division;
+use App\Models\System\PaymentMethod;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\DB;
 use Modules\Api\Http\Requests\Guest\GuestOrderRequest;
@@ -68,12 +73,12 @@ class GuestOrderController extends Controller
                 'name' => $request->name,
                 'phone_number' => $request->phone,
                 'email' => $request->email ?? null,
-                'city' => $request->city,
-                'division' => $request->division,
-                'area' => $request->area,
+                'city' => City::where('id', $request->city_id)->first()->name,
+                'division' => Division::where('id', $request->division_id)->first()->name,
+                'area' => Area::where('id', $request->area_id)->first()->name,
                 'address_line' => $request->address_line,
-                'delivery_option' => $request->delivery_option,
-                'payment_method' => $request->payment_method,
+                'delivery_option' => DeliveryOption::where('id', $request->delivery_option_id)->first()->name,
+                'payment_method' => PaymentMethod::where('id', $request->payment_method_id)->first()->name,
                 'order_note' => $request->order_note ?? null,
                 'voucher_code' => $request->voucher_code ?? null,
             ];
@@ -83,7 +88,7 @@ class GuestOrderController extends Controller
                 'guest_order_id' => $order->id,
                 'product_id' => $request->product_id,
                 'quantity' => $request->quantity,
-                'product_color_id' => $request->color_id ?? null,
+                'product_color_id' => $request->product_color_id ?? null,
                 'feature' => $request->feature_id ?? null,
                 'price' => $product->price,
                 'discount_rate' => $product->discount_rate ?? 0,

@@ -16,6 +16,13 @@ return new class extends Migration {
             $table->unsignedBigInteger('payment_method_id');
             $table->unsignedBigInteger('delivery_option_id');
             $table->unsignedBigInteger('user_address_id')->nullable();
+            $table->string('name');
+            $table->string('phone');
+            $table->string('email')->nullable();
+            $table->string('city');
+            $table->string('division');
+            $table->string('area');
+            $table->string('address_line')->nullable();
             $table->unsignedBigInteger('voucher_id')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('order_key')->nullable();

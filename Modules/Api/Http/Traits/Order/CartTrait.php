@@ -101,7 +101,6 @@ trait CartTrait
 
     public function getSelectectedCartProductTotalPrice($carts)
     {
-//        $carts = $this->getSelectedCartProduct();
         $total_price = 0;
         foreach ($carts as $cart) {
             $total_price += $cart->product->price * $cart->quantity;

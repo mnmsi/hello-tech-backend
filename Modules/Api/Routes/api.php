@@ -1,6 +1,7 @@
 <?php
 
 use App\Mail\OtpMail;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Api\Http\Controllers\Auth\ApiAuthController;
 use Modules\Api\Http\Controllers\Cart\GuestCartController;
@@ -92,11 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     //   System Address Routes
-    Route::controller(SystemAddressController::class)->group(function () {
-        Route::get('divisions', 'division');
-        Route::get('city/{id?}', 'city');
-        Route::get('area/{id?}', 'area');
-    });
+
 
     //        add review
     Route::controller(ReviewController::class)->group(function () {
@@ -180,7 +177,7 @@ Route::middleware('guest')->group(function () {
     //        Route::get('bike/{brand_id}', 'bikeByBrand');
     //    });
 
-    Route::get('shipping-charges/{name?}', [ShippingChargeController::class, 'shippingCharges']);
+
 });
 //Route::get('bike/details/{name}', [BikeController::class, 'details']);
 // Routes on feature prefix
@@ -211,13 +208,23 @@ Route::get('search-suggestions/{name}', [ProductController::class, 'searchSugges
 // guest cart
 Route::prefix('guest-cart')->middleware('api-session')->as('guest-cart.')->controller(GuestCartController::class)->group(function () {
     Route::post('add', 'store')->name('add');
-    Route::get('list', 'getCartProduct')->name('list');
-    Route::delete('remove/{id}', 'delete')->name('remove');
+    Route::get('list/{id}', 'getCartProduct')->name('list');
+    Route::Post('/delete', 'removeProductFromCart')->name('remove');
     Route::post('update', 'updateCart')->name('update');
-    Route::get('selected-product', 'getSelectedProduct')->name('selected-product');
+    Route::get('selected-product/{id}', 'getSelectedCartProduct')->name('selected-product');
 });
 
 Route::prefix('guest-order')->middleware('api-session')->as('guest-order.')->controller(GuestOrderController::class)->group(function () {
     Route::post('buy-now', 'buyNow')->name('buy-now');
     Route::post('/cart/buy-now','buyNowFromCart')->name('buy-now-from-cart');
 });
+
+Route::controller(SystemAddressController::class)->group(function () {
+    Route::get('divisions', 'division');
+    Route::get('city/{id?}', 'city');
+    Route::get('area/{id?}', 'area');
+});
+
+Route::get('shipping-charges/{name?}', [ShippingChargeController::class, 'shippingCharges']);
+
+Route::post('create-guest-user',[GuestCartController::class,'createGuestUser']);

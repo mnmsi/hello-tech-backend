@@ -2,6 +2,7 @@
 
 namespace App\Models\Product;
 
+use App\Models\GuestCart;
 use App\Models\ProductData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\BaseModel;
@@ -25,5 +26,10 @@ class ProductColor extends BaseModel
     public function productsData()
     {
         return $this->hasMany(ProductData::class);
+    }
+
+    public function guestCart()
+    {
+        return $this->hasMany(GuestCart::class);
     }
 }

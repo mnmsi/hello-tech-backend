@@ -9,7 +9,10 @@ use App\Models\Product\Product;
 use App\Models\Product\ProductColor;
 use App\Models\ProductData;
 use App\Models\ProductFeatureValue;
+use App\Models\System\Area;
+use App\Models\System\City;
 use App\Models\System\DeliveryOption;
+use App\Models\System\Division;
 use App\Models\System\PaymentMethod;
 use App\Models\Voucher;
 use Carbon\Carbon;
@@ -112,7 +115,13 @@ OrderTrait
                 'order_key' => uniqid(),
                 'delivery_option_id' => $data['delivery_option_id'],
                 'payment_method_id' => $data['payment_method_id'],
-                'user_address_id' => $data['user_address_id'],
+                'division' => Division::where('id', $data['division_id'])->first()->name,
+                'city' => City::where('id', $data['city_id'])->first()->name,
+                'area' => Area::where('id', $data['area_id'])->first()->name,
+                'address_line' => $data['address_line'],
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+                'email' => $data['email'] ?? null,
                 'voucher_id' => $data['voucher_id'] ?? null,
                 'shipping_amount' => $data['shipping_amount'],
                 'subtotal_price' => $subtotal_price,
@@ -237,7 +246,13 @@ OrderTrait
                 'user_id' => Auth::id(),
                 'payment_method_id' => $data['payment_method_id'],
                 'delivery_option_id' => $data['delivery_option_id'],
-                'user_address_id' => $data['user_address_id'],
+                'division' => Division::where('id', $data['division_id'])->first()->name,
+                'city' => City::where('id', $data['city_id'])->first()->name,
+                'area' => Area::where('id', $data['area_id'])->first()->name,
+                'address_line' => $data['address_line'],
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+                'email' => $data['email'] ?? null,
                 'voucher_id' => $data['voucher_id'] ?? null,
                 'transaction_id' => uniqid(),
                 'order_key' => uniqid(),
@@ -302,7 +317,7 @@ OrderTrait
 
     public function getUserOrderList()
     {
-         return Order::where('user_id', Auth::id())->with(['orderDetails.product','userAddress'])->latest()->get();
+        return Order::where('user_id', Auth::id())->with(['orderDetails.product', 'userAddress'])->latest()->get();
     }
 
     public function buyNowProduct($request)
@@ -341,8 +356,14 @@ OrderTrait
                 'order_key' => uniqid(),
                 'delivery_option_id' => $data['delivery_option_id'],
                 'payment_method_id' => $data['payment_method_id'],
-                'user_address_id' => $data['user_address_id'] ?? null,
-                'showroom_id' => $data['showroom_id'] ?? null,
+                'division' => Division::where('id', $data['division_id'])->first()->name,
+                'city' => City::where('id', $data['city_id'])->first()->name,
+                'area' => Area::where('id', $data['area_id'])->first()->name,
+                'address_line' => $data['address_line'],
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+                'email' => $data['email'] ?? null,
+                'voucher_id' => $data['voucher_id'] ?? null,
                 'shipping_amount' => $data['shipping_amount'] ?? 0,
                 'subtotal_price' => $subtotal_price,
                 'discount_rate' => $total_discountRate,

@@ -3,10 +3,15 @@
 namespace Modules\Api\Http\Controllers\Cart;
 
 use App\Http\Controllers\Controller;
+use App\Models\GuestCart;
+use App\Models\GuestUser;
+use App\Models\Order\Cart;
 use App\Models\Product\Product;
+use App\Models\Product\ProductColor;
 use App\Models\ProductFeatureValue;
 use Illuminate\Http\Request;
 use Modules\Api\Http\Requests\Order\AddCartRequest;
+use Modules\Api\Http\Resources\Cart\CartResource;
 use Modules\Api\Http\Traits\Cart\GuestCartTrait;
 use Modules\Api\Http\Traits\Product\ProductTrait;
 use Modules\Api\Http\Traits\Response\ApiResponseHelper;
@@ -20,103 +25,90 @@ class GuestCartController extends Controller
 
     public function store(AddCartRequest $request)
     {
-//        Session::flush();
-        // add to cart
-        $cart = $request->session()->get('cart', []);
-        if (array_key_exists($request->product_id, $cart)) {
+        $guestUser = GuestUser::where('uuid', $request->guest_user_id)->first();
+        $checkCart = GuestCart::where('guest_user_id', $guestUser->id)->where('product_id', $request->product_id)->where('product_color_id', $request->product_color_id)->where('product_data', $request->product_data)->first();
+        if ($checkCart) {
             return $this->respondError('Product already added to cart');
         } else {
-            $cart[$request->product_id] = [
+            $cart = GuestCart::create([
+                'guest_user_id' => $guestUser->id,
                 'product_id' => $request->product_id,
+                'product_color_id' => $request->product_color_id,
+                'product_data' => $request->product_data,
                 'quantity' => $request->quantity,
-                'product_color_id' => $request->product_color_id ?? null,
-                'product_data_id' => $request->product_data_id ?? null,
-                'checked' => $request->checked ?? false,
-            ];
+            ]);
         }
-        $request->session()->put('cart', $cart);
-        return $this->respondWithSuccess(['cart' => $cart]);
+        if ($cart) {
+            return $this->respondWithSuccess(['message' => 'Product added to cart']);
+        }
     }
 
-    public function viewCart()
+
+    public function getCartProduct($guest_user_id)
     {
-        $cart = session()->get('cart', []);
-        return $this->respondWithSuccess(['cart' => $cart]);
+        $guest_user = GuestUser::where('uuid', $guest_user_id)->first();
+        $guestCart = GuestCart::wherehas('productColor', function ($q) {
+            $q->where('stock', '>', 0);
+        })->with(['product'])->where('guest_user_id', $guest_user->id)->get();
+        if ($guestCart) {
+            return $this->respondWithSuccess([
+                'data' => CartResource::collection($guestCart),
+            ]);;
+        }
     }
 
-    public function getCartProduct()
+    public function getSelectedCartProduct($guest_user_id)
     {
-        $cart = session()->get('cart', []);
-        if (isset($cart) && count($cart) > 0) {
-            return $this->extracted($cart);
-        } else {
-            return $this->respondWithSuccess(['products' => []]);
-        }
+
+        $guest_user = GuestUser::where('uuid', $guest_user_id)->first();
+        $cart = GuestCart::wherehas('productColor', function ($q) {
+            $q->where('stock', '>', 0);
+        })->where('guest_user_id', $guest_user->id)->with('product')->where('status', '1')->get();
+        return $this->respondWithSuccess([
+            'data' => CartResource::collection($cart),
+        ]);
     }
 
     public function updateCart(Request $request)
     {
-        $cart = $request->session()->get('cart', []);
-        if (array_key_exists($request->product_id, $cart)) {
-            $cart[$request->product_id] = [
-                'product_color_id' => $request->product_color_id ?? null,
-                'product_data_id' => $request->product_data_id ?? null,
-                'product_id' => $request->product_id,
+        $guest_user = GuestUser::where('uuid', $request->guest_user_id)->first();
+        $cart = GuestCart::where('id', $request->cart_id)->where('guest_user_id', $guest_user->id)->first();
+        if ($cart) {
+            $cart->update([
                 'quantity' => $request->quantity,
-                'checked' => $request->checked ?? false,
-            ];
-            $request->session()->put('cart', $cart);
-            return $this->respondWithSuccess(['cart' => $cart]);
+                'status' => $request->status,
+            ]);
+            return $this->respondWithSuccess([
+                'message' => 'Product updated in cart successfully',
+            ]);
         } else {
             return $this->respondError('Product not found in cart');
         }
-
     }
 
-    public function deleteCart(Request $request)
+    public function removeProductFromCart(Request $request)
     {
-        $cart = $request->session()->get('cart', []);
-        unset($cart[$request->product_id]);
-        $request->session()->put('cart', $cart);
-        return $this->respondWithSuccess(['cart' => $cart]);
-    }
-
-    public function getSelectedProduct()
-    {
-        $cart = session()->get('cart', []);
+        $guest_user = GuestUser::where('uuid', $request->guest_user_id)->first();
+        $cart = GuestCart::where('id', $request->cart_id)->where('guest_user_id', $guest_user->id)->first();
         if ($cart) {
-            $filter_cart = array_filter($cart, function ($e) {
-                return $e['checked'] == true;
-            });
-            return $this->extracted($filter_cart);
+            $cart->delete();
+            return $this->respondWithSuccess([
+                'message' => 'Product removed from cart successfully',
+            ]);
+        } else {
+            return $this->respondError('Product not found in cart');
         }
     }
 
-    /**
-     * @param mixed $cart
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function extracted(mixed $cart): \Illuminate\Http\JsonResponse
+    public function createGuestUser(Request $request)
     {
-        $products = Product::with(['colors' => function ($e) use ($cart) {
-            return $e->where('id', array_column($cart, 'product_color_id'))->where('stock', '>', 0);
-        }, "productFeatureValues" => function ($e) use ($cart) {
-            return $e->whereIn('product_feature_values.id', array_column($cart, 'product_data_id'));
-        }])->whereIn('id', array_keys($cart))->get();
-        $data = [];
-        foreach ($products as $key => $product) {
-            $data[] = [
-                'id' => $key,
-                'product_id' => $product->id,
-                'checked' => $cart[$product->id]['checked'] ?? false,
-                'name' => $product->name,
-                'image_url' => asset('storage/' . $product->image_url),
-                'quantity' => $cart[$product->id]['quantity'],
-                'product_color_id' => $cart[$product->id]['product_color_id'],
-                'color_name' => $product->colors->first()->name ?? '',
-                'price' => collect($product->productFeatureValues)->sum('price') + $this->calculateDiscountPrice($product->price, $product->discount_rate) + collect($product->colors)->sum('price') * $cart[$product->id]['quantity'],
-            ];
+        $guestUser = GuestUser::create([
+            'uuid' => $request->uuid,
+        ]);
+        if ($guestUser) {
+            return $this->respondWithSuccess(['message' => 'Guest user created successfully']);
+        } else {
+            return $this->respondError('Something went wrong');
         }
-        return $this->respondWithSuccess(['products' => $data]);
     }
 }

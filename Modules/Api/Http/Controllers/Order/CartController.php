@@ -21,7 +21,6 @@ class CartController extends Controller
     public function carts()
     {
         $carts = $this->getCartedData();
-//        dd($carts->toArray());
         return $this->respondWithSuccess([
             'data' => CartResource::collection($carts),
         ]);
