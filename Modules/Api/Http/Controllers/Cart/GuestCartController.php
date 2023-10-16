@@ -71,18 +71,19 @@ class GuestCartController extends Controller
 
     public function updateCart(Request $request)
     {
-        $guest_user = GuestUser::where('uuid', $request->guest_user_id)->first();
-        $cart = GuestCart::where('id', $request->cart_id)->where('guest_user_id', $guest_user->id)->first();
-        if ($cart) {
-            $cart->update([
-                'quantity' => $request->quantity,
-                'status' => $request->status,
-            ]);
-            return $this->respondWithSuccess([
-                'message' => 'Product updated in cart successfully',
-            ]);
-        } else {
-            return $this->respondError('Product not found in cart');
+        try{
+            $guest_user = GuestUser::where('uuid', $request->guest_user_id)->first();
+            $cart = GuestCart::where('id', $request->cart_id)->where('guest_user_id', $guest_user->id)->first();
+            if ($cart) {
+                $cart->status = $request->status ? $request->status : $cart->status;
+                $cart->quantity = $request->quantity ? $request->quantity : $cart->quantity;
+                $cart->save();
+                return $this->respondWithSuccess([
+                    'message' => 'Product updated in cart successfully',
+                ]);
+            }
+        }catch (\Exception $e) {
+            return $this->respondError($e->getMessage());
         }
     }
 

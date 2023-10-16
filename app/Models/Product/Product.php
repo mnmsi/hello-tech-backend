@@ -23,8 +23,6 @@ class Product extends BaseModel
 {
     protected $fillable = [
         'brand_id',
-        'body_type_id',
-        'type',
         'category_id',
         'name',
         'price',

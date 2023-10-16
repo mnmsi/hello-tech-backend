@@ -4,8 +4,10 @@ namespace Modules\Api\Http\Controllers\Guest;
 
 use App\Http\Controllers\AmarPayController;
 use App\Http\Controllers\Controller;
+use App\Models\GuestCart;
 use App\Models\GuestOrder;
 use App\Models\GuestOrderDetails;
+use App\Models\GuestUser;
 use App\Models\Product\Product;
 use App\Models\Product\ProductColor;
 use App\Models\ProductFeatureValue;
@@ -136,11 +138,10 @@ class GuestOrderController extends Controller
         try {
             DB::beginTransaction();
 //        buy now from cart session
-            $cart = Session::get('cart');
-            $selected_cart = array_filter($cart, function ($item) {
-                return $item['checked'] == true;
-            });
-            foreach ($selected_cart as $key => $cartItem) {
+            $guest = GuestUser::where('uuid', $request->guest_user_id)->first();
+            $carts = GuestCart::select('id', 'product_id', 'product_color_id', 'product_data', 'quantity')
+                ->where('guest_user_id', $guest->id)->where('status',1)->get();
+            foreach ($carts as $key => $cartItem) {
                 $product = Product::find($key);
                 $subtotal_price = $this->calculateDiscountPrice($product->price, $product->discount_rate) * $cartItem['quantity'];
 //            product color price

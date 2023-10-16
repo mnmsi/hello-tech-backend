@@ -48,7 +48,7 @@ OrderTrait
             $total_discountRate = 0;
             $subtotal_price = 0;
             $carts = Cart::select('id', 'product_id', 'product_color_id', 'product_data', 'quantity')
-                ->where('user_id', Auth::id())->get();
+                ->where('user_id', Auth::id())->where('status',1)->get();
 
             foreach ($carts as $c) {
                 $product = Product::find($c['product_id']);
