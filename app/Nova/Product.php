@@ -2,6 +2,8 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\Order\OrderCancelledActions;
+use App\Nova\Actions\Product\ImportProduct;
 use App\Nova\Filters\ProductStatusFilter;
 use App\Nova\Metrics\TotalProduct;
 use Illuminate\Support\Facades\Storage;
@@ -324,7 +326,9 @@ class Product extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        return [];
+        return [
+            (new ImportProduct)->standalone(),
+        ];
     }
 
     public static function searchableColumns(): array

@@ -21,6 +21,7 @@ use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
 
 class Product extends BaseModel
 {
+    public $timestamps = false;
     protected $fillable = [
         'brand_id',
         'category_id',
@@ -40,6 +41,8 @@ class Product extends BaseModel
         'updated_at'
     ];
     protected $casts = [
+        'created_at' => 'date',
+        'updated_at' => 'date',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
         'color_list' => FlexibleCast::class,
