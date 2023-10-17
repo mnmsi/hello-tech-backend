@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('guest_order_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('guest_order_id')->constrained('guest_orders')->onDelete('cascade');
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->string('product_color_id')->constrained('product_colors')->onDelete('cascade');
+            $table->unsignedBigInteger("guest_order_id")->unsigned();
+            $table->unsignedBigInteger("product_id")->unsigned();
+            $table->unsignedBigInteger("product_color_id")->unsigned();
+            $table->foreign('guest_order_id')->references('id')->on('guest_orders')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('product_color_id')->references('id')->on('product_colors')->onDelete('cascade');
             $table->string('feature')->nullable();
             $table->decimal('price', 10, 2);
             $table->integer('quantity');

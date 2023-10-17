@@ -8,6 +8,8 @@ use App\Models\GuestCart;
 use App\Models\GuestOrder;
 use App\Models\GuestOrderDetails;
 use App\Models\GuestUser;
+use App\Models\Order\Cart;
+use App\Models\OrderDetails;
 use App\Models\Product\Product;
 use App\Models\Product\ProductColor;
 use App\Models\ProductFeatureValue;
@@ -17,6 +19,7 @@ use App\Models\System\DeliveryOption;
 use App\Models\System\Division;
 use App\Models\System\PaymentMethod;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\Api\Http\Requests\Guest\GuestOrderRequest;
 use Modules\Api\Http\Traits\Order\OrderTrait;
@@ -28,7 +31,18 @@ class GuestOrderController extends Controller
     use ApiResponseHelper;
     use OrderTrait;
 
-    public function buyNow(GuestOrderRequest $request)
+
+    public function guestOrder(GuestOrderRequest $request)
+    {
+        if (isset($request->guest_cart_id)) {
+            $order = $this->buyNowFromCart($request);
+        } else {
+            $order = $this->buyNow($request);
+        }
+        return $order;
+    }
+
+    public function buyNow($request)
     {
         DB::beginTransaction();
         try {
@@ -133,16 +147,16 @@ class GuestOrderController extends Controller
         }
     }
 
-    public function buyNowFromCart(Request $request)
+    public function buyNowFromCart($request)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
 //        buy now from cart session
             $guest = GuestUser::where('uuid', $request->guest_user_id)->first();
             $carts = GuestCart::select('id', 'product_id', 'product_color_id', 'product_data', 'quantity')
-                ->where('guest_user_id', $guest->id)->where('status',1)->get();
-            foreach ($carts as $key => $cartItem) {
-                $product = Product::find($key);
+                ->where('guest_user_id', $guest->id)->where('status', 1)->whereIn('id', $request->guest_cart_id)->get();
+            foreach ($carts as $cartItem) {
+                $product = Product::find($cartItem['product_id']);
                 $subtotal_price = $this->calculateDiscountPrice($product->price, $product->discount_rate) * $cartItem['quantity'];
 //            product color price
                 $product_color = ProductColor::find($cartItem['product_color_id']);
@@ -184,28 +198,38 @@ class GuestOrderController extends Controller
                 'name' => $request->name,
                 'phone_number' => $request->phone,
                 'email' => $request->email ?? null,
-                'city' => $request->city,
-                'division' => $request->division,
-                'area' => $request->area,
+                'city' => City::where('id', $request->city_id)->first()->name,
+                'division' => Division::where('id', $request->division_id)->first()->name,
+                'area' => Area::where('id', $request->area_id)->first()->name,
                 'address_line' => $request->address_line,
-                'delivery_option' => $request->delivery_option,
-                'payment_method' => $request->payment_method,
+                'delivery_option' => DeliveryOption::where('id', $request->delivery_option_id)->first()->name,
+                'payment_method' => PaymentMethod::where('id', $request->payment_method_id)->first()->name,
                 'order_note' => $request->order_note ?? null,
                 'voucher_code' => $request->voucher_code ?? null,
             ];
             $order = GuestOrder::create($orderData);
-            $orderDetails = [
-                'guest_order_id' => $order->id,
-                'product_id' => $request->product_id,
-                'quantity' => $request->quantity,
-                'product_color_id' => $request->color_id ?? null,
-                'feature' => $request->feature_id ?? null,
-                'price' => $product->price,
-                'discount_rate' => $product->discount_rate ?? 0,
-                'subtotal_price' => $subtotal_price,
-            ];
+//            dd($order->id);
+            $orderDetails = [];
+            foreach ($carts as $p) {
+                $product_p = Product::find($p['product_id']);
+                $subtotal_p = $product_p->price;
+                $product_color_p = ProductColor::find($p['product_color_id']);
+                $subtotal_p += $product_color_p->price * $p['quantity'];
+                $orderDetails[] = [
+                    'guest_order_id' => $order->id,
+                    'product_id' => $product_p->id,
+                    'product_color_id' => $p['product_color_id'],
+                    'feature' => $p['product_data_id'] ?? null,
+                    'price' => $product_p->price,
+                    'quantity' => $p['quantity'],
+                    'discount_rate' => $product_p->discount_rate,
+                    'subtotal_price' => $subtotal_p,
+//                    'total' => $subtotal_p + $request['shipping_amount'] ?? 0,
+                ];
+            }
             if ($order) {
-                GuestOrderDetails::create($orderDetails);
+                GuestOrderDetails::insert($orderDetails);
+               GuestCart::whereIn('id', $request->guest_cart_id)->delete();
                 $sslc = new AmarPayController();
                 if ($request->payment_method_id == 2) {
                     if ($isProcessPayment = $sslc->payment($orderData)) {
@@ -235,8 +259,11 @@ class GuestOrderController extends Controller
                 );
             }
         } catch (\Exception $e) {
-            return $this->respondError(
-                $e->getMessage()
+            return (
+            [
+                $e->getMessage(),
+                $e->getLine(),
+            ]
             );
         }
 

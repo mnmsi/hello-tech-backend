@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class GuestOrderDetails extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'guest_order_id',
         'product_id',
@@ -20,7 +19,7 @@ class GuestOrderDetails extends Model
         'subtotal_price',
     ];
 
-    public function guestOrder()
+    public function order()
     {
         return $this->belongsTo(GuestOrder::class);
     }

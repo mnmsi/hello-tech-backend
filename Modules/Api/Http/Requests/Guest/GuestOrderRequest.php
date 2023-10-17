@@ -19,8 +19,9 @@ class GuestOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|numeric',
+            'cart_id' => 'nullable|array|exists:carts,id',
+            'product_id' => 'nullable|exists:products,id',
+            'quantity' => 'nullable|numeric|min:1|max:5',
             'voucher_id' => 'nullable|exists:vouchers,id',
             'color_id' => 'nullable|exists:product_colors,id',
             'name' => 'required|string',
@@ -34,8 +35,6 @@ class GuestOrderRequest extends FormRequest
             'payment_method_id' => 'required|exists:payment_methods,id',
             'order_note' => 'nullable|string',
             'voucher_code' => 'nullable|string',
-            'transaction_id' => 'nullable|string',
-            'order_key' => 'nullable|string',
             'discount_rate' => 'nullable',
             'shipping_amount' => 'required',
             'subtotal_price' => 'required',

@@ -215,8 +215,7 @@ Route::prefix('guest-cart')->middleware('api-session')->as('guest-cart.')->contr
 });
 
 Route::prefix('guest-order')->middleware('api-session')->as('guest-order.')->controller(GuestOrderController::class)->group(function () {
-    Route::post('buy-now', 'buyNow')->name('buy-now');
-    Route::post('/cart/buy-now','buyNowFromCart')->name('buy-now-from-cart');
+    Route::post('buy-now', 'guestOrder')->name('buy-now');
 });
 
 Route::controller(SystemAddressController::class)->group(function () {

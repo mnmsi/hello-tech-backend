@@ -49,7 +49,6 @@ OrderTrait
             $subtotal_price = 0;
             $carts = Cart::select('id', 'product_id', 'product_color_id', 'product_data', 'quantity')
                 ->where('user_id', Auth::id())->where('status',1)->get();
-
             foreach ($carts as $c) {
                 $product = Product::find($c['product_id']);
 //                if ($product->stock < $c['quantity']) {
