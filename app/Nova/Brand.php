@@ -77,7 +77,9 @@ class Brand extends Resource
                 ->searchable()
                 ->rules('required')
                 ->noPeeking(),
-
+            BelongsTo::make('Sub Category', 'subCategory')
+                ->rules('required')
+                ->noPeeking(),
             Select::make('Is popular', 'is_popular')->options([
                 '1' => 'Yes',
                 '0' => 'No',

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Product\Product;
+use App\Models\Product\ProductColor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,5 +24,15 @@ class GuestOrderDetails extends Model
     public function order()
     {
         return $this->belongsTo(GuestOrder::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function productColor()
+    {
+        return $this->belongsTo(ProductColor::class);
     }
 }

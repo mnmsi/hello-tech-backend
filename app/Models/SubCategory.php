@@ -34,11 +34,17 @@ class SubCategory extends Model
         'is_popular' => 'boolean',
         'is_active' => 'boolean'
     ];
-
-    public function setNameAttribute($value): void
+    public static function boot()
     {
-        $this->attributes['name'] = $value;
-        $this->attributes['slug'] = Str::slug($value);
+        parent::boot();
+
+        static::creating(function ($post) {
+            $post->slug = Str::slug($post->name);
+        });
+
+        static::updating(function ($post) {
+            $post->slug = Str::slug($post->name);
+        });
     }
 
     public function brands()

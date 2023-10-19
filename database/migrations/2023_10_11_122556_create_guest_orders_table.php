@@ -29,7 +29,7 @@ return new class extends Migration {
             $table->string('shipping_amount');
             $table->string('subtotal_price');
             $table->string('total_price');
-            $table->tinyInteger('status')->default(0)->comment('0=Pending, 1=Processing, 2=Completed, 3=Cancelled');
+            $table->enum('status', ['pending', 'processing', 'completed', 'delivered', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }

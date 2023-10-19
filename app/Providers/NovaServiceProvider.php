@@ -10,6 +10,7 @@ use App\Nova\Dashboards\Main;
 use App\Nova\DeliveryOption;
 use App\Nova\DynamicPage;
 use App\Nova\FeatureKey;
+use App\Nova\GuestOrder;
 use App\Nova\HomeSection;
 use App\Nova\MetaKey;
 use App\Nova\Notification;
@@ -27,6 +28,7 @@ use App\Nova\ProductSpecification;
 use App\Nova\PromotionalProduct;
 use App\Nova\SeoSetting;
 use App\Nova\SiteSetting;
+use App\Nova\SubCategory;
 use App\Nova\TermsAndCondition;
 use App\Nova\User;
 use App\Nova\UserAddress;
@@ -70,6 +72,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 MenuSection::make('Products', [
                     MenuItem::resource(Brand::class),
                     MenuItem::resource(Category::class),
+                    MenuItem::resource(SubCategory::class),
                     MenuItem::resource(Product::class),
                     MenuItem::resource(FeatureKey::class)->name('Product Feature Key'),
                     MenuItem::resource(MetaKey::class)->name('Product Meta key'),
@@ -85,6 +88,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(PaymentDetails::class),
                     MenuItem::resource(PreOrder::class),
                     MenuItem::resource(Voucher::class),
+                    MenuItem::resource(GuestOrder::class),
                 ])->icon('shopping-cart')->collapsable(),
 //                system
                 MenuSection::make('System', [

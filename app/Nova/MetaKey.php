@@ -68,6 +68,13 @@ class MetaKey extends Resource
                 ->rules('required')
                 ->help("After change category please delete all meta value and add new values")
                 ->noPeeking(),
+//            sub category
+            BelongsTo::make('Sub Category', 'subCategory')
+                ->searchable()
+                ->nullable()
+                ->help("After change sub category please delete all meta value and add new values")
+                ->noPeeking(),
+
 //            key value
             HasMany::make('Product Meta Value', 'productMetaValues', 'App\Nova\MetaValue'),
             //            date
@@ -120,7 +127,7 @@ class MetaKey extends Resource
                     Select::make('Product', 'meta_product')->options(
                         Product::where('category_id', request()->category)->pluck('name', 'id')
                     )->rules('required')
-                    ->searchable(),
+                        ->searchable(),
 
                 ])->hideFromIndex()
                 ->hideFromDetail(),

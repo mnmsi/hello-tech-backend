@@ -50,7 +50,7 @@ class Product extends Resource
      * @var array
      */
     public static $search = [
-        'id','name'
+        'id', 'name'
     ];
 
     public static function label()
@@ -69,6 +69,10 @@ class Product extends Resource
     {
         return [
             ID::make()->sortable(),
+//            sub category
+            BelongsTo::make('Sub Category', 'subCategory')
+                ->rules('required')
+                ->noPeeking(),
             //            brand
             BelongsTo::make('Brand', 'brand')
                 ->searchable()
