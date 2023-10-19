@@ -47,7 +47,7 @@ class Brand extends BaseModel
 
     public function subCategory(): BelongsTo
     {
-        return $this->belongsTo(SubCategory::class, 'subcategory_id', 'id');
+        return $this->belongsTo(SubCategory::class, 'sub_category_id', 'id');
     }
 
     public function product()
