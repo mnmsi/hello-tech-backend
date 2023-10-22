@@ -14,7 +14,7 @@ class ShippingChargeController extends Controller
     {
         try {
             $text = strtolower($name);
-            if ($text == 'dhaka metro') {
+            if ($text == 'dhaka') {
                 $shipping_charge = DeliveryOption::where('name', '=', 'Inside Dhaka')->first();
             } else {
                 $shipping_charge = DeliveryOption::whereNotIn('name', ['Inside Dhaka'])->first();
