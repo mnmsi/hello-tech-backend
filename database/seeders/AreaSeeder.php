@@ -737,22 +737,22 @@ class AreaSeeder extends Seeder
             ],
             [
                 "id" => "146",
-                "city_id" => "1",
+                "city_id" => "66",
                 "name" => "Dohar",
             ],
             [
                 "id" => "147",
-                "city_id" => "1",
+                "city_id" => "67",
                 "name" => "Keraniganj",
             ],
             [
                 "id" => "148",
-                "city_id" => "1",
+                "city_id" => "68",
                 "name" => "Nawabganj",
             ],
             [
                 "id" => "149",
-                "city_id" => "1",
+                "city_id" => "69",
                 "name" => "Savar",
             ],
             [

@@ -22,7 +22,27 @@ class CitySeeder extends Seeder
             [
                 "id" => "1",
                 "division_id" => "3",
-                "name" => "Dhaka Suburb",
+                "name" => "Dhamrai",
+            ],
+            [
+                "id" => "66",
+                "division_id" => "3",
+                "name" => "Dohar",
+            ],
+            [
+                "id" => "67",
+                "division_id" => "3",
+                "name" => "Keraniganj",
+            ],
+            [
+                "id" => "68",
+                "division_id" => "3",
+                "name" => "Nawabganj",
+            ],
+            [
+                "id" => "69",
+                "division_id" => "3",
+                "name" => "Savar",
             ],
             [
                 "id" => "2",
