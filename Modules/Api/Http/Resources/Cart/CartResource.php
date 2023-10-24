@@ -12,6 +12,7 @@ use Modules\Api\Http\Traits\Product\ProductTrait;
 class CartResource extends JsonResource
 {
     use ProductTrait, CartTrait;
+
     /**
      * Transform the resource collection into an array.
      *
@@ -25,6 +26,7 @@ class CartResource extends JsonResource
             'quantity' => $this->quantity,
             'is_checked' => $this->status,
             'name' => $this->product->name ?? '',
+            'product_code' => $this->product->product_code ?? '',
             'product_id' => $this->product_id,
             'product_color_id' => $this->product_color_id,
             'price' => $this->calculateDiscountPrice($this->product->price ?? 0, $this->product->discount_rate ?? 0),
