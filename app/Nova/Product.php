@@ -334,6 +334,7 @@ class Product extends Resource
         return [
             (new ImportProduct)->standalone(),
             (new ProductImageUpload())->standalone(),
+            (new \App\Nova\Actions\Product\ProductColor())->standalone(),
         ];
     }
 

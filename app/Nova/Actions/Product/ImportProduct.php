@@ -17,7 +17,7 @@ class ImportProduct extends Action
 {
     use InteractsWithQueue, Queueable;
 
-    public $name = 'Product Upload';
+    public $name = 'Import Product';
     public $onlyOnIndex = true;
     /**
      * Perform the action on the given models.

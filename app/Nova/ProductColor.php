@@ -132,13 +132,10 @@ class ProductColor extends Resource
      */
     public function actions(NovaRequest $request)
     {
-        return [];
+        return [
+            (new \App\Nova\Actions\Product\ProductColor())->standalone(),
+        ];
     }
-
-//    public static function relatableProducts(NovaRequest $request, $query)
-//    {
-//        return $query->where('type', 'bike');
-//    }
 
     public static function searchableColumns()
     {
