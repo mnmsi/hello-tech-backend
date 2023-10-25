@@ -18,6 +18,18 @@ class ProductColorImport implements ToModel, WithStartRow
     {
         $product = Product::where("product_code", $row[0])->first();
         if ($product) {
+//            $p_specification = [];
+//            if(!empty($row[10]) && !empty($row[11]) && !empty($row[12])) {
+//                $p_specification[] = [
+//                    "product_id" => $product->id,
+//                    "title" => $product->id,
+//                    "value" => $product->id,
+//                    "product_id" => $product->id,
+//                ];
+//            }
+//            product specification
+//            dd($row);
+//            product color create
             return new ProductColor([
                 "product_id" => $product->id,
                 "name" => $row[1],
