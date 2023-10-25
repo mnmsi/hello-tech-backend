@@ -2,6 +2,8 @@
 
 namespace App\Nova\Actions\Product;
 
+use App\Models\Product\Product;
+use Ayvazyan10\Imagic\Imagic;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -29,7 +31,21 @@ class ProductImageUpload extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        dd($fields);
+        try {
+            $images_list = json_decode($fields->images, true);
+
+            foreach ($images_list as $m) {
+                $fileName = basename($m);
+                $product = Product::where("product_code", pathinfo($fileName, PATHINFO_FILENAME))->first();
+                if ($product) {
+                    $product->image_url = str_replace('/storage', '', $m);
+                    $product->save();
+                }
+            }
+            return Action::message("Product image Upload done!");
+        } catch (\Exception $e) {
+            return Action::danger($e->getMessage());
+        }
         //
     }
 
@@ -38,6 +54,7 @@ class ProductImageUpload extends Action
      *
      * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
+     * @throws \Exception
      */
     public function fields(NovaRequest $request)
     {
@@ -48,8 +65,14 @@ class ProductImageUpload extends Action
                     Select Multiple Image with product code.
                 </div>
             ")->asHtml(),
-            File::make('Images', 'images')
-                ->acceptedTypes('image/*')
+//            File::make('Images', 'images')
+//                ->acceptedTypes('image/*')
+//                ->required(),
+            Imagic::make('Images', "images")
+                ->multiple()
+//                ->directory("product_image")
+                ->help("Use .png, .jpg images only.")
+                ->convert(false)
                 ->required(),
         ];
     }
