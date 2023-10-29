@@ -67,14 +67,14 @@ class ProductColorImport implements ToModel, WithStartRow
                     'key' => 'Size'
                 ]);
 
-                if (!empty($row[17])) {
+                if (!empty($row[16])) {
                     ProductMetaValue::create([
                         'product_meta_key_id' => $p_meta_key->id,
                         'product_id' => $product->id,
                         'value' => $row[17],
                     ]);
                 }
-                if (!empty($row[18])) {
+                if (!empty($row[17])) {
                     ProductMetaValue::create([
                         'product_meta_key_id' => $p_meta_key->id,
                         'product_id' => $product->id,
