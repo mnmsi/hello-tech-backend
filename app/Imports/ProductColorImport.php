@@ -31,13 +31,13 @@ class ProductColorImport implements ToModel, WithStartRow
             $p_feature_key = ProductFeatureKey::updateOrCreate([
                 'product_id' => $product->id,
                 'key' => 'Warranty'
-            ],[
+            ], [
                 'product_id' => $product->id,
                 'key' => 'Warranty'
             ]);
 //            $p_specification = [];
 //            warranty block
-            if(!empty($row[10]) && !empty($row[11]) && !empty($row[12])) {
+            if (!empty($row[10]) && !empty($row[11]) && !empty($row[12])) {
                 ProductFeatureValue::create([
                     "product_feature_key_id" => $p_feature_key->id,
                     "title" => $row[10],
@@ -45,7 +45,7 @@ class ProductColorImport implements ToModel, WithStartRow
                     "stock" => $row[12],
                 ]);
             }
-            if(!empty($row[13]) && !empty($row[14]) && !empty($row[15])) {
+            if (!empty($row[13]) && !empty($row[14]) && !empty($row[15])) {
                 ProductFeatureValue::create([
                     "product_feature_key_id" => $p_feature_key->id,
                     "title" => $row[13],
@@ -55,26 +55,26 @@ class ProductColorImport implements ToModel, WithStartRow
             }
 //            product specification
 //                sub category missing
-            $Subcategory = SubCategory::where('category_id',$product->category_id)->first();
-            if($Subcategory) {
+            $Subcategory = SubCategory::where('category_id', $product->category_id)->first();
+            if ($Subcategory) {
                 $p_meta_key = ProductMetaKey::updateOrCreate([
                     'category_id' => $Subcategory->category_id,
                     'sub_category_id' => $Subcategory->id,
                     'key' => 'Size'
-                ],[
+                ], [
                     'category_id' => $Subcategory->category_id,
                     'sub_category_id' => $Subcategory->id,
                     'key' => 'Size'
                 ]);
 
-                if(!empty($row[17])) {
+                if (!empty($row[17])) {
                     ProductMetaValue::create([
                         'product_meta_key_id' => $p_meta_key->id,
                         'product_id' => $product->id,
                         'value' => $row[17],
                     ]);
                 }
-                if(!empty($row[18])) {
+                if (!empty($row[18])) {
                     ProductMetaValue::create([
                         'product_meta_key_id' => $p_meta_key->id,
                         'product_id' => $product->id,
@@ -83,13 +83,13 @@ class ProductColorImport implements ToModel, WithStartRow
                 }
             }
 //            product color create
-                return new ProductColor([
-                    "product_id" => $product->id,
-                    "name" => $row[1],
-                    "color_code" => $row[2],
-                    "price" => $row[3],
-                    "stock" => $row[4],
-                ]);
+            return new ProductColor([
+                "product_id" => $product->id,
+                "name" => $row[1],
+                "color_code" => $row[2],
+                "price" => $row[3],
+                "stock" => $row[4],
+            ]);
         } else {
             return null;
         }
