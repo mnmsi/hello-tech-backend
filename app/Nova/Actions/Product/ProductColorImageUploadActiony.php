@@ -18,6 +18,10 @@ class ProductColorImageUploadActiony extends Action
 {
     use InteractsWithQueue, Queueable;
 
+    public $name = 'Upload Product Color Images';
+    public $onlyOnIndex = true;
+
+
     /**
      * Perform the action on the given models.
      *
@@ -37,7 +41,7 @@ class ProductColorImageUploadActiony extends Action
                     $product = Product::where("product_code", $image_name[0])->first();
                     if ($product) {
                         $product_color = \App\Models\Product\ProductColor::where([
-                            'product_id', $product->id,
+                            'product_id' => $product->id,
                             'name' => $image_name[1]
                         ])->first();
                         if($product_color) {
