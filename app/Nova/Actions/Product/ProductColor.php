@@ -55,7 +55,20 @@ class ProductColor extends Action
                     Color Name <span class='text-red-500 text-sm'>|</span>
                     Color Code <span class='text-red-500 text-sm'>|</span>
                     Color Price <span class='text-red-500 text-sm'>|</span>
-                    Color Stock
+                    Color Stock <span class='text-red-500 text-sm'>|</span>
+                    Product Image-1 <span class='text-red-500 text-sm'>|</span>
+                    Product Image-2 <span class='text-red-500 text-sm'>|</span>
+                    Product Image-3 <span class='text-red-500 text-sm'>|</span>
+                    Product Image-4 <span class='text-red-500 text-sm'>|</span>
+                    Product Image-5 <span class='text-red-500 text-sm'>|</span>
+                    Product Warranty-1 Name <span class='text-red-500 text-sm'>|</span>
+                    Product Warranty-1 Price <span class='text-red-500 text-sm'>|</span>
+                    Product Warranty-1 Stock <span class='text-red-500 text-sm'>|</span>
+                    Product Warranty-2 Name <span class='text-red-500 text-sm'>|</span>
+                    Product Warranty-2 Price <span class='text-red-500 text-sm'>|</span>
+                    Product Warranty-2 Stock <span class='text-red-500 text-sm'>|</span>
+                    Product Size-1 Meta Key 1  <span class='text-red-500 text-sm'>|</span>
+                    Product Size-2 Meta Key 2 <span class='text-red-500 text-sm'>|</span>
                     <span class='text-red-500 text-sm'>*Use CSV file</span></div>
             ")->asHtml(),
             File::make("Products Colors", "product_colors")->required(),
