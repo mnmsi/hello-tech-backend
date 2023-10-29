@@ -48,8 +48,8 @@ class ProductColorImport implements ToModel, WithStartRow
             if (!empty($row[13]) && !empty($row[14]) && !empty($row[15])) {
                 ProductFeatureValue::create([
                     "product_feature_key_id" => $p_feature_key->id,
-                    "title" => $row[13],
-                    "value" => $row[14],
+                    "value" => $row[13],
+                    "price" => $row[14],
                     "stock" => $row[15],
                 ]);
             }

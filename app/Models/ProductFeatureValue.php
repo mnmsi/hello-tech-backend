@@ -9,7 +9,6 @@ class ProductFeatureValue extends Model
 {
     protected $fillable = [
         'product_feature_key_id',
-        'title',
         'value',
         'price',
         'stock',
