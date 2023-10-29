@@ -43,7 +43,7 @@ class ProductImport implements ToModel, WithStartRow
                 'is_active' => 1, // $row[15]
                 'is_official' => Str::upper($row[13]) == "YES" ? 1 : 0,
                 'product_code' => $row[7],
-                'image_url' => "product_image/product_no_image.png",
+                'image_url' => "product_image/gtu1P52sVj8gzp6LBvH7Oto0fj6sPkOyREOOZD6X.png",
                 'video_url' => $row[5],
                 'description' => $row[11],
             ]);
