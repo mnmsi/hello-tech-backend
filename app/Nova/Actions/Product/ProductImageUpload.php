@@ -38,7 +38,7 @@ class ProductImageUpload extends Action
                 $fileName = basename($m);
                 $product = Product::where("product_code", pathinfo($fileName, PATHINFO_FILENAME))->first();
                 if ($product) {
-                    $product->image_url = str_replace('/storage', '', $m);
+                    $product->image_url = str_replace('/storage/', '', $m);
                     $product->save();
                 }
             }
