@@ -65,12 +65,9 @@ class ProductImageUpload extends Action
                     Select Multiple Image with product code.
                 </div>
             ")->asHtml(),
-//            File::make('Images', 'images')
-//                ->acceptedTypes('image/*')
-//                ->required(),
             Imagic::make('Images', "images")
                 ->multiple()
-//                ->directory("product_image")
+                ->directory("product_image")
                 ->help("Use .png, .jpg images only.")
                 ->convert(false)
                 ->required(),
