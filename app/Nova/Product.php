@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use App\Nova\Actions\Order\OrderCancelledActions;
 use App\Nova\Actions\Product\ImportProduct;
+use App\Nova\Actions\Product\ProductColorImageUploadActiony;
 use App\Nova\Actions\Product\ProductImageUpload;
 use App\Nova\Filters\ProductStatusFilter;
 use App\Nova\Metrics\TotalProduct;
@@ -335,6 +336,7 @@ class Product extends Resource
             (new ImportProduct)->standalone(),
             (new ProductImageUpload())->standalone(),
             (new \App\Nova\Actions\Product\ProductColor())->standalone(),
+            (new ProductColorImageUploadActiony())
         ];
     }
 
