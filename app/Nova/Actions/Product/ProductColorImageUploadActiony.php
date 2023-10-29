@@ -44,7 +44,7 @@ class ProductColorImageUploadActiony extends Action
                             ProductMedia::create([
                                 'product_id' => $product->id,
                                 'product_color_id' => $product_color->id,
-                                'image_url' => str_replace('/storage/', '', $m),
+                                'image_url' => str_replace('/storage', '', $m),
                             ]);
                         } else {
                             return Action::danger('Product color not found with name ' . $image_name[1]);
@@ -80,7 +80,7 @@ class ProductColorImageUploadActiony extends Action
             ")->asHtml(),
             Imagic::make('Images', "images")
                 ->multiple()
-                ->directory("product_media")
+//                ->directory("product_media")
                 ->help("Use .png, .jpg images only.")
                 ->convert(false)
                 ->required(),
