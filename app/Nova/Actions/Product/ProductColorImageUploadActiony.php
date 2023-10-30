@@ -37,7 +37,7 @@ class ProductColorImageUploadActiony extends Action
             foreach ($images_list as $m) {
                 $fileName = basename($m);
                 $image_name = explode('_', pathinfo($fileName, PATHINFO_FILENAME));
-                if (count($image_name) == 2) {
+                if (count($image_name) > 1) {
                     $product = Product::where("product_code", $image_name[0])->first();
                     if ($product) {
                         $product_color = \App\Models\Product\ProductColor::where([
