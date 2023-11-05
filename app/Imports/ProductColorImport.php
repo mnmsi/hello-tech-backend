@@ -24,10 +24,10 @@ class ProductColorImport implements ToModel, WithStartRow
     {
         $product = Product::where("product_code", $row[0])->first();
         if ($product) {
-            $count_color = ProductColor::where('product_id', $product->id)->get();
-            if (count($count_color) > 0) {
-                return null;
-            }
+//            $count_color = ProductColor::where('product_id', $product->id)->get();
+//            if (count($count_color) > 0) {
+//                return null;
+//            }
             $p_feature_key = ProductFeatureKey::updateOrCreate([
                 'product_id' => $product->id,
                 'key' => 'Warranty'
