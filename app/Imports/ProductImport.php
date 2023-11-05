@@ -34,7 +34,7 @@ class ProductImport implements ToModel, WithStartRow
             return new Product([
                 'brand_id' => $brand->id,
                 'category_id' => $category->id,
-                'sub_category_id' => $row[11] ?? $brand->sub_category_id,
+                'sub_category_id' => $row[17] ?? $brand->sub_category_id,
                 'name' => $row[6],
                 'price' => (integer)$row[8],
                 'discount_rate' => (integer)$row[9],
