@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\Product\Brand;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
+use App\Models\SubCategory;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -30,11 +31,12 @@ class ProductImport implements ToModel, WithStartRow
         if ($category == null && !empty($row[1])) {
             throw new \ErrorException('Category ' . $row[1] . " missing. Please add category first.");
         }
+        $sub_category = SubCategory::where("name",$row[17])->first();
         if (!Product::where("product_code", $row[7])->first() && !empty($row[0])) {
             return new Product([
                 'brand_id' => $brand->id,
                 'category_id' => $category->id,
-                'sub_category_id' => $row[17] ?? $brand->sub_category_id,
+                'sub_category_id' => $sub_category ? $sub_category->id : $brand->sub_category_id,
                 'name' => $row[6],
                 'price' => (integer)$row[8],
                 'discount_rate' => (integer)$row[9],
