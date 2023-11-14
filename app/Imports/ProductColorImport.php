@@ -40,8 +40,8 @@ class ProductColorImport implements ToModel, WithStartRow
             if (isset($row[10]) && isset($row[11]) && isset($row[12])) {
                 ProductFeatureValue::create([
                     "product_feature_key_id" => $p_feature_key->id,
-                    "title" => $row[10],
-                    "value" => $row[11],
+                    "value" => $row[10],
+                    "price" => $row[11],
                     "stock" => $row[12],
                 ]);
             }
