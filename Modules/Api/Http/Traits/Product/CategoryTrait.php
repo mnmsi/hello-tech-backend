@@ -25,7 +25,6 @@ trait CategoryTrait
         return Category::has('products')->where('is_active', 1)
             ->where('is_popular', 1)
             ->with('products')
-            ->limit(5)
             ->orderBy('id', 'desc')
             ->get();
     }
