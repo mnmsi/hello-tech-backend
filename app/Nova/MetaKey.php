@@ -247,7 +247,7 @@ class MetaKey extends Resource
     {
         return [
             'id',
-            'name',
+            'key',
             new SearchableRelation('product', 'name'),
         ];
     }
