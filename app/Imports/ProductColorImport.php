@@ -37,7 +37,7 @@ class ProductColorImport implements ToModel, WithStartRow
             ]);
 //            $p_specification = [];
 //            warranty block
-            if (!empty($row[10]) && !empty($row[11]) && !empty($row[12])) {
+            if (isset($row[10]) && isset($row[11]) && isset($row[12])) {
                 ProductFeatureValue::create([
                     "product_feature_key_id" => $p_feature_key->id,
                     "title" => $row[10],
@@ -45,7 +45,7 @@ class ProductColorImport implements ToModel, WithStartRow
                     "stock" => $row[12],
                 ]);
             }
-            if (!empty($row[13]) && !empty($row[14]) && !empty($row[15])) {
+            if (isset($row[13]) && isset($row[14]) && isset($row[15])) {
                 ProductFeatureValue::create([
                     "product_feature_key_id" => $p_feature_key->id,
                     "value" => $row[13],
