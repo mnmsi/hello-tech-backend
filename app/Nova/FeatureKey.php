@@ -228,7 +228,7 @@ class FeatureKey extends Resource
     {
         return [
             'id',
-            'value',
+            'key',
             new SearchableRelation('product', 'name'),
         ];
     }
