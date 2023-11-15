@@ -37,6 +37,7 @@ class ProductColorImport implements ToModel, WithStartRow
             ]);
 //            $p_specification = [];
 //            warranty block
+            dd($row[10],$row[11],$row[12]);
             if (isset($row[10]) && isset($row[11]) && isset($row[12])) {
                 ProductFeatureValue::create([
                     "product_feature_key_id" => $p_feature_key->id,
