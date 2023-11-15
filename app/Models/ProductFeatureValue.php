@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductFeatureValue extends Model
 {
+    protected $table = "product_feature_values";
     protected $fillable = [
         'product_feature_key_id',
         'value',

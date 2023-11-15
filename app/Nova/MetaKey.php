@@ -15,6 +15,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Query\Search\SearchableRelation;
 use Whitecube\NovaFlexibleContent\Flexible;
 
 class MetaKey extends Resource
@@ -240,5 +241,14 @@ class MetaKey extends Resource
                 }
             }
         }
+    }
+
+    public static function searchableColumns()
+    {
+        return [
+            'id',
+            'key',
+            new SearchableRelation('product', 'name'),
+        ];
     }
 }
