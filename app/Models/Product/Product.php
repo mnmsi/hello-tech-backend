@@ -37,6 +37,7 @@ class Product extends BaseModel
         'image_url',
         'short_description',
         'description',
+        'order_no',
         'created_at',
         'updated_at'
     ];
