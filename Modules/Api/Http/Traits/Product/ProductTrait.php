@@ -36,7 +36,7 @@ trait ProductTrait
     {
         return Product::wherehas('colors', function ($q) {
             $q->where('stock', '>', 0);
-        })->where('category_id', $categoryId)->where('is_featured', 1)->orderBy('order_no')->get();
+        })->where('category_id', $categoryId)->where('is_featured', 1)->orderByRaw('ISNULL(order_no), order_no ASC')->get();
     }
 
     public function initializeFilterData($request)
@@ -89,7 +89,7 @@ trait ProductTrait
             })
             ->when($params['short_by'], function ($query) use ($params) {
                 $query->orderBy('price', $params['short_by']);
-            })->orderBy('order_no')
+            })->orderByRaw('ISNULL(order_no), order_no ASC')
             ->paginate(9);
     }
 
@@ -125,7 +125,7 @@ trait ProductTrait
         })->where('is_active', 1)
             ->whereHas('brand', function ($query) use ($slug) {
                 $query->where('slug', $slug);
-            })->orderBy('order_no')->get();
+            })->orderByRaw('ISNULL(order_no), order_no ASC')->get();;
     }
 
     public function getNewArrivals()
@@ -134,7 +134,7 @@ trait ProductTrait
             $q->where('stock', '>', 0);
         })->where('is_active', 1)
             ->where('is_new_arrival', 1)
-            ->orderBy('order_no')
+            ->orderByRaw('ISNULL(order_no), order_no ASC')
             ->get();
     }
 
@@ -145,7 +145,6 @@ trait ProductTrait
         })->where('is_new_arrival', 1)
             ->where('is_featured', 1)
             ->limit(4)
-            ->orderBy('order_no')
-            ->get();
+            ->orderByRaw('ISNULL(order_no), order_no ASC')->get();
     }
 }
