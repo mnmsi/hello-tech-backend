@@ -161,7 +161,7 @@ class Product extends Resource
                     return 1;
                 })
                 ->displayUsing(function ($v) {
-                    return $v ? "New" : "Not new";
+                    return $v ? "Yes" : "No";
                 }),
             Select::make('Is Official', 'is_official')->options([
                 '1' => 'Yes',
@@ -174,7 +174,7 @@ class Product extends Resource
                     return 1;
                 })
                 ->displayUsing(function ($v) {
-                    return $v ? "Used" : "New";
+                    return $v ? "Yes" : "No";
                 }),
             //            feature
             Select::make('Featured', 'is_featured')->options([
