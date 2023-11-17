@@ -25,6 +25,7 @@ class Product extends BaseModel
     protected $fillable = [
         'brand_id',
         'category_id',
+        'sub_category_id',
         'name',
         'price',
         'discount_rate',
@@ -32,6 +33,8 @@ class Product extends BaseModel
         'product_code',
         'is_used',
         'is_featured',
+        'is_new_arrival',
+        'is_official',
         'is_active',
         'badge_url',
         'image_url',
