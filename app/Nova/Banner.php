@@ -3,14 +3,19 @@
 namespace App\Nova;
 
 use App\Nova\Filters\BannerStatusFilter;
+use Ayvazyan10\Imagic\Imagic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Env;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Flexible;
 
 class Banner extends Resource
 {
@@ -43,6 +48,7 @@ class Banner extends Resource
      *
      * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return array
+     * @throws \Exception
      */
     public function fields(NovaRequest $request)
     {
@@ -99,8 +105,8 @@ class Banner extends Resource
                 'all' => 'All',
                 'top' => 'Top',
                 'bottom' => 'Bottom',
-            ])->dependsOn(['type'], function (Select $field, NovaRequest $request, FormData $formData) {
-                if ($formData->type == "page") {
+            ])->dependsOn(['page'], function (Select $field, NovaRequest $request, FormData $formData) {
+                if ($formData->page == "new-arrivals") {
                     $field
                         ->rules('required');
                 } else {
@@ -115,9 +121,53 @@ class Banner extends Resource
                 ->disk('public')
                 ->help("*only for category please give banner size height = 472px and width is relevant to height")
                 ->deletable(false)
-                ->creationRules('required')
-                ->updateRules('nullable')
-                ->disableDownload(),
+                ->disableDownload()
+                ->dependsOn(['page'], function (Image $field, NovaRequest $request, FormData $formData) {
+                    if ($formData->page != "home") {
+                        $field
+                            ->creationRules('required')
+                            ->updateRules('nullable');
+                    } else {
+                        $field
+                            ->hide()
+                            ->nullable();
+                    }
+                }),
+            //            home page
+            Flexible::make('Banner Images', 'home_image')
+                ->dependsOn(['page'], function (Flexible $field, NovaRequest $request, FormData $formData) {
+                    if ($formData->page == "home") {
+                        $field
+                            ->rules('required');
+                    } else {
+                        $field
+                            ->hide()
+                            ->nullable();
+                    }
+                })
+                ->button('Add banner Images* (Max 3)')
+                ->addLayout('Select image', 'video', [
+                    //                    image
+                    Image::make('Image', 'home_image')
+                        ->path('banner')
+                        ->disk('public')
+                        ->help("*use respected ratio on view")
+                        ->creationRules('required')
+                        ->updateRules('nullable'),
+                    // url
+                    URL::make('Url', 'image_url')
+                        ->rules('required')
+                        ->withMeta([
+                            'extraAttributes' => [
+                                'placeholder' => 'Enter promotional url',
+                            ],
+                        ]),
+                ])->hideFromIndex()
+                ->hideFromDetail(),
+//                ->limit(3),
+            //            order no
+            Number::make('Banner Position', 'order_no')
+                ->rules('required'),
             //            status
             Select::make('Status', 'is_active')->options([
                 '1' => 'Yes',
@@ -191,5 +241,60 @@ class Banner extends Resource
     public function actions(NovaRequest $request)
     {
         return [];
+    }
+
+    protected static function fillFields(NovaRequest $request, $model, $fields)
+    {
+        if ($request->isCreateOrAttachRequest()) {
+            $fields = $fields->reject(function ($field) {
+                return in_array($field->attribute, ['home_image']);
+            });
+        }
+
+        if ($request->isUpdateOrUpdateAttachedRequest()) {
+            $fields = $fields->reject(function ($field) {
+                return in_array($field->attribute, ['home_image']);
+            });
+        }
+
+        return parent::fillFields($request, $model, $fields);
+    }
+
+    public static function afterCreate(NovaRequest $request, $model): void
+    {
+        $formData = $request->all();
+
+        if (isset($formData['home_image'])) {
+            $result = [];
+            foreach ($formData['home_image'] as $b) {
+                $result[] = [
+                    "url" => $b["attributes"]["image_url"],
+                    "image" => Env::get("APP_URL") . "storage/" . $request->all()[$b["attributes"]["home_image"]]->store("banner", "public"),
+                ];
+
+                $banner_item = \App\Models\System\Banner::find($model->id);
+                $banner_item->home_images = json_encode($result);
+                $banner_item->save();
+            }
+        }
+    }
+
+    public static function afterUpdate(NovaRequest $request, $model): void
+    {
+        $formData = $request->all();
+
+        if (isset($formData['home_image'])) {
+            $result = [];
+            foreach ($formData['home_image'] as $b) {
+                $result[] = [
+                    "url" => $b["attributes"]["image_url"],
+                    "image" => Env::get("APP_URL") . "storage/" . $request->all()[$b["attributes"]["home_image"]]->store("banner", "public"),
+                ];
+
+                $banner_item = \App\Models\System\Banner::find($model->id);
+                $banner_item->home_images = json_encode($result);
+                $banner_item->save();
+            }
+        }
     }
 }
