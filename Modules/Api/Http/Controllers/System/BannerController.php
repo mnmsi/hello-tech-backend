@@ -12,6 +12,7 @@ class BannerController extends Controller
     {
         // Get all active banners
         $banners = Banner::where('is_active', 1)
+            ->orderByRaw('ISNULL(order_no), order_no ASC')
             ->get();
 
         // Return response with banners

@@ -15,9 +15,10 @@ class BannerResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'page'      => $this->page,
-            'show_on'   => $this->show_on,
+            'page' => $this->page,
+            'show_on' => $this->show_on ?? $this->order_no,
             'image_url' => str_contains($this->image_url, 'https') ? $this->image_url : asset('storage/' . $this->image_url),
+            'home_banner' => $this->home_images ? json_decode($this->home_images, true) : null,
         ];
     }
 }

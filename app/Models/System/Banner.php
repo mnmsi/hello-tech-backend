@@ -15,6 +15,7 @@ class Banner extends BaseModel
         'show_on',
         'category_id',
         'image_url',
+        'home_images',
         'is_active',
         'created_at',
         'updated_at',
@@ -32,5 +33,26 @@ class Banner extends BaseModel
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getHomeImageAttribute(): array
+    {
+        if (isset($this->attributes['id']) && !empty($this->attributes['home_images'])) {
+            $list = [];
+            $banner_list = json_decode($this->attributes['home_images'], true);
+            foreach ($banner_list as $l) {
+                $list[] = [
+                    "layout" => "video",
+                    "key" => rand(111111, 999999),
+                    "attributes" => [
+                        "home_image" => $l["image"],
+                        "image_url" => $l["url"],
+                    ]
+                ];
+            }
+            return $list;
+        } else {
+            return [];
+        }
     }
 }
