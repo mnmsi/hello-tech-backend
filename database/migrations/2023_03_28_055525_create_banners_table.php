@@ -17,7 +17,9 @@ return new  class extends Migration {
             $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade');
             $table->enum('page', ['home', 'new-arrivals', 'product-detail'])->nullable();
             $table->enum('show_on', ['top', 'bottom', 'all', 'detail'])->nullable();
-            $table->string('image_url');
+            $table->integer('order_no')->nullable();
+            $table->string('image_url')->nullable();
+            $table->longText("home_images")->nullable();
             $table->tinyInteger('is_active')->default(1)->comment('0: Inactive, 1: Active');
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrentOnUpdate()->nullable();
