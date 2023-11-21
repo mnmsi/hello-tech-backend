@@ -71,7 +71,12 @@ class ProductController extends Controller
         }
         $product = Product::with(['productFeatureValues', 'colors'])->where('id', $request->product_id)->first();
         $price = $this->calculateDiscountPrice($product->price, $product->discount_rate) + $product->productFeatureValues->whereIn('id', $product_feature_id)->sum('price') + $product->colors->whereIn('id', $request->color_id)->sum('price');
-        return $this->respondWithSuccessWithData($price * $request->quantity ?? 1);
+        $discount_price =  5;
+//        also return discount price after calculation
+        return $this->respondWithSuccessWithData([
+            'price' => $price,
+            'discount_price' => $discount_price,
+        ]);
     }
 
     public function getProductByBrand($slug)
