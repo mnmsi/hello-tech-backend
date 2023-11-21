@@ -26,7 +26,7 @@ class ProductDetailsResource extends JsonResource
             'slug' => $this->slug,
             'price' => $this->price,
             'is_favorite' => $this->is_favorite,
-            'offer_price' => $this->discount_rate ? $this->calculateDiscountPrice($this->price,$this->discount_rate) : 0,
+            'offer_price' => $this->discount_rate !=0 ? $this->calculateDiscountPrice($this->price, $this->discount_rate) : null,
             'product_code' => $this->product_code,
             'image_url' => str_contains($this->image_url, 'http') ? $this->image_url : asset('storage/' . $this->image_url),
             'brand' => new BrandResource($this->brand),
