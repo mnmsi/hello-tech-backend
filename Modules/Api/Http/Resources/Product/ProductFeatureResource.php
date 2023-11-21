@@ -11,7 +11,7 @@ class ProductFeatureResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'key' => $this->key,
+            'key' => $this->key ? $this->key->name : null,
             'values' => ProductFeatureValueResource::collection($this->productFeatureValues),
         ];
     }
