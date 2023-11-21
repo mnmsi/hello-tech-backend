@@ -144,7 +144,7 @@ trait ProductTrait
             $q->where('stock', '>', 0);
         })->where('is_new_arrival', 1)
             ->where('is_featured', 1)
-            ->limit(4)
+            ->limit(8)
             ->orderByRaw('ISNULL(order_no), order_no ASC')->get();
     }
 }
