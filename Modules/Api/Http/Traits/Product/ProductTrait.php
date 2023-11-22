@@ -69,17 +69,15 @@ trait ProductTrait
             ->when($params['name'], function ($query) use ($params) {
                 $query->whereRaw('LOWER(name) LIKE ?', '%' . strtolower($params['name']) . '%');
             })
+            ->when($params['brand'], function ($query) use ($params) {
+                $query->where('brand_id', $params['brand']);
+            })
             ->when($params['category'], function ($query) use ($params) {
                 $query->whereHas('category', function ($query) use ($params) {
                     $query->where('slug', $params['category']);
                 })->orWhereHas('subCategory', function ($query) use ($params) {
                     $query->where('slug', $params['category']);
-                })->orWhereHas('brand', function ($query) use ($params) {
-                    $query->where('slug', $params['category']);
                 });
-            })
-            ->when($params['brand'], function ($query) use ($params) {
-                $query->where('brand_id', $params['brand']);
             })
             ->when($params['is_official'], function ($query) use ($params) {
                 $query->where('is_official', $params['is_official']);
