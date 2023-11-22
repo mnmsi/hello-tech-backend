@@ -45,7 +45,15 @@ trait BrandTrait
                 ->orderBy('id', 'asc')
                 ->get();
         } else {
-           return Brand::where('is_active', 1)->where('category_id', $slug)->orWhere('sub_category_id', $slug)->orderBy('id', 'asc')->get();
+            return Brand::where('is_active', 1)
+                ->whereHas('category', function ($query) use ($slug) {
+                    $query->where('slug', $slug);
+                })
+                ->orWhereHas('subCategory', function ($query) use ($slug) {
+                    $query->where('slug', $slug);
+                })
+                ->orderBy('id', 'asc')
+                ->get();
 
         }
 
