@@ -57,8 +57,10 @@ trait ProductTrait
     public function getProductsQuery($params)
     {
 
+        $order = 'category_order_no';
         if ($params['category'] == 'gadgets') {
             $params['category'] = null;
+            $order = 'order_no';
         }
 
         return Product::wherehas('colors', function ($q) {
@@ -90,7 +92,7 @@ trait ProductTrait
             })
             ->when($params['short_by'], function ($query) use ($params) {
                 $query->orderBy('price', $params['short_by']);
-            })->orderByRaw('ISNULL(order_no), order_no ASC')
+            })->orderByRaw('ISNULL('.$order.'), '.$order.' ASC')
             ->paginate(9);
     }
 
