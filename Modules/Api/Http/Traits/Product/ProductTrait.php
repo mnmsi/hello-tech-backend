@@ -133,7 +133,7 @@ trait ProductTrait
 
     public function getNewArrivals()
     {
-        return SectionOrder::where('section', 'new-arrivals')
+        $data =  SectionOrder::where('section', 'new-arrivals')
             ->with(['sectionOrderProducts' => function ($q) {
                 $q->with(['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
@@ -142,12 +142,13 @@ trait ProductTrait
                     }]
                 )->orderBy('order', 'asc');
             }])->get();
+        return $data->pluck('sectionOrderProducts')->flatten()->pluck('product');
     }
 
     public function getFeaturedNewArrivals()
     {
 //        section order with products
-        return SectionOrder::where('section', 'new-arrivals')
+        $data =  SectionOrder::where('section', 'new-arrivals')
             ->with(['sectionOrderProducts' => function ($q) {
                 $q->with(['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
@@ -156,5 +157,6 @@ trait ProductTrait
                     }]
                 )->limit(8)->orderBy('order', 'asc');
             }])->get();
+        return $data->pluck('sectionOrderProducts')->flatten()->pluck('product');
     }
 }
