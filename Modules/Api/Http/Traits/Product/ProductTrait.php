@@ -131,18 +131,7 @@ trait ProductTrait
 
     public function getNewArrivals()
     {
-        return Product::wherehas('colors', function ($q) {
-            $q->where('stock', '>', 0);
-        })->where('is_active', 1)
-            ->where('is_new_arrival', 1)
-            ->orderByRaw('ISNULL(order_no), order_no ASC')
-            ->get();
-    }
-
-    public function getFeaturedNewArrivals()
-    {
-//        section order with products
-        $section = SectionOrder::where('section', 'new-arrivals')
+        return SectionOrder::where('section', 'new-arrivals')
             ->with(['sectionOrderProducts' => function ($q) {
                 $q->with(['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
@@ -151,6 +140,19 @@ trait ProductTrait
                     }]
                 )->orderBy('order', 'asc');
             }])->get();
-//        dd($section->toArray());
+    }
+
+    public function getFeaturedNewArrivals()
+    {
+//        section order with products
+        return SectionOrder::where('section', 'new-arrivals')
+            ->with(['sectionOrderProducts' => function ($q) {
+                $q->with(['product' => function ($q) {
+                        $q->wherehas('colors', function ($q) {
+                            $q->where('stock', '>', 0);
+                        });
+                    }]
+                )->limit(8)->orderBy('order', 'asc');
+            }])->get();
     }
 }

@@ -11,7 +11,8 @@ class HpsProduct extends Model
 {
     protected $fillable = [
         'hps_section_id',
-        'product_id'
+        'product_id',
+        'order',
     ];
 
     public function product()
