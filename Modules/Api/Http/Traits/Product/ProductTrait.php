@@ -73,12 +73,13 @@ trait ProductTrait
                 $query->where('brand_id', $params['brand']);
             })
             ->when($params['category'], function ($query) use ($params) {
-                $query->whereHas('category', function ($query) use ($params) {
-                    $query->where('slug', $params['category']);
+                $query->where(function ($c) use ($params) {
+                    $c->whereHas('category', function ($query) use ($params) {
+                        $query->where('slug', $params['category']);
+                    })->orWhereHas('category.parent', function ($query) use ($params) {
+                        $query->where('slug', $params['category']);
+                    });
                 });
-//                    ->orWhereHas('subCategory', function ($query) use ($params) {
-//                        $query->where('slug', $params['category']);
-//                    });
             })
             ->when($params['is_official'], function ($query) use ($params) {
                 $query->where('is_official', $params['is_official']);
@@ -93,7 +94,7 @@ trait ProductTrait
             })
             ->when($params['short_by'], function ($query) use ($params) {
                 $query->orderBy('price', $params['short_by']);
-            })->orderByRaw('ISNULL('.$order.'), '.$order.' ASC')
+            })->orderByRaw('ISNULL(' . $order . '), ' . $order . ' ASC')
             ->paginate(9);
     }
 
@@ -134,7 +135,7 @@ trait ProductTrait
 
     public function getNewArrivals()
     {
-        $data =  SectionOrder::where('section', 'new-arrivals')
+        $data = SectionOrder::where('section', 'new-arrivals')
             ->with(['sectionOrderProducts' => function ($q) {
                 $q->with(['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
@@ -149,7 +150,7 @@ trait ProductTrait
     public function getFeaturedNewArrivals()
     {
 //        section order with products
-        $data =  SectionOrder::where('section', 'new-arrivals')
+        $data = SectionOrder::where('section', 'new-arrivals')
             ->with(['sectionOrderProducts' => function ($q) {
                 $q->with(['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
