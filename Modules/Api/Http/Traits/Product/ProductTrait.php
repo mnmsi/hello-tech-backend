@@ -37,7 +37,7 @@ trait ProductTrait
     {
         return Product::wherehas('colors', function ($q) {
             $q->where('stock', '>', 0);
-        })->where('category_id', $categoryId)->where('is_featured', 1)->orderByRaw('ISNULL(order_no), order_no ASC')->get();
+        })->where('category_id', $categoryId)->where('is_featured', 1)->orderByRaw('ISNULL(category_order_no), category_order_no ASC')->get();
     }
 
     public function initializeFilterData($request)
