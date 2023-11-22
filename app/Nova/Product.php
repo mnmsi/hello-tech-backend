@@ -142,7 +142,10 @@ class Product extends Resource
                 ->step('any')
                 ->nullable(),
             //            stock
-            Number::make('Product Order Number', 'order_no')
+            Number::make('Product Position No.', 'order_no')
+                ->nullable(),
+//            category
+            Number::make('Category Position No.', 'category_order_no')
                 ->nullable(),
             //            description
             Trix::make('Description', 'description')
@@ -150,19 +153,19 @@ class Product extends Resource
                 ->rules('required')
                 ->alwaysShow(),
             //            used or not
-            Select::make('New Arrival', 'is_new_arrival')->options([
-                '1' => 'Yes',
-                '0' => 'No',
-            ])->rules('required')
-                ->resolveUsing(function ($value) {
-                    if (!$value) {
-                        return 0;
-                    }
-                    return 1;
-                })
-                ->displayUsing(function ($v) {
-                    return $v ? "Yes" : "No";
-                }),
+//            Select::make('New Arrival', 'is_new_arrival')->options([
+//                '1' => 'Yes',
+//                '0' => 'No',
+//            ])->rules('required')
+//                ->resolveUsing(function ($value) {
+//                    if (!$value) {
+//                        return 0;
+//                    }
+//                    return 1;
+//                })
+//                ->displayUsing(function ($v) {
+//                    return $v ? "Yes" : "No";
+//                }),
             Select::make('Is Official', 'is_official')->options([
                 '1' => 'Yes',
                 '0' => 'No',

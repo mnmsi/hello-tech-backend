@@ -28,7 +28,8 @@ class HomePageSection extends Model
                     "layout" => "wysiwyg",
                     "key" => substr(uniqid(rand()), 0, 12),
                     "attributes" => [
-                        "product" => $l->product_id
+                        "product" => $l->product_id,
+                        "order" => $l->order
                     ]
                 ];
             }

@@ -26,6 +26,7 @@ use App\Nova\ProductMedia;
 use App\Nova\ProductReview;
 use App\Nova\ProductSpecification;
 use App\Nova\PromotionalProduct;
+use App\Nova\SectionOrder;
 use App\Nova\SeoSetting;
 use App\Nova\SiteSetting;
 use App\Nova\SubCategory;
@@ -110,6 +111,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(SiteSetting::class),
                     MenuItem::resource(SeoSetting::class),
                     MenuItem::resource(HomeSection::class),
+                    MenuItem::resource(SectionOrder::class)->name("Section Product Order"),
                     MenuItem::resource(TermsAndCondition::class),
                     MenuItem::resource(PrivacyPolicy::class),
                     MenuItem::resource(AboutUs::class)->name('About Us'),
