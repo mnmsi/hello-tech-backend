@@ -37,7 +37,7 @@ trait BrandTrait
      */
     public function getCategoryBrands($slug)
     {
-        if($slug == 'gadgets'){
+        if ($slug == 'gadgets') {
             return Brand::where('is_active', 1)->inRandomOrder()->get();
         }
         if ($slug == 'all') {
@@ -45,15 +45,16 @@ trait BrandTrait
                 ->orderBy('id', 'asc')
                 ->get();
         } else {
-            return Brand::with(['subCategory','category'])
-                ->where('is_active', 1)
-                ->whereHas('subCategory', function ($query) use ($slug) {
+            return Brand::with(['subCategory', 'category', function ($query) use ($slug) {
+                $query->where(function ($c) use ($slug) {
+                    $c->where('slug', $slug);
+                })->orWhereHas('subCategory', function ($query) use ($slug) {
                     $query->where('slug', $slug);
-                })->orWhereHas('category', function ($query) use ($slug) {
-                    $query->where('slug', $slug);
-                })
+                });
+            }]) ->where('is_active', 1)
                 ->orderBy('id', 'asc')
                 ->get();
+
         }
 
     }
