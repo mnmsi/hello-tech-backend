@@ -46,11 +46,13 @@ trait BrandTrait
                 ->get();
         } else {
             return Brand::where('is_active', 1)
-                ->whereHas('category', function ($query) use ($slug) {
-                    $query->where('slug', $slug);
-                })
-                ->orWhereHas('subCategory', function ($query) use ($slug) {
-                    $query->where('slug', $slug);
+                ->where(function ($q) use ($slug) {
+                    $q->whereHas('category', function ($query) use ($slug) {
+                        $query->where('slug', $slug);
+                    })
+                        ->orWhereHas('subCategory', function ($query) use ($slug) {
+                            $query->where('slug', $slug);
+                        });
                 })
                 ->orderBy('id', 'asc')
                 ->get();
