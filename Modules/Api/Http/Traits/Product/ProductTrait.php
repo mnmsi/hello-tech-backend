@@ -5,6 +5,7 @@ namespace Modules\Api\Http\Traits\Product;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
 use App\Models\ProductData;
+use App\Models\SectionOrder;
 
 trait ProductTrait
 {
@@ -140,11 +141,16 @@ trait ProductTrait
 
     public function getFeaturedNewArrivals()
     {
-        return Product::wherehas('colors', function ($q) {
-            $q->where('stock', '>', 0);
-        })->where('is_new_arrival', 1)
-            ->where('is_featured', 1)
-            ->limit(8)
-            ->orderByRaw('ISNULL(order_no), order_no ASC')->get();
+//        section order with products
+        $section = SectionOrder::where('section', 'new-arrivals')
+            ->with(['sectionOrderProducts' => function ($q) {
+                $q->with(['product' => function ($q) {
+                        $q->wherehas('colors', function ($q) {
+                            $q->where('stock', '>', 0);
+                        });
+                    }]
+                )->orderBy('order', 'asc');
+            }])->get();
+//        dd($section->toArray());
     }
 }
