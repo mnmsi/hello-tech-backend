@@ -21,6 +21,7 @@ use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
 
 class Product extends BaseModel
 {
+    use HasFactory;
     public $timestamps = false;
     protected $fillable = [
         'brand_id',

@@ -76,7 +76,7 @@ trait ProductTrait
                 $query->where(function ($c) use ($params) {
                     $c->whereHas('category', function ($query) use ($params) {
                         $query->where('slug', $params['category']);
-                    })->orWhereHas('category.parent', function ($query) use ($params) {
+                    })->orWhereHas('subCategory', function ($query) use ($params) {
                         $query->where('slug', $params['category']);
                     });
                 });
