@@ -18,24 +18,9 @@ class PromotionalProduct extends Model
         'status',
     ];
 
-    protected $appends = [
-        'all_product'
-    ];
-
     protected $casts = [
         'new_product_list' => FlexibleCast::class
     ];
-
-    public function getAllProductAttribute()
-    {
-        return [];
-//        dd($this->attributes['product_list']);
-//        if($this->attributes['product_list']){
-//            return ProductResource::collection(Product::whereIn('id', json_decode($this->attributes['product_list']))->get());
-//        } else {
-//            return [];
-//        }
-    }
 
     public function getNewProductListAttribute(): array
     {

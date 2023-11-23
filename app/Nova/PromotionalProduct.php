@@ -88,7 +88,7 @@ class PromotionalProduct extends Resource
                         ->searchable()
                         ->displayUsingLabels(),
                     Number::make('Product Position No.', 'order')
-                        ->nullable(),
+                        ->rules('required'),
                 ])->hideFromIndex()
                 ->withMeta([
                     'ignoreOnSaving',
