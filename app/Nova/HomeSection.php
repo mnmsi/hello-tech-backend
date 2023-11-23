@@ -83,7 +83,7 @@ class HomeSection extends Resource
                         ->searchable()
                         ->displayUsingLabels(),
                     Number::make('Product Position No.', 'order')
-                        ->nullable(),
+                        ->required(),
                 ])->hideFromIndex()
                 ->withMeta([
                     'ignoreOnSaving',

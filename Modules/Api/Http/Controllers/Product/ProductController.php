@@ -96,6 +96,7 @@ class ProductController extends Controller
 
     public function featuredNewArrivals()
     {
+        $data = $this->getFeaturedNewArrivals();
         return $this->respondWithSuccessWithData(
             ProductResource::collection($this->getFeaturedNewArrivals())
         );

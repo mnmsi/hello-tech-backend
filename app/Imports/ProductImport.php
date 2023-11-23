@@ -40,6 +40,7 @@ class ProductImport implements ToModel, WithStartRow
                 'name' => $row[6],
                 'price' => (integer)$row[8],
                 'discount_rate' => (integer)$row[9],
+                'order_no' => (integer)$row[10] ?? null,
                 'is_featured' => Str::upper($row[14]) == "YES" ? 1 : 0,
                 'is_new_arrival' => Str::upper($row[12]) == "YES" ? 1 : 0,
                 'is_active' => 1, // $row[15]

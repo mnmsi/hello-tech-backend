@@ -37,7 +37,7 @@ trait ProductTrait
     {
         return Product::wherehas('colors', function ($q) {
             $q->where('stock', '>', 0);
-        })->where('category_id', $categoryId)->where('is_featured', 1)->orderByRaw('ISNULL(order_no), order_no ASC')->get();
+        })->where('category_id', $categoryId)->where('is_featured', 1)->orderByRaw('ISNULL(category_order_no), category_order_no ASC')->get();
     }
 
     public function initializeFilterData($request)
@@ -57,8 +57,10 @@ trait ProductTrait
     public function getProductsQuery($params)
     {
 
+        $order = 'category_order_no';
         if ($params['category'] == 'gadgets') {
             $params['category'] = null;
+            $order = 'order_no';
         }
 
         return Product::wherehas('colors', function ($q) {
@@ -67,15 +69,17 @@ trait ProductTrait
             ->when($params['name'], function ($query) use ($params) {
                 $query->whereRaw('LOWER(name) LIKE ?', '%' . strtolower($params['name']) . '%');
             })
-            ->when($params['category'], function ($query) use ($params) {
-                $query->whereHas('category', function ($query) use ($params) {
-                    $query->where('slug', $params['category']);
-                })->orWhereHas('subCategory', function ($query) use ($params) {
-                    $query->where('slug', $params['category']);
-                });
-            })
             ->when($params['brand'], function ($query) use ($params) {
                 $query->where('brand_id', $params['brand']);
+            })
+            ->when($params['category'], function ($query) use ($params) {
+                $query->where(function ($c) use ($params) {
+                    $c->whereHas('category', function ($query) use ($params) {
+                        $query->where('slug', $params['category']);
+                    })->orWhereHas('subCategory', function ($query) use ($params) {
+                        $query->where('slug', $params['category']);
+                    });
+                });
             })
             ->when($params['is_official'], function ($query) use ($params) {
                 $query->where('is_official', $params['is_official']);
@@ -90,7 +94,7 @@ trait ProductTrait
             })
             ->when($params['short_by'], function ($query) use ($params) {
                 $query->orderBy('price', $params['short_by']);
-            })->orderByRaw('ISNULL(order_no), order_no ASC')
+            })->orderByRaw('ISNULL(' . $order . '), ' . $order . ' ASC')
             ->paginate(9);
     }
 
@@ -131,7 +135,7 @@ trait ProductTrait
 
     public function getNewArrivals()
     {
-        return SectionOrder::where('section', 'new-arrivals')
+        $data = SectionOrder::where('section', 'new-arrivals')
             ->with(['sectionOrderProducts' => function ($q) {
                 $q->with(['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
@@ -140,12 +144,13 @@ trait ProductTrait
                     }]
                 )->orderBy('order', 'asc');
             }])->get();
+        return $data->pluck('sectionOrderProducts')->flatten()->pluck('product');
     }
 
     public function getFeaturedNewArrivals()
     {
 //        section order with products
-        return SectionOrder::where('section', 'new-arrivals')
+        $data = SectionOrder::where('section', 'new-arrivals')
             ->with(['sectionOrderProducts' => function ($q) {
                 $q->with(['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
@@ -154,5 +159,6 @@ trait ProductTrait
                     }]
                 )->limit(8)->orderBy('order', 'asc');
             }])->get();
+        return $data->pluck('sectionOrderProducts')->flatten()->pluck('product');
     }
 }
