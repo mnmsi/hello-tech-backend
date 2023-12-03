@@ -22,8 +22,8 @@ class OrderController extends Controller
                 'site' => $site,
                 'data' => $request->all()
             ]);
-            return $pdf->stream('invoice.pdf');
-//            return $pdf->download('invoice.pdf');
+//            return $pdf->stream('invoice.pdf');
+            return $pdf->download('invoice.pdf');
         } catch (\Exception $e) {
             return $e->getMessage();
         }
