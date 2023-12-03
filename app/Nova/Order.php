@@ -69,10 +69,17 @@ class Order extends Resource
     {
         return [
             ID::make()->sortable(),
+            Text::make('Name of the customer', 'name')->required(),
             //            user
             BelongsTo::make('User', 'user', 'App\Nova\User')
                 ->rules('required')
                 ->noPeeking(),
+            //            phone
+            Text::make('Phone', 'phone')->required(),
+            Text::make('City','city')->required(),
+            Text::make('Division','division')->required(),
+            Text::make('Area','area')->required(),
+            Text::make('Address Line','address_line')->required(),
             //            payment method
             BelongsTo::make('Payment Method', 'paymentMethod', 'App\Nova\PaymentMethods')
                 ->rules('required')
@@ -81,10 +88,10 @@ class Order extends Resource
             BelongsTo::make('Delivery Type', 'deliveryOption', 'App\Nova\DeliveryOption')
                 ->rules('required')
                 ->noPeeking(),
-            //            user address
-            BelongsTo::make('User address', 'userAddress', 'App\Nova\UserAddress')
-                ->nullable()
-                ->noPeeking(),
+//            //            user address
+//            BelongsTo::make('User address', 'userAddress', 'App\Nova\UserAddress')
+//                ->nullable()
+//                ->noPeeking(),
             //            Voucher
             BelongsTo::make('Voucher', 'voucher', 'App\Nova\Voucher')
                 ->nullable()
@@ -146,7 +153,7 @@ class Order extends Resource
             ])->rules('required')->hideFromIndex()
                 ->hideFromDetail(),
 
-            Badge::make('Status','status')->map([
+            Badge::make('Status', 'status')->map([
                 'pending' => 'warning',
                 'processing' => 'info',
                 'completed' => 'success',

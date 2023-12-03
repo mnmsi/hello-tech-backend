@@ -71,6 +71,7 @@ class Banner extends Resource
                             ->nullable();
                     }
                 })
+                ->searchable()
                 ->noPeeking(),
             //            category
             BelongsTo::make('Category', 'category')
@@ -85,6 +86,7 @@ class Banner extends Resource
                             ->nullable();
                     }
                 })
+                ->searchable()
                 ->noPeeking(),
             //          page
             Select::make('Display Page', 'page')->options([
