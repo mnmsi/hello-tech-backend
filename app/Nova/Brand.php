@@ -75,11 +75,12 @@ class Brand extends Resource
                 ->hideWhenUpdating(),
 
             BelongsTo::make('Category', 'category')
-                ->searchable()
                 ->rules('required')
-                ->noPeeking(),
+                ->searchable(),
+//                ->noPeeking(),
             BelongsTo::make('Sub Category', 'subCategory')
                 ->rules('required')
+                ->searchable()
                 ->noPeeking(),
             Select::make('Is popular', 'is_popular')->options([
                 '1' => 'Yes',

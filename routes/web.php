@@ -21,4 +21,7 @@ Route::get('/', function () {
 Route::get('/admin-login',[LoginController::class,'loginPage'])->name('login.page');
 Route::post('login-check', [LoginController::class, 'loginCheck'])->name('admin-login-check');
 
+Route::get('/order/invoice/{id}',[\App\Http\Controllers\OrderController::class,'orderInvoiceGenerate'])->name("order.invoice");
+Route::get('/order/test',[\App\Http\Controllers\OrderController::class,'text']);
+
 

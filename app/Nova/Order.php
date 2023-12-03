@@ -5,6 +5,8 @@ namespace App\Nova;
 use App\Nova\Actions\Order\OrderCancelledActions;
 use App\Nova\Actions\Order\OrderCompletedActions;
 use App\Nova\Actions\Order\OrderDeliveredActions;
+use App\Nova\Actions\Order\OrderInvoice;
+use App\Nova\Actions\Order\OrderInvoiceAction;
 use App\Nova\Actions\Order\OrderPendingActions;
 use App\Nova\Actions\Order\OrderProcessingActions;
 use App\Nova\Filters\OrderByDateFilter;
@@ -216,12 +218,14 @@ class Order extends Resource
     public function actions(NovaRequest $request)
     {
         return [
+            new OrderInvoiceAction(),
             new OrderPendingActions(),
             new OrderProcessingActions(),
             new OrderCompletedActions(),
             new OrderDeliveredActions(),
             new OrderCancelledActions(),
 
+            (new OrderInvoiceAction())->onlyOnTableRow(),
             (new OrderPendingActions())->onlyOnTableRow(),
             (new OrderProcessingActions())->onlyOnTableRow(),
             (new OrderCompletedActions())->onlyOnTableRow(),
