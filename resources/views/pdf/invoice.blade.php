@@ -166,9 +166,9 @@
             <th style="text-align: left">Qty</th>
             <th style="text-align: right">SubTotal</th>
         </tr>
-        <tr class="items">
-            @if(!empty($order->orderDetails))
-                @foreach($order->orderDetails as $item)
+        @if(!empty($order->orderDetails))
+            @foreach($order->orderDetails as $item)
+                <tr class="items">
                     <td>
                         {{ !empty($item["product"]["name"]) ? $item["product"]["name"] : "" }}
                     </td>
@@ -179,9 +179,9 @@
                         {{ !empty($item["quantity"]) ? $item["quantity"] : 0 }}
                     </td>
                     <td style="text-align: right">{{ !empty($item["subtotal_price"]) ? $item["subtotal_price"] : 0 }}</td>
-                @endforeach
-            @endif
-        </tr>
+                </tr>
+            @endforeach
+        @endif
     </table>
 </div>
 {{--summary--}}
