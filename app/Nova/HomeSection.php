@@ -60,6 +60,8 @@ class HomeSection extends Resource
                         'placeholder' => 'Enter title',
                     ],
                 ]),
+            Number::make('Section Position No.', 'order_no')
+                ->rules('required'),
 //            date
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()

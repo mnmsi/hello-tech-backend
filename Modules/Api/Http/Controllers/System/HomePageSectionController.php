@@ -17,7 +17,7 @@ class HomePageSectionController extends Controller
                     $q->where('stock','>',0);
                 }]);
             }])->orderBy('order','asc');
-        }])
+        }])->orderBy("order_no")
             ->get();
         return $this->respondWithSuccessWithData(
             HomePageSectionResource::collection($data)
