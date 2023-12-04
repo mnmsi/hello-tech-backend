@@ -75,13 +75,13 @@ class GuestCartController extends Controller
             $guest_user = GuestUser::where('uuid', $request->guest_user_id)->first();
             $cart = GuestCart::where('id', $request->cart_id)->where('guest_user_id', $guest_user->id)->first();
             if ($cart) {
-                $cart->status = $request->status ? $request->status : $cart->status;
-                $cart->quantity = $request->quantity ? $request->quantity : $cart->quantity;
+                $cart->status = $request->status ;
+                $cart->quantity = $request->quantity;
                 $cart->save();
-                return $this->respondWithSuccess([
-                    'message' => 'Product updated in cart successfully',
-                ]);
             }
+            return $this->respondWithSuccess([
+                'message' => 'Product updated in cart successfully',
+            ]);
         }catch (\Exception $e) {
             return $this->respondError($e->getMessage());
         }
