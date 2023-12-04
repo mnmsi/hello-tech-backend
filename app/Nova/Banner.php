@@ -46,7 +46,7 @@ class Banner extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @return array
      * @throws \Exception
      */
@@ -165,8 +165,8 @@ class Banner extends Resource
                             ],
                         ]),
                 ])->hideFromIndex()
-                ->hideFromDetail(),
-//                ->limit(3),
+                ->hideFromDetail()
+                ->limit(3),
             //            order no
             Number::make('Banner Position', 'order_no')
                 ->rules('required'),
@@ -202,7 +202,7 @@ class Banner extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @return array
      */
     public function cards(NovaRequest $request)
@@ -213,7 +213,7 @@ class Banner extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @return array
      */
     public function filters(NovaRequest $request)
@@ -226,7 +226,7 @@ class Banner extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @return array
      */
     public function lenses(NovaRequest $request)
@@ -237,7 +237,7 @@ class Banner extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param NovaRequest $request
      * @return array
      */
     public function actions(NovaRequest $request)
@@ -249,13 +249,13 @@ class Banner extends Resource
     {
         if ($request->isCreateOrAttachRequest()) {
             $fields = $fields->reject(function ($field) {
-                return in_array($field->attribute, ['home_image']);
+                return $field->attribute == 'home_image';
             });
         }
 
         if ($request->isUpdateOrUpdateAttachedRequest()) {
             $fields = $fields->reject(function ($field) {
-                return in_array($field->attribute, ['home_image']);
+                return $field->attribute == 'home_image';
             });
         }
 
@@ -286,17 +286,21 @@ class Banner extends Resource
         $formData = $request->all();
 
         if (isset($formData['home_image'])) {
-            $result = [];
-            foreach ($formData['home_image'] as $b) {
-                $result[] = [
-                    "url" => $b["attributes"]["image_url"],
-                    "image" => Env::get("APP_URL") . "storage/" . $request->all()[$b["attributes"]["home_image"]]->store("banner", "public"),
-                ];
-
-                $banner_item = \App\Models\System\Banner::find($model->id);
-                $banner_item->home_images = json_encode($result);
-                $banner_item->save();
+            $banner_item = \App\Models\System\Banner::find($model->id);
+            $result = json_decode($banner_item->home_images, true);
+            //            dd(json_decode($banner_item->home_images, true),$formData['home_image']);
+            foreach ($formData['home_image'] as $k => $b) {
+                $result[$k]["url"] = $b["attributes"]["image_url"];
+                if (!empty($b["attributes"]["home_image"])) {
+                    $result[$k]["image"] = Env::get("APP_URL") . "storage/" . $request->all()[$b["attributes"]["home_image"]]->store("banner", "public");
+                }
+//                $result[] = [
+//                    "url" => $b["attributes"]["image_url"],
+//                    "image" => Env::get("APP_URL") . "storage/" . $request->all()[$b["attributes"]["home_image"]]->store("banner", "public"),
+//                ];
             }
+            $banner_item->home_images = json_encode($result);
+            $banner_item->save();
         }
     }
 }
