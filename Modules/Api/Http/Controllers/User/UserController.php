@@ -29,7 +29,7 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        $user    = Auth::user();                                                                           // Get current user
+        $user = Auth::user();                                                                           // Get current user
         $reqData = $request->only('name', 'email', 'phone',); // Get request data
 
         // Check if request has file
@@ -46,21 +46,26 @@ class UserController extends Controller
         );
     }
 
-    public function changePassword(Request $request){
+    public function changePassword(Request $request)
+    {
         $request->validate([
-           'current_password' => 'required',
+            'uid' => 'exists:users,uid',
+            'current_password' => 'required_if:uid,null|same:new_password',
             'new_password' => 'required|string|min:6'
         ]);
+
         $user = Auth::user();
-        if(!Hash::check($request->current_password,$user->password)){
-            return $this->respondFailedValidation(
-                'Password does not match'
-            );
+        if($request->uid != $user->uid || empty($request->uid)){
+            if (!Hash::check($request->current_password, $user->password)) {
+                return $this->respondFailedValidation(
+                    'Password does not match'
+                );
+            }
         }
         $user->password = Hash::make($request->new_password);
         $user->save();
         return $this->respondWithSuccess([
-           'message'=>'Password updated successfully'
+            'message' => 'Password updated successfully'
         ]);
     }
 }
