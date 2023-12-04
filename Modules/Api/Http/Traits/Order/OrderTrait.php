@@ -117,7 +117,7 @@ OrderTrait
                     "quantity" => $c['quantity'], // quantity
                     "discount_rate" => $product->discount_rate, // product discount rate
                     "subtotal_price" => $sub_total, // without quantity
-                    "total" => $product_price, // product + product color + product feature + discount + quantity
+                    "total" => $sub_total * $c['quantity'], // product + product color + product feature + discount + quantity
                 ];
             }
             $subtotal_price = collect($newOrderDetails)->sum("total");
