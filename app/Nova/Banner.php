@@ -288,18 +288,18 @@ class Banner extends Resource
         if (isset($formData['home_image'])) {
             $banner_item = \App\Models\System\Banner::find($model->id);
             $result = json_decode($banner_item->home_images, true);
-            //            dd(json_decode($banner_item->home_images, true),$formData['home_image']);
+            $update_data = [];
             foreach ($formData['home_image'] as $k => $b) {
-                $result[$k]["url"] = $b["attributes"]["image_url"];
                 if (!empty($b["attributes"]["home_image"])) {
-                    $result[$k]["image"] = Env::get("APP_URL") . "storage/" . $request->all()[$b["attributes"]["home_image"]]->store("banner", "public");
+                    $update_data[] = [
+                        "url" => $b["attributes"]["image_url"],
+                        "image" => Env::get("APP_URL") . "storage/" . $request->all()[$b["attributes"]["home_image"]]->store("banner", "public")
+                    ];
+                } else {
+                    $update_data[] = $result[$k];
                 }
-//                $result[] = [
-//                    "url" => $b["attributes"]["image_url"],
-//                    "image" => Env::get("APP_URL") . "storage/" . $request->all()[$b["attributes"]["home_image"]]->store("banner", "public"),
-//                ];
             }
-            $banner_item->home_images = json_encode($result);
+            $banner_item->home_images = json_encode($update_data);
             $banner_item->save();
         }
     }
