@@ -23,7 +23,7 @@ class OrderController extends Controller
                 'data' => $request->all()
             ]);
 //            return $pdf->stream('invoice.pdf');
-            return $pdf->download('invoice.pdf');
+            return $pdf->download($order->transaction_id . '_invoice.pdf');
         } catch (\Exception $e) {
             return $e->getMessage();
         }

@@ -170,10 +170,10 @@
             @foreach($order->orderDetails as $item)
                 <tr class="items">
                     <td>
-                        {{ !empty($item["product"]["name"]) ? $item["product"]["name"] : "" }}
+                        {{ !empty($item["product"]["name"]) ? $item["product"]["name"] : "" }}, {{ !empty($item["product_color"]["name"]) ? $item["product_color"]["name"] : "" }}
                     </td>
                     <td>
-                        {{ !empty($item["product"]["price"]) ? $item["product"]["price"] : 0 }}
+                        {{ !empty($item["product"]["price"]) ? $item["product"]["price"] : 0 }}, {{ !empty($item["product_color"]["price"]) ? $item["product_color"]["price"] : 0 }}
                     </td>
                     <td>
                         {{ !empty($item["quantity"]) ? $item["quantity"] : 0 }}
