@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order\Order;
 use App\Models\System\SiteSetting;
+use App\Models\Voucher;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Action;
@@ -17,9 +18,14 @@ class OrderController extends Controller
         try {
             $order = Order::with("orderDetails", "orderDetails.product", "orderDetails.product_color")->find($id);
             $site = SiteSetting::first();
+            $discount = null;
+            if (!empty($order->voucher_id)) {
+                $discount = Voucher::find($order->voucher_id);
+            }
             $pdf = Pdf::loadView('pdf.invoice', [
                 'order' => $order,
                 'site' => $site,
+                'discount' => $discount,
                 'data' => $request->all()
             ]);
 //            return $pdf->stream('invoice.pdf');
@@ -31,9 +37,13 @@ class OrderController extends Controller
 
     public function text(Request $request)
     {
-        $order = Order::with("orderDetails", "orderDetails.product:id,name,price", "orderDetails.product_color:id,name,price")->find(2);
+        $order = Order::with("orderDetails", "orderDetails.product:id,name,price", "orderDetails.product_color:id,name,price")->find(5);
         $site = SiteSetting::first();
+        $discount = null;
+        if (!empty($order->voucher_id)) {
+            $discount = Voucher::find($order->voucher_id);
+        }
 //        $pdf = Pdf::loadView('pdf.invoice', ['data' => $data]);
-        return view('pdf.invoice', ['order' => $order, 'site' => $site]);
+        return view('pdf.invoice', ['order' => $order, 'site' => $site, 'discount' => $discount,]);
     }
 }

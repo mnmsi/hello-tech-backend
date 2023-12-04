@@ -78,10 +78,10 @@ class OrderDetail extends Resource
                 ->step('any')
                 ->rules('required'),
 //            discount
-            Number::make('discount_rate')
-                ->min(0)
-                ->step('any')
-                ->nullable(),
+//            Number::make('discount_rate')
+//                ->min(0)
+//                ->step('any')
+//                ->nullable(),
 //            subtotal
             Number::make('subtotal_price')
                 ->min(0)

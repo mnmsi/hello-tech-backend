@@ -170,15 +170,16 @@
             @foreach($order->orderDetails as $item)
                 <tr class="items">
                     <td>
-                        {{ !empty($item["product"]["name"]) ? $item["product"]["name"] : "" }}, {{ !empty($item["product_color"]["name"]) ? $item["product_color"]["name"] : "" }}
+                        {{ !empty($item["product"]["name"]) ? $item["product"]["name"] : "" }}
+                        , {{ !empty($item["product_color"]["name"]) ? $item["product_color"]["name"] : "" }}
                     </td>
                     <td>
-                        {{ !empty($item["product"]["price"]) ? $item["product"]["price"] : 0 }}, {{ !empty($item["product_color"]["price"]) ? $item["product_color"]["price"] : 0 }}
+                        {{ !empty($item["subtotal_price"]) ? $item["subtotal_price"] : 0 }}
                     </td>
                     <td>
                         {{ !empty($item["quantity"]) ? $item["quantity"] : 0 }}
                     </td>
-                    <td style="text-align: right">{{ !empty($item["subtotal_price"]) ? $item["subtotal_price"] : 0 }}</td>
+                    <td style="text-align: right">{{ !empty($item["total"]) ? $item["total"] : 0 }}</td>
                 </tr>
             @endforeach
         @endif
@@ -203,16 +204,22 @@
             <td class="w-half">
                 <div style="">
                     <table class="w-full">
-                        <tr>
-                            <td class="w-half" style="padding-left: 0">Shipping:</td>
-                            <td class="w-half text-right">{{$order->shipping_amount ?? 0}}</td>
-                        </tr>
-                        @if($order->discount_rate !== null)
+                        @if($discount !== null)
                             <tr>
                                 <td class="w-half" style="padding-left: 0">Discount:</td>
-                                <td class="w-half text-right">{{$order->discount_rate}} %</td>
+                                <td class="w-half text-right">
+                                    - {{ $discount->value }} {{ $discount->type==="percentage" ? "%" : "" }}
+                                </td>
                             </tr>
                         @endif
+                        <tr>
+                            <td class="w-half" style="padding-left: 0">Sub Total:</td>
+                            <td class="w-half text-right">{{$order->subtotal_price ?? 0}}</td>
+                        </tr>
+                        <tr>
+                            <td class="w-half" style="padding-left: 0">Shipping:</td>
+                            <td class="w-half text-right">{{$order->shipping_amount ? "+ " . $order->shipping_amount : 0}}</td>
+                        </tr>
                     </table>
                 </div>
             </td>
@@ -220,7 +227,7 @@
     </table>
 </div>
 <div class="total">
-    <h2>Total: {{$order->subtotal_price ?? 0}}</h2>
+    <h2>Total: {{$order->total_price ?? 0}}</h2>
 </div>
 {{--auth--}}
 <div class="margin-top">
