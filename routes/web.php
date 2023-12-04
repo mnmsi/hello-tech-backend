@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Nova\LoginController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,10 +19,11 @@ Route::get('/', function () {
     return redirect()->route('login.page');
 });
 
-Route::get('/admin-login',[LoginController::class,'loginPage'])->name('login.page');
+Route::get('/admin-login', [LoginController::class, 'loginPage'])->name('login.page');
 Route::post('login-check', [LoginController::class, 'loginCheck'])->name('admin-login-check');
 
-Route::get('/order/invoice/{id}',[\App\Http\Controllers\OrderController::class,'orderInvoiceGenerate'])->name("order.invoice");
-Route::get('/order/test',[\App\Http\Controllers\OrderController::class,'text']);
+Route::get('/order/invoice/{id}', [OrderController::class, 'orderInvoiceGenerate'])->name("order.invoice");
+Route::get('/guest-order/invoice/{id}', [OrderController::class, 'guestOrderInvoiceGenerate'])->name("guest.order.invoice");
+Route::get('/order/test', [OrderController::class, 'text']);
 
 

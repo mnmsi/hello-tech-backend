@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\GuestOrderInvoiceAction;
 use App\Nova\Actions\Order\OrderCancelledActions;
 use App\Nova\Actions\Order\OrderCompletedActions;
 use App\Nova\Actions\Order\OrderDeliveredActions;
@@ -145,12 +146,14 @@ class GuestOrder extends Resource
     public function actions(NovaRequest $request)
     {
         return [
+            new GuestOrderInvoiceAction(),
             new OrderPendingActions(),
             new OrderProcessingActions(),
             new OrderCompletedActions(),
             new OrderDeliveredActions(),
             new OrderCancelledActions(),
 
+            (new GuestOrderInvoiceAction())->onlyOnTableRow(),
             (new OrderPendingActions())->onlyOnTableRow(),
             (new OrderProcessingActions())->onlyOnTableRow(),
             (new OrderCompletedActions())->onlyOnTableRow(),
