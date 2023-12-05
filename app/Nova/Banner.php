@@ -296,7 +296,11 @@ class Banner extends Resource
                         "image" => Env::get("APP_URL") . "storage/" . $request->all()[$b["attributes"]["home_image"]]->store("banner", "public")
                     ];
                 } else {
-                    $update_data[] = $result[$k];
+//                    $update_data[] = $result[$k];
+                    $update_data[] = [
+                        "url" => $b["attributes"]["image_url"],
+                        "image" => $result[$k]["image"],
+                    ];
                 }
             }
             $banner_item->home_images = json_encode($update_data);
