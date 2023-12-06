@@ -33,7 +33,7 @@ class SubCategory extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'name'
     ];
 
     /**
@@ -63,7 +63,7 @@ class SubCategory extends Resource
                 ->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->default(now()),
-            HasMany::make('Product List', 'products','App\Nova\Product'),
+            HasMany::make('Product List', 'products', 'App\Nova\Product'),
         ];
     }
 
