@@ -67,6 +67,7 @@ class ProductMedia extends Resource
                         $query->where('product_id', $formData->product);
                     });
                 })
+                ->help("Please select product if color is not showing")
                 ->noPeeking(),
 
 //            thumb url
