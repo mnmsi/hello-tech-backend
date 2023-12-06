@@ -121,7 +121,7 @@ class Brand extends Resource
                 ->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->default(now()),
-            HasMany::make('Product List', 'product','App\Nova\Product'),
+            HasMany::make('Product List', 'product', 'App\Nova\Product'),
         ];
     }
 
@@ -171,7 +171,12 @@ class Brand extends Resource
 
     public static function searchableColumns()
     {
-        return ['id', 'name', new SearchableRelation('category', 'name')];
+        return [
+            'id',
+            'name',
+            new SearchableRelation('category', 'name'),
+            new SearchableRelation('subCategory', 'name')
+        ];
     }
 
 //    public function authorizedToDelete(Request $request): bool
