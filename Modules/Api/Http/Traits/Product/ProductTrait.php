@@ -137,7 +137,8 @@ trait ProductTrait
     {
         $data = SectionOrder::where('section', 'new-arrivals')
             ->with(['sectionOrderProducts' => function ($q) {
-                $q->with(['product' => function ($q) {
+                $q->with(
+                    ['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
                             $q->where('stock', '>', 0);
                         });
@@ -149,10 +150,11 @@ trait ProductTrait
 
     public function getFeaturedNewArrivals()
     {
-//        section order with products
+        //        section order with products
         $data = SectionOrder::where('section', 'new-arrivals')
             ->with(['sectionOrderProducts' => function ($q) {
-                $q->with(['product' => function ($q) {
+                $q->with(
+                    ['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
                             $q->where('stock', '>', 0);
                         });
