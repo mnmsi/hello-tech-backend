@@ -21,7 +21,9 @@ trait ProductTrait
 
     public function getSearchSuggestions($search)
     {
-        return Product::where('name', 'LIKE', '%' . $search . '%')->take(5)->get();
+        return Product::where('name', 'LIKE', '%' . $search . '%')->take(5)->whereHas('colors', function ($q) {
+            $q->where('stock', '>', 0);
+        })->get();
     }
 
     /**
@@ -35,9 +37,7 @@ trait ProductTrait
 
     public function featuredProduct($categoryId)
     {
-        return Product::wherehas('colors', function ($q) {
-            $q->where('stock', '>', 0);
-        })->where('category_id', $categoryId)->where('is_featured', 1)->orderByRaw('ISNULL(category_order_no), category_order_no ASC')->get();
+        return Product::where('category_id', $categoryId)->where('is_featured', 1)->orderByRaw('ISNULL(category_order_no), category_order_no ASC')->get();
     }
 
     public function initializeFilterData($request)
@@ -64,7 +64,7 @@ trait ProductTrait
         }
 
         return Product::wherehas('colors', function ($q) {
-            $q->where('stock', '>', 0);
+            $q->where('id', '>', 0);
         })->where('is_active', 1)
             ->when($params['name'], function ($query) use ($params) {
                 $query->whereRaw('LOWER(name) LIKE ?', '%' . strtolower($params['name']) . '%');
@@ -105,29 +105,27 @@ trait ProductTrait
                 $q->where('stock', '>', 0);
             }]);
         }, 'banner', 'category', 'colors' => function ($c) {
-            $c->where('stock', '>', 0);
+            $c->where('id', '>', 0);
         }])->first();
     }
 
     public function productDataById($id)
     {
         return ProductData::wherehas('colors', function ($q) {
-            $q->where('stock', '>', 0);
+            $q->where('id', '>', 0);
         })->where('product_feature_value_id', $id)->orWhere('product_color_id', $id)->first();
     }
 
     public function getRelatedProduct()
     {
-        return Product::where('is_active', 1)->whereHas('colors', function ($query) {
-            $query->where('stock', '>', 0);
-        })->inRandomOrder()->take(4)->get();
+        return Product::where('is_active', 1)
+        ->orderByRaw('ISNULL(order_no), order_no ASC')->get();
     }
 
     public function getProductByBrandSlug($slug)
     {
-        return Product::wherehas('colors', function ($q) {
-            $q->where('stock', '>', 0);
-        })->where('is_active', 1)
+        return Product::where
+        ('is_active', 1)
             ->whereHas('brand', function ($query) use ($slug) {
                 $query->where('slug', $slug);
             })->orderByRaw('ISNULL(order_no), order_no ASC')->get();;
@@ -140,7 +138,8 @@ trait ProductTrait
                 $q->with(
                     ['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
-                            $q->where('stock', '>', 0);
+                            $q->where('id', '>', 0);
+
                         });
                     }]
                 )->orderBy('order', 'asc');
@@ -156,7 +155,7 @@ trait ProductTrait
                 $q->with(
                     ['product' => function ($q) {
                         $q->wherehas('colors', function ($q) {
-                            $q->where('stock', '>', 0);
+                            $q->where('id', '>', 0);
                         });
                     }]
                 )->limit(8)->orderBy('order', 'asc');

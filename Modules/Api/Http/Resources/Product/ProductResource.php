@@ -29,6 +29,7 @@ class ProductResource extends JsonResource
             'hover_image_url' => $this->hover_image_url ? asset('storage/' . $this->hover_image_url) : null,
             'is_favorite' => $this->is_favorite,
             'is_cart' => $this->is_cart,
+            'is_stock_out' => $this->colors->sum('stock') == 0,
         ];
     }
 }
