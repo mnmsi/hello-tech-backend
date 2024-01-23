@@ -22,6 +22,7 @@
         "maatwebsite/excel": "^3.1",
         "nwidart/laravel-modules": "^10.0",
         "outl1ne/nova-multiselect-field": "^4.3",
+        "predis/predis": "^2.2",
         "spatie/laravel-mail-preview": "^6.0",
         "whitecube/nova-flexible-content": "^1.0",
         "yieldstudio/nova-phone-field": "^1.0"

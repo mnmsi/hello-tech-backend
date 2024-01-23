@@ -128,7 +128,7 @@ trait ProductTrait
         ('is_active', 1)
             ->whereHas('brand', function ($query) use ($slug) {
                 $query->where('slug', $slug);
-            })->orderByRaw('ISNULL(order_no), order_no ASC')->get();;
+            })->orderByRaw('ISNULL(order_no), order_no ASC')->take(4)->get();;
     }
 
     public function getNewArrivals()
