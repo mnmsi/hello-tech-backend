@@ -173,8 +173,13 @@ OrderTrait
                 } else {
                     DB::commit();
                     return [
+                        'data' => [
+                            'order_id' => $order->id,
+                            'transaction_id' => $order->transaction_id,
+                            'order_key' => $order->order_key,
+                        ],
                         'status' => true,
-                        'message' => 'Payment Successful',
+                        'message' => 'Order Successful',
                     ];
                 }
             } else {
@@ -440,8 +445,13 @@ OrderTrait
                 } else {
                     DB::commit();
                     return [
+                        'data' => [
+                            'order_id' => $order->id,
+                            'transaction_id' => $order->transaction_id,
+                            'order_key' => $order->order_key,
+                        ],
                         'status' => true,
-                        'message' => 'Payment Successful',
+                        'message' => 'Order Successful',
                     ];
                 }
             } else {
