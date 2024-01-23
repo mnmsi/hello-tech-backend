@@ -95,7 +95,7 @@ trait ProductTrait
             ->when($params['short_by'], function ($query) use ($params) {
                 $query->orderBy('price', $params['short_by']);
             })->orderByRaw('ISNULL(' . $order . '), ' . $order . ' ASC')
-            ->paginate(9);
+            ->paginate(27);
     }
 
     public function getProductDetailsBySlug($slug)
