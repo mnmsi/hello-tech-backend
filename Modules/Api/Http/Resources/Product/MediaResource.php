@@ -18,6 +18,7 @@ class MediaResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'is_stock_out' => $this->color->stock == 0,
             'color' => $this->color->name,
             'thumbnail_url' => str_contains($this->image_url, 'http') ? $this->image_url : asset('storage/' . $this->image_url),
         ];
