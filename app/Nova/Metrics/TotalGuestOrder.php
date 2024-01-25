@@ -3,18 +3,21 @@
 namespace App\Nova\Metrics;
 
 use App\Models\GuestOrder;
-use Laravel\Nova\Metrics\Value;
+use App\Models\Order\Order;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Metrics\Trend;
 
-class  TotalGuestOrder extends Value
+class  TotalGuestOrder extends Trend
 {
     public function name()
     {
         return "Total Guest Order";
     }
 
-    public function calculate()
+    public function calculate(NovaRequest $request)
     {
-        return $this->result(GuestOrder::count());
+        return $this->countByDays($request, GuestOrder::class)
+            ->showSumValue();
     }
 
     public function ranges()
