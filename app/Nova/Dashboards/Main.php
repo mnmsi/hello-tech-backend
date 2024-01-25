@@ -2,6 +2,7 @@
 
 namespace App\Nova\Dashboards;
 
+use App\Nova\GuestOrder;
 use App\Nova\Metrics\BannerCount;
 use App\Nova\Metrics\BikeSellRequestPerDay;
 use App\Nova\Metrics\BrandCount;
@@ -11,9 +12,11 @@ use App\Nova\Metrics\DeliveriedOrder;
 use App\Nova\Metrics\OrderPerDay;
 use App\Nova\Metrics\OrderTotalPayment;
 use App\Nova\Metrics\PendingOrder;
+use App\Nova\Metrics\RecentGuestOrder;
 use App\Nova\Metrics\RecentOrder;
 use App\Nova\Metrics\RegisteredUsers;
 use App\Nova\Metrics\ShowroomPerCity;
+use App\Nova\Metrics\TotalGuestOrder;
 use App\Nova\Metrics\TotalProduct;
 use Laravel\Nova\Cards\Help;
 use Laravel\Nova\Dashboards\Main as Dashboard;
@@ -28,19 +31,22 @@ class Main extends Dashboard
     public function cards()
     {
         return [
+            new TotalGuestOrder(),
             new RegisteredUsers(),
-            new TotalProduct(),
-            new OrderTotalPayment(),
-            new BrandCount(),
-            new CategoryCount(),
-            new BannerCount(),
             new OrderPerDay(),
             new PendingOrder(),
             new DeliveriedOrder(),
             new CancelledOrder(),
-            (new RecentOrder())->width("full"),
+            (new RecentOrder())->width("1/2"),
+            (new RecentGuestOrder())->width("1/2"),
         ];
     }
+
+    public function filters()
+    {
+        return [];
+    }
+
 
     public function name()
     {

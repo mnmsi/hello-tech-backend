@@ -8,6 +8,7 @@ use App\Nova\Actions\Order\OrderCompletedActions;
 use App\Nova\Actions\Order\OrderDeliveredActions;
 use App\Nova\Actions\Order\OrderPendingActions;
 use App\Nova\Actions\Order\OrderProcessingActions;
+use App\Nova\Metrics\TotalGuestOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Badge;
@@ -165,6 +166,13 @@ class GuestOrder extends Resource
     public static function authorizedToCreate(Request $request)
     {
         return false;
+    }
+
+    public function metrics(Request $request)
+    {
+        return [
+            new TotalGuestOrder(),
+        ];
     }
 
 

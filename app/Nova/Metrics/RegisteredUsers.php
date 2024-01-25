@@ -14,12 +14,12 @@ class RegisteredUsers extends Value
     /**
      * Calculate the value of the metric.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return mixed
      */
-    public function calculate(NovaRequest $request)
+    public function calculate()
     {
-        return $this->count($request, User::class);
+        return $this->result(User::count());
     }
 
     /**
@@ -30,13 +30,10 @@ class RegisteredUsers extends Value
     public function ranges()
     {
         return [
+            15 => Nova::__('15 Days'),
             30 => Nova::__('30 Days'),
             60 => Nova::__('60 Days'),
             365 => Nova::__('365 Days'),
-            'TODAY' => Nova::__('Today'),
-            'MTD' => Nova::__('Month To Date'),
-            'QTD' => Nova::__('Quarter To Date'),
-            'YTD' => Nova::__('Year To Date'),
         ];
     }
 
