@@ -21,9 +21,7 @@ trait ProductTrait
 
     public function getSearchSuggestions($search)
     {
-        return Product::where('name', 'LIKE', '%' . $search . '%')->take(5)->whereHas('colors', function ($q) {
-            $q->where('stock', '>', 0);
-        })->get();
+        return Product::where('name', 'LIKE', '%' . $search . '%')->take(5)->get();
     }
 
     /**
