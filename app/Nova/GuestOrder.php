@@ -42,7 +42,7 @@ class GuestOrder extends Resource
      * @var array
      */
     public static $search = [
-        'id','order_key','name',
+        'id','order_key','name','transaction_id','phone_number','email'
     ];
 
     /**

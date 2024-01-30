@@ -33,7 +33,7 @@ class OrderDetail extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'order_id', 'product_id', 'product_color_id',
     ];
 
     /**

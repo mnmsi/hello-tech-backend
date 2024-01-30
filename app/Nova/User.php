@@ -41,12 +41,12 @@ class User extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'phone', 'email',
+        'id', 'phone', 'email','name',
     ];
 
     public static function label()
     {
-        return __('All User List');
+        return __('User List');
     }
 
     /**

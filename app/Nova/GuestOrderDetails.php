@@ -32,6 +32,7 @@ class GuestOrderDetails extends Resource
      * @var array
      */
     public static $search = [
+        'order_id'
     ];
 
     /**

@@ -34,7 +34,7 @@ class ProductReview extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id','title','review','rate','product_id','user_id',
     ];
 
     /**

@@ -53,6 +53,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function boot()
     {
+        Nova::withoutGlobalSearch();
+        Nova::withoutNotificationCenter();
         parent::boot();
 
         Nova::footer(function ($req) {
@@ -99,7 +101,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(PaymentMethods::class),
                     MenuItem::resource(DeliveryOption::class),
                     MenuItem::resource(VideoReviews::class),
-                    MenuItem::resource(Notification::class),
+//                    MenuItem::resource(Notification::class),
                 ])->icon('briefcase')->collapsable(),
 //                dynamic page
                 MenuSection::make('Promotional Product', [

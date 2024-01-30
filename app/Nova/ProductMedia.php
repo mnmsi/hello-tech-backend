@@ -39,7 +39,7 @@ class ProductMedia extends Resource
      * @var array
      */
     public static $search = [
-        'id'
+        'product_id', 'color_id',
     ];
 
 

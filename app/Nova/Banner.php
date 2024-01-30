@@ -40,7 +40,7 @@ class Banner extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'page',
+        'id', 'page','type','show_on',
     ];
 
     /**

@@ -32,7 +32,7 @@ class UserWishlist extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id','user_id','product_id',
     ];
 
     /**

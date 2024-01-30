@@ -50,7 +50,7 @@ class Order extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'transaction_id',
+        'id', 'transaction_id','order_key','name','phone','city','division','area','address_line'
     ];
 
     public static function label()

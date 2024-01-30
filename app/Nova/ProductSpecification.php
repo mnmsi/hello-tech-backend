@@ -34,7 +34,7 @@ class ProductSpecification extends Resource
      * @var array
      */
     public static $search = [
-        'title',
+        'title','value','product_id',
     ];
 
     /**
