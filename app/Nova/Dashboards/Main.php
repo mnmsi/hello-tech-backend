@@ -31,12 +31,12 @@ class Main extends Dashboard
     public function cards()
     {
         return [
-            new TotalGuestOrder(),
-            new RegisteredUsers(),
             new OrderPerDay(),
+            new TotalGuestOrder(),
             new PendingOrder(),
             new DeliveriedOrder(),
             new CancelledOrder(),
+            new RegisteredUsers(),
             (new RecentOrder())->width("1/2"),
             (new RecentGuestOrder())->width("1/2"),
         ];

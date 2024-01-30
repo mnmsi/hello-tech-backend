@@ -4,10 +4,11 @@ namespace App\Nova\Metrics;
 
 use App\Models\User\User;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Metrics\Trend;
 use Laravel\Nova\Metrics\Value;
 use Laravel\Nova\Nova;
 
-class RegisteredUsers extends Value
+class RegisteredUsers extends Trend
 {
     public $name = "Total User";
 
@@ -17,9 +18,9 @@ class RegisteredUsers extends Value
      * @param \Laravel\Nova\Http\Requests\NovaRequest $request
      * @return mixed
      */
-    public function calculate()
+    public function calculate(NovaRequest $request)
     {
-        return $this->result(User::count());
+        return $this->countByDays($request,User::class)->showSumValue();
     }
 
     /**

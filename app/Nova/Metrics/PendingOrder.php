@@ -4,10 +4,11 @@ namespace App\Nova\Metrics;
 
 use App\Models\Order\Order;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Metrics\Trend;
 use Laravel\Nova\Metrics\Value;
 use Laravel\Nova\Nova;
 
-class PendingOrder extends Value
+class PendingOrder extends Trend
 {
     public $name = "Total Pending Order";
 
@@ -19,7 +20,7 @@ class PendingOrder extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->count($request, Order::where("status", "pending"));
+        return $this->countByDays($request, Order::where("status", "pending"))->showSumValue();
     }
 
     /**
