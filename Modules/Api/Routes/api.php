@@ -137,6 +137,7 @@ Route::middleware('guest')->group(function () {
         Route::get('/', 'banners');
         Route::get('category/{id}', 'getBannerByCategory');
         Route::get('product/{id}', 'getBannerByProduct');
+        Route::get('home-slider', 'homeSlider');
     });
 
 

@@ -92,6 +92,7 @@ class Banner extends Resource
             Select::make('Display Page', 'page')->options([
                 'home' => 'Home',
                 'new-arrivals' => 'New Arrivals',
+                'home-slider' => 'Home Slider',
             ])->dependsOn(['type'], function (Select $field, NovaRequest $request, FormData $formData) {
                 if ($formData->type == "page") {
                     $field
@@ -158,7 +159,6 @@ class Banner extends Resource
                         ->updateRules('nullable'),
                     // url
                     URL::make('Url', 'image_url')
-                        ->rules('required')
                         ->withMeta([
                             'extraAttributes' => [
                                 'placeholder' => 'Enter promotional url',

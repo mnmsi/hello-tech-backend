@@ -19,6 +19,15 @@ class BannerController extends Controller
         return $this->respondWithSuccessWithData(BannerResource::collection($banners));
     }
 
+
+    public function homeSlider(){
+        $banner = Banner::where('is_active', true)
+            ->where('page','home-slider')
+            ->get();
+
+        return $this->respondWithSuccessWithData(BannerResource::collection($banner));
+    }
+
     public function getBannerByCategory($id)
     {
         // Get banner by id
