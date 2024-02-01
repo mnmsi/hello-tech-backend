@@ -23,6 +23,7 @@ class BannerController extends Controller
     public function homeSlider(){
         $banner = Banner::where('is_active', true)
             ->where('page','home-slider')
+            ->orderByRaw('ISNULL(order_no), order_no ASC')
             ->get();
 
         return $this->respondWithSuccessWithData(BannerResource::collection($banner));
