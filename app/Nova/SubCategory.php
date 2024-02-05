@@ -52,7 +52,7 @@ class SubCategory extends Resource
                 '1' => 'Yes',
                 '0' => 'No',
             ])->rules('required'),
-            Select::make('Status', 'status')->options([
+            Select::make('is_active', 'Active')->options([
                 '1' => 'Active',
                 '0' => 'Inactive',
             ])->rules('required'),
