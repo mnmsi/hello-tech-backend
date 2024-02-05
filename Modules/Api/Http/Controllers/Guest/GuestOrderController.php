@@ -254,7 +254,12 @@ class GuestOrderController extends Controller
                     DB::commit();
                     return [
                         'status' => true,
-                        'message' => 'Payment Successful',
+                        'message' => 'Order Successful',
+                        'data' => [
+                            'order_id' => $order->id,
+                            'transaction_id' => $order->transaction_id,
+                            'order_key' => $order->order_key,
+                        ]
                     ];
                 }
             } else {
