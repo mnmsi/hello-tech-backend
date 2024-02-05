@@ -47,10 +47,14 @@ class SubCategory extends Resource
         return [
             BelongsTo::make('Category', 'category', Category::class)->required(),
             Text::make('Name')->required(),
-            Text::make('Slug')->readonly(),
+//            Text::make('Slug')->readonly(),
             Select::make('Popular', 'is_popular')->options([
                 '1' => 'Yes',
                 '0' => 'No',
+            ])->rules('required'),
+            Select::make('Status', 'status')->options([
+                '1' => 'Active',
+                '0' => 'Inactive',
             ])->rules('required'),
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
