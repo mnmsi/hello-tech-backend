@@ -51,11 +51,11 @@ class SubCategory extends Resource
             Select::make('Popular', 'is_popular')->options([
                 '1' => 'Yes',
                 '0' => 'No',
-            ])->rules('required'),
-            Select::make('is_active', 'Active')->options([
+            ])->default('0'),
+            Select::make('Status', 'is_active')->options([
                 '1' => 'Active',
                 '0' => 'Inactive',
-            ])->rules('required'),
+            ])->default('1'),
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
                 ->default(now())
