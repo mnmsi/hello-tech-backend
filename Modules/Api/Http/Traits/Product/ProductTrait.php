@@ -63,22 +63,21 @@ trait ProductTrait
 
     public function getProductsQuery($params)
     {
-
         $order = 'category_order_no';
         if ($params['category'] == 'gadgets') {
             $params['category'] = null;
             $order = 'order_no';
         }
-
-        return Product::wherehas('colors', function ($q) {
+        $name = explode(' ', $params['name']);
+        $query = Product::wherehas('colors', function ($q) {
             $q->where('id', '>', 0);
-        })->where('is_active', 1)
-            ->when($params['name'], function ($query) use ($params) {
-                $query->whereRaw('LOWER(name) LIKE ?', '%' . strtolower($params['name']) . '%');
-            })
-            ->when($params['brand'], function ($query) use ($params) {
-                $query->where('brand_id', $params['brand']);
-            })
+        })->where('is_active', 1);
+        foreach ($name as $item) {
+            $query->where('name', 'like', '%' . $item . '%');
+        }
+        return $query->when($params['brand'], function ($query) use ($params) {
+            $query->where('brand_id', $params['brand']);
+        })
             ->when($params['category'], function ($query) use ($params) {
                 $query->where(function ($c) use ($params) {
                     $c->whereHas('category', function ($query) use ($params) {
@@ -103,6 +102,40 @@ trait ProductTrait
                 $query->orderBy('price', $params['short_by']);
             })->orderByRaw('ISNULL(' . $order . '), ' . $order . ' ASC')
             ->paginate(27);
+
+//        return Product::wherehas('colors', function ($q) {
+//            $q->where('id', '>', 0);
+//        })->where('is_active', 1)
+//            ->when($params['name'], function ($query) use ($params) {
+//
+//            })
+//            ->when($params['brand'], function ($query) use ($params) {
+//                $query->where('brand_id', $params['brand']);
+//            })
+//            ->when($params['category'], function ($query) use ($params) {
+//                $query->where(function ($c) use ($params) {
+//                    $c->whereHas('category', function ($query) use ($params) {
+//                        $query->where('slug', $params['category']);
+//                    })->orWhereHas('subCategory', function ($query) use ($params) {
+//                        $query->where('slug', $params['category']);
+//                    });
+//                });
+//            })
+//            ->when($params['is_official'], function ($query) use ($params) {
+//                $query->where('is_official', $params['is_official']);
+//            })->when($params['value'], function ($query) use ($params) {
+//                $query->whereHas('metaValue', function ($query) use ($params) {
+//                    $query->whereIn('id', explode(',', $params['value']));
+//                });
+//            })->when($params['price_from'], function ($query) use ($params) {
+//                $query->where('price', '>=', $params['price_from']);
+//            })->when($params['price_to'], function ($query) use ($params) {
+//                $query->where('price', '<=', $params['price_to']);
+//            })
+//            ->when($params['short_by'], function ($query) use ($params) {
+//                $query->orderBy('price', $params['short_by']);
+//            })->orderByRaw('ISNULL(' . $order . '), ' . $order . ' ASC')
+//            ->paginate(27);
     }
 
     public function getProductDetailsBySlug($slug)
