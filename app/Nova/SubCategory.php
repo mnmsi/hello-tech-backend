@@ -53,13 +53,17 @@ class SubCategory extends Resource
                 '0' => 'No',
             ])->default('0')->resolveUsing(function ($value) {
                 return $value == 1 ? 'Yes' : 'No';
-            })->withMeta(['value' => '0']),
+            })->withMeta(['value' => '0'])->displayUsing(function ($value) {
+                return $value == 1 ? 'Yes' : 'No';
+            }),
             Select::make('Status', 'is_active')->options([
                 '1' => 'Active',
                 '0' => 'Inactive',
-            ])->default('1')->resolveUsing(function ($value) {
+            ])->default('1')->withMeta(['value' => '1'])->resolveUsing(function ($value) {
                 return $value == 1 ? 'Active' : 'Inactive';
-            })->withMeta(['value' => '1']),
+            })->withMeta(['value' => '1'])->displayUsing(function ($value) {
+                return $value == 1 ? 'Active' : 'Inactive';
+            }),
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
                 ->default(now())
