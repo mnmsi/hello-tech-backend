@@ -154,7 +154,7 @@ OrderTrait
                     return array_merge($item, ['order_id' => $order->id]);
                 })->toArray();
                 OrderDetails::insert($order_details_list);
-                Cart::where('user_id', Auth::id())->delete();
+                Cart::where('user_id', Auth::id())->where('status',1)->delete();
                 if ($data['payment_method_id'] == 2) {
                     if ($isProcessPayment = $this->processPayment($orderData)) {
                         DB::commit();
@@ -557,8 +557,13 @@ OrderTrait
                 } else {
                     DB::commit();
                     return [
+                        'data' => [
+                            'order_id' => $order->id,
+                            'transaction_id' => $order->transaction_id,
+                            'order_key' => $order->order_key,
+                        ],
                         'status' => true,
-                        'message' => 'Payment Successful',
+                        'message' => 'Order Successful',
                     ];
                 }
             } else {
