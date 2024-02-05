@@ -142,4 +142,9 @@ class DeliveryOption extends Resource
     {
         return false;
     }
+
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
 }
