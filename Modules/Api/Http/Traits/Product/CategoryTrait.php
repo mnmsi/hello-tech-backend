@@ -31,7 +31,9 @@ trait CategoryTrait
 
     public function getCategoryWithSubCategory(){
         return Category::where('is_active', 1)
-            ->with('subCategories')
+            ->with(['subCategories' => function($query){
+                $query->where('is_active', 1);
+            }])
             ->orderBy('name', 'asc')
             ->get();
     }
