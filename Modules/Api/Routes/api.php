@@ -231,7 +231,7 @@ Route::post('create-guest-user',[GuestCartController::class,'createGuestUser']);
 Route::get('voucher-discount', [OrderController::class, 'getVoucherDiscount']); // Buy Now Routes
 
 
-Route::get('order-cart',function (){
-   $cart = \App\Models\Order\Cart::pluck('id')->toArray();
-   return $cart;
-});
+//Route::get('order-cart',function (){
+//   $cart = \App\Models\Order\Cart::pluck('id')->toArray();
+//   return $cart;
+//});
