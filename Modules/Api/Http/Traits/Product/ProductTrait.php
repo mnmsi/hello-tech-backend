@@ -6,6 +6,7 @@ use App\Models\Product\Category;
 use App\Models\Product\Product;
 use App\Models\ProductData;
 use App\Models\SectionOrder;
+use Illuminate\Support\Facades\DB;
 
 trait ProductTrait
 {
@@ -21,7 +22,15 @@ trait ProductTrait
 
     public function getSearchSuggestions($search)
     {
-        return Product::where('name', 'LIKE', '%' . $search . '%')->take(5)->get();
+        $searchItem = explode(' ', $search);
+        $query = Product::where('is_active', 1);
+        foreach ($searchItem as $item) {
+            $query->where('name', 'like', '%' . $item . '%');
+        }
+        return $query->take(5)->get();
+
+//        $results = DB::table('products')->whereRaw("name REGEXP '".implode('|', explode(' ', $search))."'")->get();
+//        return Product::where('name', 'RLIKE', '%'.$text.'%')->take(5)->get();
     }
 
     /**
