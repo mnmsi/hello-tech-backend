@@ -51,11 +51,15 @@ class SubCategory extends Resource
             Select::make('Popular', 'is_popular')->options([
                 '1' => 'Yes',
                 '0' => 'No',
-            ])->default('0'),
+            ])->default('0')->resolveUsing(function ($value) {
+                return $value == 1 ? 'Yes' : 'No';
+            })->withMeta(['value' => '0']),
             Select::make('Status', 'is_active')->options([
                 '1' => 'Active',
                 '0' => 'Inactive',
-            ])->default('1'),
+            ])->default('1')->resolveUsing(function ($value) {
+                return $value == 1 ? 'Active' : 'Inactive';
+            })->withMeta(['value' => '1']),
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
                 ->default(now())
