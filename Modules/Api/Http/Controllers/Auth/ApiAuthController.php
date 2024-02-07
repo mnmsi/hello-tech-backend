@@ -27,7 +27,7 @@ class ApiAuthController extends Controller
     public function login(AuthenticateUserRequest $request)
     {
         // Authentication for requested phone and password
-        if (Auth::attempt([$request->type => $request->user, 'password' => $request->password])) {
+        if (Auth::attempt(['phone' => $request->phone, 'password' => $request->password])) {
 
 
             // Get user for current request which is authenticated
@@ -50,6 +50,7 @@ class ApiAuthController extends Controller
 
     public function register(RegisterUserRequest $request)
     {
+
         $reqData = $request->all(); // Get request data
 
         // Check if request has file
@@ -88,42 +89,50 @@ class ApiAuthController extends Controller
 
     public function forgotPassword(Request $request)
     {
-        $type = filter_var($request->user, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+//        $type = filter_var($request->user, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
         $request->validate([
-            'user' => 'required|exists:users,'.$type,
+            'phone'    => 'required|string|exists:App\Models\User\User,phone',
         ]);
-        $user = User::where($type, $request->user)->first();
+        $user = User::where('phone', $request->phone)->first();
         $otp = $this->generateOtp();
         if ($user) {
-            if($type == 'phone') {
-                $message = "This is your IOTAIT otp: $otp"; // Message to send with OTP
-                // Send otp to user phone if send sms is true then update or create phone verification record
-                if ($isSendSms = $this->sendSms($request->phone, $message)) {
-                    PhoneVerification::updateOrCreate([
-                        'phone' => $request->phone
-                    ], [
-                        'phone' => $request->phone,
-                        'otp' => $otp,
-                        'expires_at' => now()->addMinutes(30),
-                    ]);
-                }
-                return $this->respondWithSuccessStatus($isSendSms);
-            }else{
+            $message = "Your One-Time-Password for Hello Tech is: $otp" . "  It will expire after 5 minutes";
+            // Send otp to user phone if send sms is true then update or create phone verification record
+            if ($isSendSms = $this->sendSms($request->phone, $message)) {
                 PhoneVerification::updateOrCreate([
-                    'email' => $request->user
+                    'phone' => $request->phone
                 ], [
-                    'email' => $request->user,
+                    'phone' => $request->phone,
                     'otp' => $otp,
-                    'expires_at' => now()->addMinutes(30),
-                ]);
-                Mail::to($request->user)->send(new OtpMail($otp));
-                return $this->respondWithSuccess([
-                    'message' => 'OTP sent successfully',
-                    'expires_at' => now()->addMinutes(10)->format('i'),
-                    'otp' => $otp,
+                    'expires_at' => now()->addMinutes(5),
                 ]);
             }
-        } else {
+            return $this->respondWithSuccessWithData([
+                'message' => "OTP sent successfully.",
+                'is_send_sms' => $isSendSms,
+                'otp' => $otp,
+                'expires_at' => now()->addMinutes(5)->format('Y-m-d H:i:s'),
+            ]);
+        }
+//            if ($type == 'phone') {
+
+//            } else {
+//                PhoneVerification::updateOrCreate([
+//                    'email' => $request->user
+//                ], [
+//                    'email' => $request->user,
+//                    'otp' => $otp,
+//                    'expires_at' => now()->addMinutes(30),
+//                ]);
+//                Mail::to($request->user)->send(new OtpMail($otp));
+//                return $this->respondWithSuccess([
+//                    'message' => 'OTP sent successfully',
+//                    'expires_at' => now()->addMinutes(10)->format('i'),
+//                    'otp' => $otp,
+//                ]);
+//            }
+//        }
+        else {
             return $this->respondNotFound('User not found');
         }
 
@@ -131,11 +140,11 @@ class ApiAuthController extends Controller
 
     public function resetPassword(ResetPasswordRequest $request)
     {
-        $type = filter_var($request->user, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
-        $user = User::where($type, $request->user)->first();
+//        $type = filter_var($request->user, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        $user = User::where('phone',$request->phone)->first();
         if ($user) {
             $user->update([
-                'password' => Hash::make($request->password),
+                'password' => $request->password,
             ]);
             return $this->respondWithSuccessStatusWithMsg(['message' => 'Password updated successfully']);
         } else {

@@ -142,7 +142,7 @@
         </tr>
         <tr class="body">
             <td class="w-half">
-                <div><h4>{{$site->name ?? "Hello Techs"}}</h4></div>
+                <div><h4>{{$site->name ?? "Hello Tech"}}</h4></div>
                 <div>Dhaka, Bangladesh</div>
                 <div>Phone: {{$site->phone ?? "-"}}</div>
                 <div>Email: {{$site->email ?? "-"}}</div>
@@ -151,7 +151,7 @@
                 <div><h4>Name: {{$order->name ?? "-"}}</h4></div>
                 <div>{{$order->address_line ?? "-"}} {{$order->area ?? "-"}}</div>
                 <div>{{$order->city ?? "-"}}, {{$order->division ?? "-"}}</div>
-                <div>Phone: {{$order->phone ?? "-"}}</div>
+                <div>Phone: {{$order->mobile_number ?? "-"}}</div>
                 <div>{{!empty($order->email) ? "Email: " . $order->email : ""}}</div>
             </td>
         </tr>

@@ -13,11 +13,13 @@ use App\Models\System\Area;
 use App\Models\System\City;
 use App\Models\System\DeliveryOption;
 use App\Models\System\Division;
+use App\Models\System\Notification;
 use App\Models\System\PaymentMethod;
 use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\Api\Http\Traits\OTP\OtpTrait;
 use Modules\Api\Http\Traits\Payment\PaymentTrait;
 use Modules\Api\Http\Traits\Product\ProductTrait;
 use App\Http\Controllers\AmarPayController;
@@ -26,6 +28,7 @@ trait
 OrderTrait
 {
     use productTrait;
+    use OtpTrait;
 
     public function getDeliveryOptions()
     {
@@ -125,11 +128,12 @@ OrderTrait
                 $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'], $subtotal_price);
                 $subtotal_price = $subtotal_price - $voucher_dis;
             }
-
+            $order_key = now()->format('Ymd') . '-' . Order::count() + 1;
+            $total_price = $subtotal_price + $data['shipping_amount'] ?? 0;
             $orderData = [
                 'user_id' => Auth::id(),
-                'transaction_id' => uniqid(),
-                'order_key' => uniqid(),
+                'transaction_id' => $order_key,
+                'order_key' => $order_key,
                 'delivery_option_id' => $data['delivery_option_id'],
                 'payment_method_id' => $data['payment_method_id'],
                 'division' => Division::where('id', $data['division_id'])->first()->name,
@@ -143,7 +147,7 @@ OrderTrait
                 'shipping_amount' => $data['shipping_amount'],
                 'discount_rate' => 0,
                 'subtotal_price' => $subtotal_price, // price without shipping cost
-                'total_price' => $subtotal_price + $data['shipping_amount'] ?? 0,
+                'total_price' => $total_price, // price with shipping cost
                 'status' => 'pending',
             ];
 
@@ -172,6 +176,12 @@ OrderTrait
                     }
                 } else {
                     DB::commit();
+                    $numbers = Notification::where('status', 1)->get();
+                    foreach ($numbers as $number) {
+                        $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
+                    }
+                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping with us.";
+                    $this->sendSms($data['phone'], $message);
                     return [
                         'data' => [
                             'order_id' => $order->id,
@@ -392,6 +402,8 @@ OrderTrait
                 $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'], $sub_price);
                 $sub_price = $sub_price - $voucher_dis;
             }
+            $total_price = $sub_price + $data['shipping_amount'] ?? 0;
+            $order_key = now()->format('Ymd') . '-' . Order::count() + 1;
             $orderData = [
                 'user_id' => Auth::id(),
                 'payment_method_id' => $data['payment_method_id'],
@@ -404,12 +416,12 @@ OrderTrait
                 'phone' => $data['phone'],
                 'email' => $data['email'] ?? null,
                 'voucher_id' => $data['voucher_id'] ?? null,
-                'transaction_id' => uniqid(),
-                'order_key' => uniqid(),
+                'transaction_id' => $order_key,
+                'order_key' => $order_key,
                 'discount_rate' => $product->discount_rate,
                 'shipping_amount' => $data['shipping_amount'],
                 'subtotal_price' => $sub_price,
-                'total_price' => $sub_price + $data['shipping_amount'] ?? 0,
+                'total_price' => $total_price,
                 'order_note' => $data['order_note'] ?? null,
                 'status' => 'pending',
             ];
@@ -444,6 +456,12 @@ OrderTrait
                     }
                 } else {
                     DB::commit();
+                    $numbers = Notification::where('status', 1)->get();
+                    foreach ($numbers as $number) {
+                        $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
+                    }
+                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping with us.";
+                    $this->sendSms($data['phone'], $message);
                     return [
                         'data' => [
                             'order_id' => $order->id,
@@ -502,13 +520,15 @@ OrderTrait
     {
         DB::beginTransaction();
         try {
+            $order_key = now()->format('Ymd') . '-' . Order::count() + 1;
             $products = Product::where('id', $data->product_id)->first();
             $total_discountRate = $products->discount_rate;
             $subtotal_price = $this->calculateDiscountPrice($products->price, $products->discount_rate);
+            $total_price = $subtotal_price + $data['shipping_amount'] ?? 0;
             $orderData = [
                 'user_id' => Auth::id(),
-                'transaction_id' => uniqid(),
-                'order_key' => uniqid(),
+                'transaction_id' => $order_key,
+                'order_key' => $order_key,
                 'delivery_option_id' => $data['delivery_option_id'],
                 'payment_method_id' => $data['payment_method_id'],
                 'division' => Division::where('id', $data['division_id'])->first()->name,
@@ -535,7 +555,7 @@ OrderTrait
                 'discount_rate' => $total_discountRate,
                 'subtotal_price' => $subtotal_price,
                 'quantity' => 1,
-                'total' => $subtotal_price + $data['shipping_amount'] ?? 0,
+                'total' => $total_price,
             ];
             if ($order) {
                 OrderDetails::create($orderDetails);
@@ -556,6 +576,12 @@ OrderTrait
                     }
                 } else {
                     DB::commit();
+                    $numbers = Notification::where('status', 1)->get();
+                    foreach ($numbers as $number) {
+                        $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
+                    }
+                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping with us.";
+                    $this->sendSms($data['phone'], $message);
                     return [
                         'data' => [
                             'order_id' => $order->id,

@@ -26,6 +26,7 @@ class CartResource extends JsonResource
             'quantity' => $this->quantity,
             'is_checked' => $this->status,
             'name' => $this->product->name ?? '',
+            'slug' => $this->product->slug ?? '',
             'product_code' => $this->product->product_code ?? '',
             'product_id' => $this->product_id,
             'product_color_id' => $this->product_color_id,

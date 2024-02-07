@@ -21,40 +21,31 @@ class OtpController extends Controller
 
     public function sendOtp(Request $request)
     {
-        $request->validate([
-            'user' => 'required',
-        ]);
-        $otp = $this->generateOtp();
-        $message = "This is your IOTAIT otp: $otp"; // Message to send with OTP
-        if ($request->user == "phone") {
-            if ($isSendSms = $this->sendSms($request->phone, $message)) {
-                PhoneVerification::updateOrCreate([
-                    'phone' => $request->phone
-                ], [
-                    'phone' => $request->phone,
-                    'otp' => $otp,
-                    'expires_at' => now()->addMinutes(10),
-                ]);
-            }
-        } else {
-            try {
-                PhoneVerification::updateOrCreate([
-                    'email' => $request->user
-                ], [
-                    'email' => $request->user,
-                    'otp' => $otp,
-                    'expires_at' => now()->addMinutes(10),
-                ]);
-                Mail::to($request->user)->send(new OtpMail($otp, 10));
-                return $this->respondWithSuccess([
-                    'message' => 'OTP sent successfully',
-                    'expires_at' =>  10,
-                    'otp' => $otp,
-                ]);
-            } catch (\Exception $e) {
-                return $this->respondError($e->getMessage());
-            }
+        $last_sent = PhoneVerification::where('phone', $request->phone)->orderBy('id', 'desc')->first();
+        if ($last_sent && now() < $last_sent->expires_at) {
+            return $this->respondWithSuccessWithData([
+                'message' => 'OTP already sent! Please wait for 5 minutes.',
+            ]);
         }
+        $otp = $this->generateOtp();
+        $message = "Your One-Time-Password for Hello Tech is: $otp" . "  It will expire after 5 minutes"; // Message to send with OTP
+        if ($isSendSms = $this->sendSms($request->phone, $message)) {
+            PhoneVerification::updateOrCreate([
+                'phone' => $request->phone
+            ], [
+                'phone' => $request->phone,
+                'otp' => $otp,
+                'expires_at' => now()->addMinutes(5),
+            ]);
+        }
+
+        // Return response with success status according to send sms
+        return $this->respondWithSuccessWithData([
+            'message' => "OTP sent successfully.",
+            'is_send_sms' => $isSendSms,
+            'otp' => $otp,
+            'expires_at' => now()->addMinutes(5)->format('Y-m-d H:i:s'),
+        ]);
     }
 
     function verifyOtp(OtpValidateRequest $request)
@@ -76,7 +67,11 @@ class OtpController extends Controller
             }
 
             // If not expired then return response with success status
-            return $this->respondWithSuccessStatus();
+//            $phoneVerification->delete();
+            return $this->respondWithSuccessWithData([
+                'message' => 'OTP verified successfully',
+            ]);
+
         }
 
         // If phone verification record not found then return response with error status

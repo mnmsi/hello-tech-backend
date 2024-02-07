@@ -22,19 +22,19 @@ class AuthenticateUserRequest extends FormRequest
         return true;
     }
 
-    public function prepareForValidation()
-    {
-        //check phone or email
-        if (filter_var($this->user, FILTER_VALIDATE_EMAIL)) {
-            $this->merge([
-                'type' => 'email', // 'email' or 'phone
-            ]);
-        } else {
-            $this->merge([
-                'type' => 'phone', // 'email' or 'phone
-            ]);
-        }
-    }
+//    public function prepareForValidation()
+//    {
+//        //check phone or email
+//        if (filter_var($this->user, FILTER_VALIDATE_EMAIL)) {
+//            $this->merge([
+//                'type' => 'email', // 'email' or 'phone
+//            ]);
+//        } else {
+//            $this->merge([
+//                'type' => 'phone', // 'email' or 'phone
+//            ]);
+//        }
+//    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -44,7 +44,7 @@ class AuthenticateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'user'    => 'required|string|exists:App\Models\User\User,' . $this->type,
+            'phone'    => 'required|string|exists:App\Models\User\User,phone',
             'password' => 'required|string|min:6',
         ];
     }

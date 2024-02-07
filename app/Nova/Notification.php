@@ -46,20 +46,20 @@ class Notification extends Resource
             ID::make()->sortable(),
 //            phone
             PhoneNumber::make('Phone', 'phone')
-                ->withCustomFormats('880## #### ####')
+                ->withCustomFormats('880##########')
                 ->onlyCustomFormats()
                 ->creationRules('unique:App\Models\System\Notification,phone')
                 ->updateRules('unique:App\Models\System\Notification,phone,{{resourceId}}')
-                ->help("Ex: 880 #### #####"),
+                ->help("Ex: 880#########"),
 //            email
-            Text::make('Email', 'email')
-                ->sortable()
-                ->rules('nullable', 'email')
-                ->withMeta([
-                    'extraAttributes' => [
-                        'placeholder' => 'Enter email(optional)',
-                    ],
-                ]),
+//            Text::make('Email', 'email')
+//                ->sortable()
+//                ->rules('nullable', 'email')
+//                ->withMeta([
+//                    'extraAttributes' => [
+//                        'placeholder' => 'Enter email(optional)',
+//                    ],
+//                ]),
 //            status
             Select::make('Status', 'status')->options([
                 '1' => 'Yes',

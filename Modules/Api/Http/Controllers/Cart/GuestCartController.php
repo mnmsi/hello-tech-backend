@@ -26,6 +26,7 @@ class GuestCartController extends Controller
     public function store(AddCartRequest $request)
     {
         $guestUser = GuestUser::where('uuid', $request->guest_user_id)->first();
+//        dd($guestUser);
         $checkCart = GuestCart::where('guest_user_id', $guestUser->id)->where('product_id', $request->product_id)->where('product_color_id', $request->product_color_id)->where('product_data', $request->product_data)->first();
         if ($checkCart) {
             return $this->respondError('Product already added to cart');

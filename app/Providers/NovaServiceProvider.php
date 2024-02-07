@@ -101,7 +101,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(PaymentMethods::class),
                     MenuItem::resource(DeliveryOption::class),
                     MenuItem::resource(VideoReviews::class),
-//                    MenuItem::resource(Notification::class),
+                    MenuItem::resource(Notification::class),
                 ])->icon('briefcase')->collapsable(),
 //                dynamic page
                 MenuSection::make('Promotional Product', [

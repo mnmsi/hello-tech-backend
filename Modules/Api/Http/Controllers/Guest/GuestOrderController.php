@@ -17,12 +17,14 @@ use App\Models\System\Area;
 use App\Models\System\City;
 use App\Models\System\DeliveryOption;
 use App\Models\System\Division;
+use App\Models\System\Notification;
 use App\Models\System\PaymentMethod;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\Api\Http\Requests\Guest\GuestOrderRequest;
 use Modules\Api\Http\Traits\Order\OrderTrait;
+use Modules\Api\Http\Traits\OTP\OtpTrait;
 use Modules\Api\Http\Traits\Response\ApiResponseHelper;
 use Session;
 
@@ -30,6 +32,7 @@ class GuestOrderController extends Controller
 {
     use ApiResponseHelper;
     use OrderTrait;
+    use OtpTrait;
 
 
     public function guestOrder(GuestOrderRequest $request)
@@ -79,9 +82,10 @@ class GuestOrderController extends Controller
                     }
                 }
             }
+            $order_key = now()->format('Ymd') . '-' . GuestOrder::count() + 1;
             $orderData = [
-                'transaction_id' => uniqid(),
-                'order_key' => uniqid(),
+                'transaction_id' => $order_key,
+                'order_key' => $order_key,
                 'discount_rate' => $product->discount_rate ?? 0,
                 'shipping_amount' => $request->shipping_amount,
                 'subtotal_price' => $subtotal_price,
@@ -98,7 +102,6 @@ class GuestOrderController extends Controller
                 'order_note' => $request->order_note ?? null,
                 'voucher_code' => $request->voucher_code ?? null,
             ];
-
             $order = GuestOrder::create($orderData);
             $orderDetails = [
                 'guest_order_id' => $order->id,
@@ -129,6 +132,13 @@ class GuestOrderController extends Controller
                     }
                 } else {
                     DB::commit();
+                    $numbers = Notification::where('status', 1)->get();
+                    foreach ($numbers as $number) {
+                        $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
+                    }
+                    $message = "Hi! " . $request->name .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ".$order->total_price. " BDT.  Thank you for shopping with us.";
+                    $this->sendSms($request->phone, $message);
+
                     return [
                         'status' => true,
                         'message' => 'Order Successful',
@@ -193,9 +203,10 @@ class GuestOrderController extends Controller
                 $voucher_dis = $this->calculateVoucherDiscount($request['voucher_id'], $subtotal_price);
                 $subtotal_price = $subtotal_price - $voucher_dis;
             }
+            $order_key = now()->format('Ymd') . '-' . GuestOrder::count() + 1;
             $orderData = [
-                'transaction_id' => uniqid(),
-                'order_key' => uniqid(),
+                'transaction_id' => $order_key,
+                'order_key' => $order_key,
                 'discount_rate' => $product->discount_rate ?? 0,
                 'shipping_amount' => $request->shipping_amount,
                 'subtotal_price' => $subtotal_price,
@@ -251,6 +262,12 @@ class GuestOrderController extends Controller
                         ];
                     }
                 } else {
+                    $numbers = Notification::where('status', 1)->get();
+                    foreach ($numbers as $number) {
+                        $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
+                    }
+                    $message = "Hi! " . $request->name .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ".$order->total_price. " BDT.  Thank you for shopping with us.";
+                    $this->sendSms($request->phone, $message);
                     DB::commit();
                     return [
                         'status' => true,
