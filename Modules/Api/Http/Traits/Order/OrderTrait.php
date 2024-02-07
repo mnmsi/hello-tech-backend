@@ -180,7 +180,7 @@ OrderTrait
                     foreach ($numbers as $number) {
                         $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
                     }
-                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping with us.";
+                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping from hellotech.store";
                     $this->sendSms($data['phone'], $message);
                     return [
                         'data' => [
@@ -460,7 +460,7 @@ OrderTrait
                     foreach ($numbers as $number) {
                         $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
                     }
-                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping with us.";
+                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping from hellotech.store";
                     $this->sendSms($data['phone'], $message);
                     return [
                         'data' => [
@@ -580,7 +580,7 @@ OrderTrait
                     foreach ($numbers as $number) {
                         $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
                     }
-                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping with us.";
+                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping from hellotech.store";
                     $this->sendSms($data['phone'], $message);
                     return [
                         'data' => [

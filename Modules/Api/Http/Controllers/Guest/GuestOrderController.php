@@ -136,7 +136,7 @@ class GuestOrderController extends Controller
                     foreach ($numbers as $number) {
                         $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
                     }
-                    $message = "Hi! " . $request->name .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ".$order->total_price. " BDT.  Thank you for shopping with us.";
+                    $message = "Hi! " . $request->name .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ".$order->total_price. " BDT.  Thank you for shopping from hellotech.store";
                     $this->sendSms($request->phone, $message);
 
                     return [
@@ -266,7 +266,7 @@ class GuestOrderController extends Controller
                     foreach ($numbers as $number) {
                         $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
                     }
-                    $message = "Hi! " . $request->name .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ".$order->total_price. " BDT.  Thank you for shopping with us.";
+                    $message = "Hi! " . $request->name .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ".$order->total_price. " BDT.  Thank you for shopping from hellotech.store";
                     $this->sendSms($request->phone, $message);
                     DB::commit();
                     return [
