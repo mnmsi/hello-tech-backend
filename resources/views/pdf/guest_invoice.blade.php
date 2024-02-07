@@ -151,7 +151,7 @@
                 <div><h4>Name: {{$order->name ?? "-"}}</h4></div>
                 <div>{{$order->address_line ?? "-"}} {{$order->area ?? "-"}}</div>
                 <div>{{$order->city ?? "-"}}, {{$order->division ?? "-"}}</div>
-                <div>Phone: {{$order->mobile_number ?? "-"}}</div>
+                <div>Phone: {{$order->phone_number ?? "-"}}</div>
                 <div>{{!empty($order->email) ? "Email: " . $order->email : ""}}</div>
             </td>
         </tr>
