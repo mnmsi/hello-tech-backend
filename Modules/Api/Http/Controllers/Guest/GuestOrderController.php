@@ -48,21 +48,26 @@ class GuestOrderController extends Controller
     public function buyNow($request)
     {
 
+
 //        this function is for buy now from product details page
 
         DB::beginTransaction();
         try {
             $product = Product::where('id', $request->product_id)->first();
             $subtotal_price = $this->calculateDiscountPrice($product->price, $product->discount_rate) * $request->quantity;
+            $price = $this->calculateDiscountPrice($product->price, $product->discount_rate);
             if (!empty($request->voucher_id)) {
                 $calculateVoucher = $this->calculateVoucherDiscount($request->voucher_id, $subtotal_price);
                 $subtotal_price = -$calculateVoucher;
+                $price = $price - $calculateVoucher;
             }
+
             if ($request->color_id) {
                 $product_color = ProductColor::find($request->color_id);
                 if ($product_color) {
                     if ($product_color->stock > 0) {
                         $subtotal_price += $product_color->price;
+                        $price += $product_color->price;
                         ProductColor::where('id', $request->color_id)->update([
                             'stock' => $product_color->stock - $request->quantity
                         ]);
@@ -73,18 +78,31 @@ class GuestOrderController extends Controller
                     }
                 }
             }
-            if ($request->feature_id) {
-                $product_feature = ProductFeatureValue::find($request->feature_id);
+
+//
+
+            if ($request->product_feature_id) {
+//                dd($request->product_feature_id);
+                $product_feature = ProductFeatureValue::WhereIn('id', json_decode($request->product_feature_id))->get();
                 if ($product_feature) {
-                    if ($product_feature->stock > 0) {
-                        $subtotal_price += $product_feature->price;
-                    } else {
-                        return $this->respondError(
-                            'Product is out of stock'
-                        );
+                    $total_feature = $product_feature->sum('price');
+                    $subtotal_price += $total_feature;
+                    $price += $total_feature;
+                    foreach ($product_feature as $f) {
+                        if ($f->stock > 0) {
+                            $f->stock = $f->stock - $request->quantity;
+                            $f->save();
+                        } else {
+                            return $this->respondError(
+                                'Product feature is out of stock'
+                            );
+                        }
                     }
                 }
+//                dd($product_feature->toArray());
             }
+//            dd($price);
+
 //            dd($request->all());
             $order_key = now()->format('Ymd') . '-' . GuestOrder::count() + 1;
             $orderData = [
@@ -107,13 +125,14 @@ class GuestOrderController extends Controller
                 'voucher_code' => $request->voucher_code ?? null,
             ];
             $order = GuestOrder::create($orderData);
+
             $orderDetails = [
                 'guest_order_id' => $order->id,
                 'product_id' => $request->product_id,
                 'quantity' => $request->quantity,
                 'product_color_id' => $request->product_color_id ?? null,
-                'feature' => $request->feature_id ?? null,
-                'price' => $product->price,
+                'feature' => $request->product_feature_id ?? null,
+                'price' => $price,
                 'discount_rate' => $product->discount_rate ?? 0,
                 'subtotal_price' => $subtotal_price,
             ];
