@@ -46,6 +46,7 @@ OrderTrait
 
     public function storeOrder($data)
     {
+//        return "I am line number 49";
         DB::beginTransaction();
         try {
             //            cart list
@@ -146,8 +147,8 @@ OrderTrait
                 'voucher_id' => $data['voucher_id'] ?? null,
                 'shipping_amount' => $data['shipping_amount'],
                 'discount_rate' => 0,
-                'subtotal_price' => $subtotal_price, // price without shipping cost
-                'total_price' => $total_price, // price with shipping cost
+                'subtotal_price' => $data['subtotal_price'], // price without shipping cost
+                'total_price' => $total_price['total_price'], // price with shipping cost
                 'status' => 'pending',
             ];
 
@@ -420,8 +421,8 @@ OrderTrait
                 'order_key' => $order_key,
                 'discount_rate' => $product->discount_rate,
                 'shipping_amount' => $data['shipping_amount'],
-                'subtotal_price' => $sub_price,
-                'total_price' => $total_price,
+                'subtotal_price' => $data['subtotal_price'] ?? 0,
+                'total_price' => $data['total_price'] ?? 0,
                 'order_note' => $data['order_note'] ?? null,
                 'status' => 'pending',
             ];
@@ -495,6 +496,7 @@ OrderTrait
 
     public function buyNowProduct($request)
     {
+        return "I am line number 498";
         try {
             $buyNowProduct = Product::where('id', $request->product_id)
                 ->whereHas('colors', function ($query) use ($request) {

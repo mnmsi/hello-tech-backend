@@ -47,6 +47,9 @@ class GuestOrderController extends Controller
 
     public function buyNow($request)
     {
+
+//        this function is for buy now from product details page
+
         DB::beginTransaction();
         try {
             $product = Product::where('id', $request->product_id)->first();
@@ -82,14 +85,15 @@ class GuestOrderController extends Controller
                     }
                 }
             }
+//            dd($request->all());
             $order_key = now()->format('Ymd') . '-' . GuestOrder::count() + 1;
             $orderData = [
                 'transaction_id' => $order_key,
                 'order_key' => $order_key,
                 'discount_rate' => $product->discount_rate ?? 0,
                 'shipping_amount' => $request->shipping_amount,
-                'subtotal_price' => $subtotal_price,
-                'total_price' => $subtotal_price + $request->shipping_amount,
+                'subtotal_price' => $request->subtotal_price,
+                'total_price' => $request->total_price,
                 'name' => $request->name,
                 'phone_number' => $request->phone,
                 'email' => $request->email ?? null,
@@ -136,7 +140,7 @@ class GuestOrderController extends Controller
                     foreach ($numbers as $number) {
                         $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
                     }
-                    $message = "Hi! " . $request->name .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ".$order->total_price. " BDT.  Thank you for shopping from hellotech.store";
+                    $message = "Hi! " . $request->name . ".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total " . $order->total_price . " BDT.  Thank you for shopping from hellotech.store";
                     $this->sendSms($request->phone, $message);
 
                     return [
@@ -209,8 +213,8 @@ class GuestOrderController extends Controller
                 'order_key' => $order_key,
                 'discount_rate' => $product->discount_rate ?? 0,
                 'shipping_amount' => $request->shipping_amount,
-                'subtotal_price' => $subtotal_price,
-                'total_price' => $subtotal_price + $request->shipping_amount,
+                'subtotal_price' => $request->subtotal_price,
+                'total_price' => $request->total_price,
                 'name' => $request->name,
                 'phone_number' => $request->phone,
                 'email' => $request->email ?? null,
@@ -245,7 +249,7 @@ class GuestOrderController extends Controller
             }
             if ($order) {
                 GuestOrderDetails::insert($orderDetails);
-               GuestCart::whereIn('id', $request->guest_cart_id)->delete();
+                GuestCart::whereIn('id', $request->guest_cart_id)->delete();
                 $sslc = new AmarPayController();
                 if ($request->payment_method_id == 2) {
                     if ($isProcessPayment = $sslc->payment($orderData)) {
@@ -266,7 +270,7 @@ class GuestOrderController extends Controller
                     foreach ($numbers as $number) {
                         $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
                     }
-                    $message = "Hi! " . $request->name .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ".$order->total_price. " BDT.  Thank you for shopping from hellotech.store";
+                    $message = "Hi! " . $request->name . ".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total " . $order->total_price . " BDT.  Thank you for shopping from hellotech.store";
                     $this->sendSms($request->phone, $message);
                     DB::commit();
                     return [
