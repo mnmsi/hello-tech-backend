@@ -10,7 +10,7 @@ class PrivacyPolicyController extends Controller
 {
     public function privacyPolicy()
     {
-        $privacy = Cache::rememberForever('privacy', function () {
+        $privacy = Cache::rememberForever('privacy_policy', function () {
             return PrivacyPolicy::first();
         });
 

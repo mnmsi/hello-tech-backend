@@ -11,7 +11,7 @@ class TermsConditionController extends Controller
     public function terms()
     {
         // Cache the response forever
-        $terms = Cache::rememberForever('terms', function () {
+        $terms = Cache::rememberForever('terms_conditions', function () {
             return TermsCondition::first();
         });
 
