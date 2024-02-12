@@ -12,10 +12,6 @@ class BaseModel extends Model
     {
         parent::boot();
 
-        static::creating(function ($model) {
-            Cache::forget($model->getTable());
-        });
-
         static::updating(function ($model) {
             Cache::forget($model->getTable());
         });
