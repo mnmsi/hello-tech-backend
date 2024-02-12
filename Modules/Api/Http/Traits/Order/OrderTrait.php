@@ -46,7 +46,6 @@ OrderTrait
 
     public function storeOrder($data)
     {
-//        return "I am line number 49";
         DB::beginTransaction();
         try {
             //            cart list
@@ -54,7 +53,6 @@ OrderTrait
                 ->where('user_id', Auth::id())
                 ->where('status', 1)
                 ->get();
-
             $newOrderDetails = [];
 
             foreach ($carts as $c) {
@@ -100,9 +98,8 @@ OrderTrait
                     $product_feature = ProductFeatureValue::whereIn('id', json_decode($c['product_data']))->get();
                     if ($product_feature) {
                         $total_feature = $product_feature->sum('price');
-                        $product_price += $total_feature * $c['quantity'];
                         $sub_total += $total_feature;
-
+                        $product_price += $total_feature * $c['quantity'];
                         foreach ($product_feature as $f) {
                             $ff = ProductFeatureValue::find($f['id']);
                             if ($f['stock'] < $c['quantity']) {
@@ -113,16 +110,16 @@ OrderTrait
                         }
                     }
                 }
-
                 $newOrderDetails[] = [
                     "product_id" => $c['product_id'],
                     "product_color_id" => $c['product_color_id'],
-                    "price" => $product->price, // product price
+                    "price" => $sub_total, // product price
                     "quantity" => $c['quantity'], // quantity
                     "discount_rate" => $product->discount_rate, // product discount rate
                     "subtotal_price" => $sub_total, // without quantity
                     "total" => $sub_total * $c['quantity'], // product + product color + product feature + discount + quantity
                 ];
+
             }
             $subtotal_price = collect($newOrderDetails)->sum("total");
             if (!empty($data['voucher_id'])) {
@@ -131,6 +128,7 @@ OrderTrait
             }
             $order_key = now()->format('Ymd') . '-' . Order::count() + 1;
             $total_price = $subtotal_price + $data['shipping_amount'] ?? 0;
+//            dd($data->toArray());
             $orderData = [
                 'user_id' => Auth::id(),
                 'transaction_id' => $order_key,
@@ -146,14 +144,12 @@ OrderTrait
                 'email' => $data['email'] ?? null,
                 'voucher_id' => $data['voucher_id'] ?? null,
                 'shipping_amount' => $data['shipping_amount'],
-                'discount_rate' => 0,
+                'discount_rate' => $data['discount_rate'] ?? 0,
                 'subtotal_price' => $data['subtotal_price'], // price without shipping cost
-                'total_price' => $total_price['total_price'], // price with shipping cost
+                'total_price' => $data['total_price'], // price with shipping cost
                 'status' => 'pending',
             ];
-
             $order = Order::create($orderData);
-
             if ($order) {
                 $order_details_list = collect($newOrderDetails)->map(function ($item) use ($order) {
                     return array_merge($item, ['order_id' => $order->id]);
@@ -392,7 +388,7 @@ OrderTrait
                     foreach ($product_feature as $f) {
                         $ff = ProductFeatureValue::find($f['id']);
                         if ($f['stock'] < $data['quantity']) {
-                            throw new \Exception('Feature product color out of stock.');
+                            throw new \Exception('Feature Product out of stock.');
                         }
                         $ff->stock = $f['stock'] - $data['quantity'];
                         $ff->save();
@@ -496,7 +492,6 @@ OrderTrait
 
     public function buyNowProduct($request)
     {
-        return "I am line number 498";
         try {
             $buyNowProduct = Product::where('id', $request->product_id)
                 ->whereHas('colors', function ($query) use ($request) {

@@ -39,7 +39,7 @@ trait CartTrait
 //        dd($request->all());
         $request->merge(['user_id' => auth()->id()]);
         try {
-            $cart = Cart::where('product_id', $request->product_id)->where('user_id', auth()->id())->first();
+            $cart = Cart::where('product_id', $request->product_id)->where('product_color_id', $request->product_color_id)->where('user_id', auth()->id())->first();
             if ($cart) {
                 return false;
             } else {
