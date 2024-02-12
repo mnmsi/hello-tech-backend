@@ -228,6 +228,7 @@ class GuestOrderController extends Controller
                 $voucher_dis = $this->calculateVoucherDiscount($request['voucher_id'], $subtotal_price);
                 $subtotal_price = $subtotal_price - $voucher_dis;
             }
+
             $order_key = now()->format('Ymd') . '-' . GuestOrder::count() + 1;
             $orderData = [
                 'transaction_id' => $order_key,
@@ -248,28 +249,39 @@ class GuestOrderController extends Controller
                 'order_note' => $request->order_note ?? null,
                 'voucher_code' => $request->voucher_code ?? null,
             ];
+
             $order = GuestOrder::create($orderData);
+
             $orderDetails = [];
 //            dd($carts->toArray());
             foreach ($carts as $p) {
                 $product_p = Product::find($p['product_id']);
                 $subtotal_p = $product_p->price;
                 $product_color_p = ProductColor::find($p['product_color_id']);
-                $product_feature_p = ProductFeatureValue::whereIn('id', json_decode($p['product_data']))->get();
+                $p_f_sum = 0;
+                if(!empty($p['product_data'])) {
+                    $product_feature_p = ProductFeatureValue::whereIn('id', json_decode($p['product_data']))->get();
+                    $p_f_sum = $product_feature_p->sum('price');
+                }
+//
+                $price = $product_p->price + $product_color_p->price + $p_f_sum - $product_p->discount_rate;
+                $subtotal_price = $price * $p['quantity'];
                 $subtotal_p += $product_color_p->price * $p['quantity'];
                 $orderDetails[] = [
                     'guest_order_id' => $order->id,
                     'product_id' => $product_p->id,
                     'product_color_id' => $p['product_color_id'],
                     'feature' => $p['product_data'] ?? null,
-                    'price' => ($product_p->price + $product_color_p->price + $product_feature_p->sum('price') - $product_p->discount_rate),
-                    'quantity' => $p['quantity'],
-                    'discount_rate' => $product_p->discount_rate,
-                    'subtotal_price' => (($product_p->price + $product_color_p->price + $product_feature_p->sum('price')) - $product_p->discount_rate) * $p['quantity'],
+                    'price' => $price ?? 0,
+                    'quantity' => $p['quantity'] ?? 0,
+                    'discount_rate' => $product_p->discount_rate ?? 0,
+                    'subtotal_price' => $subtotal_price ?? 0,
 //                    'total' => $subtotal_p + $request['shipping_amount'] ?? 0,
                 ];
+
             }
             if ($order) {
+
                 GuestOrderDetails::insert($orderDetails);
                 GuestCart::whereIn('id', $request->guest_cart_id)->delete();
                 $sslc = new AmarPayController();

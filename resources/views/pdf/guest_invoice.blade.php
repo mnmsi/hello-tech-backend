@@ -174,7 +174,7 @@
                         , {{ !empty($item["productColor"]["name"]) ? $item["productColor"]["name"] : "" }}
                     </td>
                     <td>
-                        {{ !empty($item["subtotal_price"]) ? ($item["subtotal_price"]/$item["quantity"]) : 0 }}
+                        {{ !empty($item["price"]) ? $item["price"] : 0 }}
                     </td>
                     <td>
                         {{ !empty($item["quantity"]) ? $item["quantity"] : 0 }}
