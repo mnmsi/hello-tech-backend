@@ -4,15 +4,20 @@ namespace Modules\Api\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
 use App\Models\System\TermsCondition;
+use Illuminate\Support\Facades\Cache;
 
 class TermsConditionController extends Controller
 {
     public function terms()
     {
-        $terms = TermsCondition::first();
+        // Cache the response forever
+        $terms = Cache::rememberForever('terms', function () {
+            return TermsCondition::first();
+        });
+
         return response()->json([
             'status' => 200,
-            'data' => $terms,
+            'data'   => $terms,
         ]);
     }
 }
