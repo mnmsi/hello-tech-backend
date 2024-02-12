@@ -13,10 +13,12 @@ class BaseModel extends Model
         parent::boot();
 
         static::updating(function ($model) {
+            // Forget the cache for the updated model
             Cache::forget($model->getTable());
         });
 
         static::deleting(function ($model) {
+            // Forget the cache for the deleted model
             Cache::forget($model->getTable());
         });
     }
