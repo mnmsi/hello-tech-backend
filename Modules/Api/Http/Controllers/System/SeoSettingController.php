@@ -12,14 +12,17 @@ class SeoSettingController extends Controller
 {
     public function seoSettings(Request $request)
     {
+        // Check if the data is cached
+        if (Cache::has('seo_settings')) {
+            return $this->respondWithSuccessWithData(Cache::get('seo_settings'));
+        }
+
         $data = SeoSetting::select('page_description', 'page_keywords', 'page_url', 'page_title')
             ->where('page_url', $request->page_url)
             ->first();
 
         // Cache the response forever
-        $data = Cache::rememberForever('seo_settings', function () use ($data) {
-            return $data;
-        });
+        Cache::forever('seo_settings', $data);
 
         return $this->respondWithSuccessWithData($data);
     }

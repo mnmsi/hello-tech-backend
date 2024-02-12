@@ -52,21 +52,20 @@ Route::post('verify-otp', [OtpController::class, 'verifyOtp']);               //
 
 // System Routes (Public) or (Guest) Mode
 Route::middleware('guest')->group(function () {
-    Route::get('site-settings', [SiteSettingController::class, 'siteSettings']);
-    Route::get('seo-settings', [SeoSettingController::class, 'seoSettings']);
-    Route::get('about', [AboutController::class, 'index']);                     // -------------- cached
+    Route::get('site-settings', [SiteSettingController::class, 'siteSettings']); // -------------- cached
+    Route::get('seo-settings', [SeoSettingController::class, 'seoSettings']);    // -------------- cached
+    Route::get('about', [AboutController::class, 'index']);                      // -------------- cached
     // Banner Routes
-    Route::get('testimonials', [TestimonialController::class, 'testimonials']); // Testimonial Routes
-    Route::get('showrooms', [ShowroomController::class, 'showrooms']);          // Showroom Routes
-    Route::get('colors', [ColorController::class, 'colors']);                   // Color Routes
+    Route::get('testimonials', [TestimonialController::class, 'testimonials']);  // Testimonial Routes // -------------- cached
+    Route::get('showrooms', [ShowroomController::class, 'showrooms']);           // Showroom Routes // -------------- cached
+    Route::get('colors', [ColorController::class, 'colors']);                    // Color Routes
     //    route for video review
-    Route::get('video-review', [VideoReviewController::class, 'index']);
+    Route::get('video-review', [VideoReviewController::class, 'index']);         // -------------- cached
     // Routes on OrderController
     Route::controller(OrderController::class)->group(function () {
-        Route::get('delivery-options', 'deliveryOptions'); // Delivery Options
-        Route::get('payment-methods', 'paymentMethods');   // Payment Methods// Shipping Charges
+        Route::get('delivery-options', 'deliveryOptions'); // Delivery Options // -------------- cached
+        Route::get('payment-methods', 'paymentMethods');   // Payment Methods// Shipping Charges // -------------- cached
     });
-
 });
 
 // User Routes (Auth) or (User) Mode

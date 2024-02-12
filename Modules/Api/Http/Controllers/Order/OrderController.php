@@ -5,6 +5,7 @@ namespace Modules\Api\Http\Controllers\Order;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Modules\Api\Http\Requests\Order\AddCartRequest;
 use Modules\Api\Http\Requests\Order\CreateOrderRequest;
 use Modules\Api\Http\Resources\Order\OrderListResource;
@@ -26,8 +27,20 @@ class OrderController extends Controller
      */
     public function deliveryOptions(): JsonResponse
     {
+        // check if the response is cached
+        if (Cache::has('delivery_options')) {
+            return $this->respondWithSuccessWithData(
+                Cache::get('delivery_options')
+            );
+        }
+
+        $deliveryOptions = $this->getDeliveryOptions();
+
+        // cache the response forever
+        Cache::forever('delivery_options', $deliveryOptions);
+
         return $this->respondWithSuccessWithData(
-            $this->getDeliveryOptions()
+            $deliveryOptions
         );
     }
 
@@ -38,8 +51,20 @@ class OrderController extends Controller
      */
     public function paymentMethods(): JsonResponse
     {
+        // check if the response is cached
+        if (Cache::has('payment_methods')) {
+            return $this->respondWithSuccessWithData(
+                Cache::get('payment_methods')
+            );
+        }
+
+        $paymentMethods = $this->getPaymentMethods();
+
+        // cache the response forever
+        Cache::forever('payment_methods', $paymentMethods);
+
         return $this->respondWithSuccessWithData(
-            $this->getPaymentMethods()
+            $paymentMethods
         );
     }
 
@@ -47,7 +72,8 @@ class OrderController extends Controller
     {
         if ($request->cart_id) {
             $order = $this->storeOrder($request);
-        } else {
+        }
+        else {
             $order = $this->buyNowOrderStore($request);
         }
 
@@ -59,9 +85,10 @@ class OrderController extends Controller
         $orders = $this->getUserOrderList();
         if ($orders) {
             return $this->respondWithSuccessWithData(
-               OrderListResource::collection($orders)
+                OrderListResource::collection($orders)
             );
-        } else {
+        }
+        else {
             return $this->respondError(
                 "Something went wrong"
             );
@@ -76,10 +103,11 @@ class OrderController extends Controller
         $cart = $this->buyNowProduct($request);
         if ($cart) {
             return $this->respondWithSuccess([
-                'data' => [new OrderResource($cart)],
+                'data'        => [new OrderResource($cart)],
                 'total_price' => $this->buyNowProductPrice($request),
             ]);
-        } else {
+        }
+        else {
             return $this->respondError(
                 "Something went wrong"
             );
@@ -89,17 +117,18 @@ class OrderController extends Controller
     public function makeOrderFromBuyNow(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id',
+            'product_id'       => 'required|exists:products,id',
             'product_color_id' => 'required|exists:product_colors,id',
-            'quantity' => 'required|numeric',
-            'voucher_id' => 'nullable|exists:vouchers,id',
+            'quantity'         => 'required|numeric',
+            'voucher_id'       => 'nullable|exists:vouchers,id',
         ]);
         $order = $this->buyNowRequest($request);
         if ($order) {
             return $this->respondWithSuccessWithData(
                 $order
             );
-        } else {
+        }
+        else {
             return $this->respondError(
                 "Something went wrong!"
             );
@@ -110,28 +139,30 @@ class OrderController extends Controller
     public function getVoucherDiscount(Request $request)
     {
         $request->validate([
-            'code' => 'required|exists:vouchers,code',
+            'code'   => 'required|exists:vouchers,code',
             'amount' => 'required|min:0',
         ]);
         $discount = $this->voucherDiscountCalculate($request);
         if ($discount) {
             $result = [
-                'id' => $discount->id,
-                'code' => $discount->code,
-                'value' => $discount->value,
-                'type' => $discount->type,
+                'id'     => $discount->id,
+                'code'   => $discount->code,
+                'value'  => $discount->value,
+                'type'   => $discount->type,
                 'amount' => $request['amount'],
             ];
 
             if ($discount->type == "amount") {
                 $result['discount_amount'] = $request['amount'] - $discount->value;
-            } else {
+            }
+            else {
                 $result['discount_amount'] = $request['amount'] - (($discount->value * $request['amount']) / 100);
             }
             return $this->respondWithSuccessWithData(
                 $result
             );
-        } else {
+        }
+        else {
             return $this->respondError(
                 "Something went wrong!"
             );

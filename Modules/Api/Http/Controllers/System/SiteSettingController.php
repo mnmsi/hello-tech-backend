@@ -10,7 +10,12 @@ class SiteSettingController extends Controller
 {
     public function siteSettings()
     {
-        $data = SiteSetting::select('name', 'email', 'phone', 'header_logo', 'footer_logo', 'fav_icon', 'dark_fav_icon', 'facebook_url', 'twitter_url', 'youtube_url', 'whatsapp_url', 'site_address', 'welcome_popup_image', 'section_order')
+        // Check if the site settings are cached
+        if (Cache::has('site_settings')) {
+            return Cache::get('site_settings');
+        }
+
+        $data                        = SiteSetting::select('name', 'email', 'phone', 'header_logo', 'footer_logo', 'fav_icon', 'dark_fav_icon', 'facebook_url', 'twitter_url', 'youtube_url', 'whatsapp_url', 'site_address', 'welcome_popup_image', 'section_order')
             ->first();
 
         $data['status']              = true;
@@ -22,8 +27,8 @@ class SiteSettingController extends Controller
         $data['section_order']       = !empty($data["section_order"]) ? array_values(json_decode($data["section_order"], true)) : [];
 
         // Cache the response forever
-        return Cache::rememberForever('site_settings', function () use ($data) {
-            return $data;
-        });
+        Cache::forever('site_settings', $data);
+
+        return $data;
     }
 }
