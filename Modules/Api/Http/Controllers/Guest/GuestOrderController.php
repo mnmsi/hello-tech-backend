@@ -191,11 +191,13 @@ class GuestOrderController extends Controller
         try {
 //        buy now from cart session
             $guest = GuestUser::where('uuid', $request->guest_user_id)->first();
-            $carts = GuestCart::select('id', 'product_id', 'product_color_id', 'product_data', 'quantity')
-                ->where('guest_user_id', $guest->id)->where('status', 1)->whereIn('id', $request->guest_cart_id)->get();
+            $carts = GuestCart::where('guest_user_id', $guest->id)->where('status', 1)->get();
             foreach ($carts as $cartItem) {
                 $product = Product::find($cartItem['product_id']);
                 $subtotal_price = $this->calculateDiscountPrice($product->price, $product->discount_rate) * $cartItem['quantity'];
+//                if ($product->stock < $cartItem['quantity']) {
+//                    throw new \Exception('Product out of stock.');
+//                }
 //            product color price
                 $product_color = ProductColor::find($cartItem['product_color_id']);
                 if ($product_color) {
@@ -206,8 +208,8 @@ class GuestOrderController extends Controller
                     $product_color->stock = $product_color->stock - $cartItem['quantity'];
                     $product_color->save();
                 }
-                if (!empty($cartItem['product_data_id'])) {
-                    $product_feature = ProductFeatureValue::whereIn('id', json_decode($cartItem['product_data_id']))->get();
+                if (!empty($cartItem['product_data'])) {
+                    $product_feature = ProductFeatureValue::whereIn('id', json_decode($cartItem['product_data']))->get();
                     if ($product_feature) {
                         $total_feature = $product_feature->sum('price');
                         $subtotal_price += $total_feature * $cartItem['quantity'];
@@ -247,22 +249,23 @@ class GuestOrderController extends Controller
                 'voucher_code' => $request->voucher_code ?? null,
             ];
             $order = GuestOrder::create($orderData);
-//            dd($order->id);
             $orderDetails = [];
+//            dd($carts->toArray());
             foreach ($carts as $p) {
                 $product_p = Product::find($p['product_id']);
                 $subtotal_p = $product_p->price;
                 $product_color_p = ProductColor::find($p['product_color_id']);
+                $product_feature_p = ProductFeatureValue::whereIn('id', json_decode($p['product_data']))->get();
                 $subtotal_p += $product_color_p->price * $p['quantity'];
                 $orderDetails[] = [
                     'guest_order_id' => $order->id,
                     'product_id' => $product_p->id,
                     'product_color_id' => $p['product_color_id'],
-                    'feature' => $p['product_data_id'] ?? null,
-                    'price' => $product_p->price,
+                    'feature' => $p['product_data'] ?? null,
+                    'price' => ($product_p->price + $product_color_p->price + $product_feature_p->sum('price') - $product_p->discount_rate),
                     'quantity' => $p['quantity'],
                     'discount_rate' => $product_p->discount_rate,
-                    'subtotal_price' => $subtotal_p,
+                    'subtotal_price' => (($product_p->price + $product_color_p->price + $product_feature_p->sum('price')) - $product_p->discount_rate) * $p['quantity'],
 //                    'total' => $subtotal_p + $request['shipping_amount'] ?? 0,
                 ];
             }
