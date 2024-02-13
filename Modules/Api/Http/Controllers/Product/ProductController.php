@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Modules\Api\Http\Resources\Product\ProductCollection;
 use Modules\Api\Http\Resources\Product\ProductDataResource;
 use Modules\Api\Http\Resources\Product\ProductDetailsResource;
@@ -31,11 +32,14 @@ class ProductController extends Controller
 
     public function getProduct(Request $request)
     {
-
         $filterData = $this->initializeFilterData($request);
-        return $this->respondWithSuccessWithData(
-            new ProductCollection($this->getProductsQuery($filterData))
-        );
+
+        // Cache the data for 2 minutes
+        $data = Cache::remember(json_encode($filterData), 2 * 60, function () use ($filterData) {
+            return new ProductCollection($this->getProductsQuery($filterData));
+        });
+
+        return $this->respondWithSuccessWithData($data);
     }
 
     public function details($name)
@@ -69,12 +73,12 @@ class ProductController extends Controller
                 $product_feature_id[$key] = (int)$value;
             }
         }
-        $product = Product::with(['productFeatureValues', 'colors'])->where('id', $request->product_id)->first();
-        $price = $product->price + $product->productFeatureValues->whereIn('id', $product_feature_id)->sum('price') + $product->colors->whereIn('id', $request->color_id)->sum('price');
+        $product        = Product::with(['productFeatureValues', 'colors'])->where('id', $request->product_id)->first();
+        $price          = $product->price + $product->productFeatureValues->whereIn('id', $product_feature_id)->sum('price') + $product->colors->whereIn('id', $request->color_id)->sum('price');
         $discount_price = $this->calculateDiscountPrice($product->price, $product->discount_rate ?? 0) + $product->productFeatureValues->whereIn('id', $product_feature_id)->sum('price') + $product->colors->whereIn('id', $request->color_id)->sum('price');
         //        also return discount price after calculation
         return $this->respondWithSuccessWithData([
-            'price' => $price,
+            'price'          => $price,
             'discount_price' => $discount_price,
         ]);
     }

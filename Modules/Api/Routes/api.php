@@ -184,7 +184,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('product')->group(function () {
     Route::controller(ProductController::class)->prefix('product')->group(function () {
         Route::get('/featured/{id}', 'getFeaturedProduct');   // Feature product
-        Route::get('/', 'getProduct');                        // Feature product
+        Route::get('/', 'getProduct');                        // Feature product // -------------- cached
         Route::get('details/{name}', 'details');              // Product Details
         Route::get('get-data/{id}', 'getProductDataById');
         Route::post('calculate_product_price', 'calculatePrice');
