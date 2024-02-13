@@ -18,7 +18,6 @@ class ReviewController extends Controller
     {
         return $this->respondWithSuccessWithData(
             ReviewResource::collection($this->getReview($id)),
-        // user id
         );
     }
 
