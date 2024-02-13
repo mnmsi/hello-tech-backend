@@ -164,7 +164,7 @@
             <th style="text-align: left">Description</th>
             <th style="text-align: left">Price</th>
             <th style="text-align: left">Qty</th>
-            <th style="text-align: right">SubTotal</th>
+            <th style="text-align: right">Total Price</th>
         </tr>
         @if(!empty($order->orderItems))
             @foreach($order->orderItems as $item)

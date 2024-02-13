@@ -18,6 +18,7 @@ class OrderController extends Controller
     {
         try {
             $order = Order::with("orderDetails", "orderDetails.product", "orderDetails.product_color")->find($id);
+//            dd($order);
             $site = SiteSetting::first();
             $discount = null;
             if (!empty($order->voucher_id)) {

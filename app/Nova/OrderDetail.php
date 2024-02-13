@@ -72,6 +72,11 @@ class OrderDetail extends Resource
                 ->min(0)
                 ->step('any')
                 ->rules('required'),
+            //            subtotal
+//            Number::make('subtotal_price')
+//                ->min(0)
+//                ->step('any')
+//                ->nullable(),
 //            total
             Number::make('total')
                 ->min(0)
@@ -82,11 +87,7 @@ class OrderDetail extends Resource
 //                ->min(0)
 //                ->step('any')
 //                ->nullable(),
-//            subtotal
-            Number::make('subtotal_price')
-                ->min(0)
-                ->step('any')
-                ->nullable(),
+
 //            date
             DateTime::make('Created At', 'created_at')
                 ->hideFromIndex()
@@ -133,6 +134,11 @@ class OrderDetail extends Resource
     public function lenses(NovaRequest $request)
     {
         return [];
+    }
+
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
     }
 
     /**

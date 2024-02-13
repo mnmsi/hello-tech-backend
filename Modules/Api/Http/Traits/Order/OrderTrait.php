@@ -155,7 +155,7 @@ OrderTrait
                     return array_merge($item, ['order_id' => $order->id]);
                 })->toArray();
                 OrderDetails::insert($order_details_list);
-                Cart::where('user_id', Auth::id())->where('status',1)->delete();
+                Cart::where('user_id', Auth::id())->where('status', 1)->delete();
                 if ($data['payment_method_id'] == 2) {
                     if ($isProcessPayment = $this->processPayment($orderData)) {
                         DB::commit();
@@ -177,13 +177,14 @@ OrderTrait
                     foreach ($numbers as $number) {
                         $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
                     }
-                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping from hellotech.store";
+                    $message = "Hi! " . $data['name'] . ".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total " . $total_price . " BDT.  Thank you for shopping from hellotech.store";
                     $this->sendSms($data['phone'], $message);
                     return [
                         'data' => [
                             'order_id' => $order->id,
                             'transaction_id' => $order->transaction_id,
                             'order_key' => $order->order_key,
+                            'total' => $total_price,
                         ],
                         'status' => true,
                         'message' => 'Order Successful',
@@ -204,153 +205,6 @@ OrderTrait
             ];
         }
     }
-
-//    public function storeOrder($data)
-//    {
-//        DB::beginTransaction();
-//        try {
-//            $total_discountRate = 0;
-//            $subtotal_price = 0;
-//            //            cart list
-//            $carts = Cart::select('id', 'product_id', 'product_color_id', 'product_data', 'quantity')
-//                ->where('user_id', Auth::id())
-//                ->where('status', 1)
-//                ->get();
-//
-//            foreach ($carts as $c) {
-//                //                get product
-//                $product = Product::find($c['product_id']);
-//                //                product color price
-//                $product_color = ProductColor::find($c['product_color_id']);
-//                //                price calculation
-//                if ($product->discount_rate) {
-//                    if ($product->discount_rate == 100) {
-//                        $pp = 0;
-//                        $total_discountRate += 100;
-//                    } else {
-//                        $pp = $product->price - (($product->price * $product->discount_rate) / 100);
-//                        $total_discountRate += $product->discount_rate;
-//                    }
-//                    $subtotal_price = $pp * $c['quantity'];
-//                } else {
-//                    $subtotal_price = $product->price * $c['quantity'];
-//                }
-//
-//                if ($product_color) {
-//                    $subtotal_price += $product_color->price * $c['quantity'];
-//                    if ($product_color->stock < $c['quantity']) {
-//                        throw new \Exception('Product color out of stock.');
-//                    }
-//                    $product_color->stock = $product_color->stock - $c['quantity'];
-//                    $product_color->save();
-//                }
-//                /*
-//                 * feature data if exist
-//                 * */
-//                //                product feature
-//                if (!empty($c['product_data'])) {
-//                    $product_feature = ProductFeatureValue::whereIn('id', json_decode($c['product_data']))->get();
-//                    if ($product_feature) {
-//                        $total_feature = $product_feature->sum('price');
-//                        $subtotal_price += $total_feature * $c['quantity'];
-//
-//                        foreach ($product_feature as $f) {
-//                            $ff = ProductFeatureValue::find($f['id']);
-//                            if ($f['stock'] < $c['quantity']) {
-//                                throw new \Exception('Feature Product out of stock.');
-//                            }
-//                            $ff->stock = $f['stock'] - $c['quantity'];
-//                            $ff->save();
-//                        }
-//                    }
-//                }
-//            }
-//
-//            if (!empty($data['voucher_id'])) {
-//                $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'], $subtotal_price);
-//                $subtotal_price = $subtotal_price - $voucher_dis;
-//            }
-//
-//            $orderData = [
-//                'user_id' => Auth::id(),
-//                'transaction_id' => uniqid(),
-//                'order_key' => uniqid(),
-//                'delivery_option_id' => $data['delivery_option_id'],
-//                'payment_method_id' => $data['payment_method_id'],
-//                'division' => Division::where('id', $data['division_id'])->first()->name,
-//                'city' => City::where('id', $data['city_id'])->first()->name,
-//                'area' => Area::where('id', $data['area_id'])->first()->name,
-//                'address_line' => $data['address_line'],
-//                'name' => $data['name'],
-//                'phone' => $data['phone'],
-//                'email' => $data['email'] ?? null,
-//                'voucher_id' => $data['voucher_id'] ?? null,
-//                'shipping_amount' => $data['shipping_amount'],
-//                'subtotal_price' => $subtotal_price,
-//                'discount_rate' => $total_discountRate,
-//                'total_price' => $subtotal_price + $data['shipping_amount'] ?? 0,
-//                'status' => 'pending',
-//            ];
-//
-//            $order = Order::create($orderData);
-//            $orderDetails = [];
-//            foreach ($carts as $p) {
-//                $product_p = Product::find($p['product_id']);
-//                $subtotal_p = $product_p->price;
-//                $product_color_p = ProductColor::find($p['product_color_id']);
-//                $subtotal_p += $product_color_p->price * $p['quantity'];
-//
-//                $orderDetails[] = [
-//                    'order_id' => $order->id,
-//                    'product_id' => $product_p->id,
-//                    'product_color_id' => $p['product_color_id'],
-//                    'price' => $product_p->price,
-//                    'discount_rate' => $product_p->discount_rate,
-//                    'subtotal_price' => $subtotal_p,
-//                    'quantity' => $p['quantity'],
-//                    'total' => $subtotal_p + $data['shipping_amount'] ?? 0,
-//                ];
-//            }
-//            if ($order) {
-//                OrderDetails::insert($orderDetails);
-//                Cart::where('user_id', Auth::id())->delete();
-//                if ($data['payment_method_id'] == 2) {
-//                    if ($isProcessPayment = $this->processPayment($orderData)) {
-//                        DB::commit();
-//                        return [
-//                            'status' => true,
-//                            'message' => 'Payment Successful',
-//                            'data' => json_decode($isProcessPayment)
-//                        ];
-//                    } else {
-//                        DB::rollBack();
-//                        return [
-//                            'status' => false,
-//                            'message' => 'Order Unsuccessful',
-//                        ];
-//                    }
-//                } else {
-//                    DB::commit();
-//                    return [
-//                        'status' => true,
-//                        'message' => 'Payment Successful',
-//                    ];
-//                }
-//            } else {
-//                DB::rollBack();
-//                return [
-//                    'status' => false,
-//                    'message' => 'Order Unsuccessful',
-//                ];
-//            }
-//        } catch (\Exception $e) {
-//            DB::rollBack();
-//            return [
-//                'status' => false,
-//                'message' => $e->getMessage(),
-//            ];
-//        }
-//    }
 
     public function buyNowOrderStore($data)
     {
@@ -416,23 +270,26 @@ OrderTrait
                 'transaction_id' => $order_key,
                 'order_key' => $order_key,
                 'discount_rate' => $product->discount_rate,
+                'quantity' => $data['quantity'],
                 'shipping_amount' => $data['shipping_amount'],
-                'subtotal_price' => $data['subtotal_price'] ?? 0,
-                'total_price' => $data['total_price'] ?? 0,
+                'subtotal_price' => $data['subtotal_price'] * $data['quantity'] ?? 0,
+                'total_price' => ($data['subtotal_price'] * $data['quantity']) + $data['shipping_amount'] ?? 0,
                 'order_note' => $data['order_note'] ?? null,
                 'status' => 'pending',
             ];
             $order = Order::create($orderData);
             if ($order) {
+                $totalProductPrice = $this->calculateDiscountPrice($product->price + $product_color->price + $total_feature, $product->discount_rate);
+                $subTotalPrice = $totalProductPrice * $data['quantity'];
                 $orderDetails = [
                     'order_id' => $order->id,
                     'product_id' => $product->id,
                     'product_color_id' => $product_color->id,
-                    'price' => $product->price,
+                    'price' => $totalProductPrice,
                     'discount_rate' => $product->discount_rate,
-                    'subtotal_price' => $sub_price,
+                    'subtotal_price' => $subTotalPrice,
                     'quantity' => $data['quantity'],
-                    'total' => $sub_price + $data['shipping_amount'] ?? 0,
+                    'total' => $subTotalPrice,
                 ];
                 OrderDetails::insert($orderDetails);
                 $sslc = new AmarPayController();
@@ -457,13 +314,14 @@ OrderTrait
                     foreach ($numbers as $number) {
                         $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
                     }
-                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping from hellotech.store";
+                    $message = "Hi! " . $data['name'] . ".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total " . $total_price . " BDT.  Thank you for shopping from hellotech.store";
                     $this->sendSms($data['phone'], $message);
                     return [
                         'data' => [
                             'order_id' => $order->id,
                             'transaction_id' => $order->transaction_id,
                             'order_key' => $order->order_key,
+                            'total' => $total_price,
                         ],
                         'status' => true,
                         'message' => 'Order Successful',
@@ -577,7 +435,7 @@ OrderTrait
                     foreach ($numbers as $number) {
                         $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
                     }
-                    $message = "Hi! " . $data['name'] .".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total ". $total_price. " BDT.  Thank you for shopping from hellotech.store";
+                    $message = "Hi! " . $data['name'] . ".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total " . $total_price . " BDT.  Thank you for shopping from hellotech.store";
                     $this->sendSms($data['phone'], $message);
                     return [
                         'data' => [

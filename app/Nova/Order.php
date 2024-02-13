@@ -19,6 +19,7 @@ use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\Badge;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
@@ -175,6 +176,7 @@ class Order extends Resource
                 ->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->default(now()),
+            HasMany::make('Order Details','orderDetails',OrderDetail::class)->show(),
         ];
     }
 

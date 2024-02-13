@@ -12,8 +12,9 @@ class BaseModel extends Model
     protected static function boot()
     {
         parent::boot();
+        $that = new self();
 
-        static::updating(function ($model) {
+        static::updating(function ($model) use ($that){
 
             if ($model->getTable() == 'products') {
                 Cache::forget('products.' . $model->slug);
@@ -23,7 +24,7 @@ class BaseModel extends Model
                 Cache::forget($model->getTable());
 
                 // clear dependency cache for address
-                $this->clearAddressDependencyCache($model->getTable());
+                $that->clearAddressDependencyCache($model->getTable());
             }
         });
 

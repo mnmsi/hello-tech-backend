@@ -164,7 +164,7 @@
             <th style="text-align: left">Description</th>
             <th style="text-align: left">Price</th>
             <th style="text-align: left">Qty</th>
-            <th style="text-align: right">SubTotal</th>
+            <th style="text-align: right">Total Price</th>
         </tr>
         @if(!empty($order->orderDetails))
             @foreach($order->orderDetails as $item)
@@ -174,7 +174,7 @@
                         , {{ !empty($item["product_color"]["name"]) ? $item["product_color"]["name"] : "" }}
                     </td>
                     <td>
-                        {{ !empty($item["subtotal_price"]) ? $item["subtotal_price"] : 0 }}
+                        {{ !empty($item["price"]) ? $item["price"] : 0 }}
                     </td>
                     <td>
                         {{ !empty($item["quantity"]) ? $item["quantity"] : 0 }}
