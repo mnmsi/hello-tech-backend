@@ -14,16 +14,27 @@ class BaseModel extends Model
         parent::boot();
 
         static::updating(function ($model) {
-            // Forget the cache for the updated model
-            Cache::forget($model->getTable());
 
-            // clear dependency cache for address
-            $this->clearAddressDependencyCache($model->getTable());
+            if ($model->getTable() == 'products') {
+                Cache::forget('products.' . $model->slug);
+            }
+            else {
+                // Forget the cache for the updated model
+                Cache::forget($model->getTable());
+
+                // clear dependency cache for address
+                $this->clearAddressDependencyCache($model->getTable());
+            }
         });
 
         static::deleting(function ($model) {
-            // Forget the cache for the deleted model
-            Cache::forget($model->getTable());
+            if ($model->getTable() == 'products') {
+                Cache::forget('products.' . $model->slug);
+            }
+            else {
+                // Forget the cache for the deleted model
+                Cache::forget($model->getTable());
+            }
         });
     }
 

@@ -44,19 +44,11 @@ class ProductController extends Controller
 
     public function details($name)
     {
-//        Cache::flush();
-        if (Cache::has('products.' . $name)) {
-            $product = Cache::get('products.' . $name);
-            return $this->respondWithSuccessWithData(
-                $product
-            );
-        } else {
-            $product = $this->getProductDetailsBySlug($name);
-            Cache::forever('products.' . $name, new ProductDetailsResource($product));
-            return $this->respondWithSuccessWithData(
-                $product
-            );
-        }
+        $product = Cache::rememberForever('products.' . $name, function () use ($name) {
+            return new ProductDetailsResource($this->getProductDetailsBySlug($name));
+        });
+
+        return $this->respondWithSuccessWithData($product);
     }
 
     public function getProductDataById($id)

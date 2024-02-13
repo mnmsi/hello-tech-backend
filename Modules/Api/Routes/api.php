@@ -185,10 +185,10 @@ Route::middleware('product')->group(function () {
     Route::controller(ProductController::class)->prefix('product')->group(function () {
         Route::get('/featured/{id}', 'getFeaturedProduct');   // Feature product
         Route::get('/', 'getProduct');                        // Feature product // -------------- cached
-        Route::get('details/{name}', 'details');              // Product Details
+        Route::get('details/{name}', 'details');              // Product Details // -------------- cached
         Route::get('get-data/{id}', 'getProductDataById');
         Route::post('calculate_product_price', 'calculatePrice');
-        Route::get('related', 'relatedProduct');                                   // Related Product //cached
+        Route::get('related', 'relatedProduct');                                   // Related Product // -------------- cached
         Route::get('total-review/{id}', [ReviewController::class, 'totalReview']); // Product Review
         Route::get('get-product-by-brand/{slug}', 'getProductByBrand');            // Product Review
         Route::get('/new-arrivals', 'newArrivals');                                // Product Review
