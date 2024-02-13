@@ -58,7 +58,7 @@ Route::middleware('guest')->group(function () {
     // Banner Routes
     Route::get('testimonials', [TestimonialController::class, 'testimonials']);  // Testimonial Routes // -------------- cached
     Route::get('showrooms', [ShowroomController::class, 'showrooms']);           // Showroom Routes // -------------- cached
-    Route::get('colors', [ColorController::class, 'colors']);                    // Color Routes
+    Route::get('colors', [ColorController::class, 'colors']);                    // Color Routes // -------------- cached
     //    route for video review
     Route::get('video-review', [VideoReviewController::class, 'index']);         // -------------- cached
     // Routes on OrderController
@@ -184,8 +184,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('product')->group(function () {
     Route::controller(ProductController::class)->prefix('product')->group(function () {
         Route::get('/featured/{id}', 'getFeaturedProduct');   // Feature product
-        Route::get('/', 'getProduct');                        // Feature product
-        Route::get('details/{name}', 'details');              // Product Details // cached
+        Route::get('/', 'getProduct');                        // Feature product // -------------- cached
+        Route::get('details/{name}', 'details');              // Product Details
         Route::get('get-data/{id}', 'getProductDataById');
         Route::post('calculate_product_price', 'calculatePrice');
         Route::get('related', 'relatedProduct');                                   // Related Product //cached
@@ -219,9 +219,9 @@ Route::prefix('guest-order')->middleware('api-session')->as('guest-order.')->con
 });
 
 Route::controller(SystemAddressController::class)->group(function () {
-    Route::get('divisions', 'division');
-    Route::get('city/{id?}', 'city');
-    Route::get('area/{id?}', 'area');
+    Route::get('divisions', 'division'); // -------------- cached
+    Route::get('city/{id?}', 'city');    // -------------- cached
+    Route::get('area/{id?}', 'area');    // -------------- cached
 });
 
 Route::get('shipping-charges/{name?}', [ShippingChargeController::class, 'shippingCharges']);

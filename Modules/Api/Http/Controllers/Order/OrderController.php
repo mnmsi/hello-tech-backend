@@ -29,9 +29,7 @@ class OrderController extends Controller
     {
         // check if the response is cached
         if (Cache::has('delivery_options')) {
-            return $this->respondWithSuccessWithData(
-                Cache::get('delivery_options')
-            );
+            return $this->respondWithSuccessWithData(Cache::get('delivery_options'));
         }
 
         $deliveryOptions = $this->getDeliveryOptions();
@@ -39,9 +37,7 @@ class OrderController extends Controller
         // cache the response forever
         Cache::forever('delivery_options', $deliveryOptions);
 
-        return $this->respondWithSuccessWithData(
-            $deliveryOptions
-        );
+        return $this->respondWithSuccessWithData($deliveryOptions);
     }
 
     /**
@@ -53,9 +49,7 @@ class OrderController extends Controller
     {
         // check if the response is cached
         if (Cache::has('payment_methods')) {
-            return $this->respondWithSuccessWithData(
-                Cache::get('payment_methods')
-            );
+            return $this->respondWithSuccessWithData(Cache::get('payment_methods'));
         }
 
         $paymentMethods = $this->getPaymentMethods();
@@ -63,9 +57,7 @@ class OrderController extends Controller
         // cache the response forever
         Cache::forever('payment_methods', $paymentMethods);
 
-        return $this->respondWithSuccessWithData(
-            $paymentMethods
-        );
+        return $this->respondWithSuccessWithData($paymentMethods);
     }
 
     public function order(CreateOrderRequest $request)

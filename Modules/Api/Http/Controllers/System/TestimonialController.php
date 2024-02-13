@@ -13,20 +13,18 @@ class TestimonialController extends Controller
     {
         //  Check if the testimonials are cached
         if (Cache::has('testimonials')) {
-            return $this->respondWithSuccessWithData(
-                TestimonialResource::collection(Cache::get('testimonials'))
-            );
+            return $this->respondWithSuccessWithData(Cache::get('testimonials'));
         }
 
         // Get all active testimonials
         $testimonials = Testimonial::where('is_active', 1)
                                    ->get();
 
+        $testimonials = TestimonialResource::collection($testimonials);
+
         Cache::forever('testimonials', $testimonials);
 
         // Return response with testimonials
-        return $this->respondWithSuccessWithData(
-            TestimonialResource::collection($testimonials)
-        );
+        return $this->respondWithSuccessWithData($testimonials);
     }
 }

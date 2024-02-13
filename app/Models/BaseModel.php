@@ -18,7 +18,7 @@ class BaseModel extends Model
             Cache::forget($model->getTable());
 
             // clear dependency cache for address
-            $this->clearDependencyCache($model->getTable());
+            $this->clearAddressDependencyCache($model->getTable());
         });
 
         static::deleting(function ($model) {
@@ -27,7 +27,7 @@ class BaseModel extends Model
         });
     }
 
-    private function clearDependencyCache($table): void
+    private function clearAddressDependencyCache($table): void
     {
         $dependencyAddDB = [
             'divisions',

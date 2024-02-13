@@ -23,7 +23,7 @@ trait ProductTrait
     public function getSearchSuggestions($search)
     {
         $searchItem = explode(' ', $search);
-        $query = Product::where('is_active', 1);
+        $query      = Product::where('is_active', 1);
         foreach ($searchItem as $item) {
             $query->where('name', 'like', '%' . $item . '%');
         }
@@ -55,14 +55,14 @@ trait ProductTrait
     public function initializeFilterData($request)
     {
         return [
-            'name' => $request->name ?? null,
-            'category' => $request->category ?? null,
-            'brand' => $request->brand ?? null,
+            'name'        => $request->name ?? null,
+            'category'    => $request->category ?? null,
+            'brand'       => $request->brand ?? null,
             'is_official' => $request->is_official ?? null,
-            'value' => $request->value ?? null,
-            'short_by' => $request->short_by ?? null,
-            'price_from' => $request->price_from ?? null,
-            'price_to' => $request->price_to ?? null,
+            'value'       => $request->value ?? null,
+            'short_by'    => $request->short_by ?? null,
+            'price_from'  => $request->price_from ?? null,
+            'price_to'    => $request->price_to ?? null,
         ];
     }
 
@@ -71,15 +71,18 @@ trait ProductTrait
         $order = 'category_order_no';
         if ($params['category'] == 'gadgets') {
             $params['category'] = null;
-            $order = 'order_no';
+            $order              = 'order_no';
         }
-        $name = explode(' ', $params['name']);
+
+        $name  = explode(' ', $params['name']);
         $query = Product::wherehas('colors', function ($q) {
             $q->where('id', '>', 0);
         })->where('is_active', 1);
+
         foreach ($name as $item) {
             $query->where('name', 'like', '%' . $item . '%');
         }
+
         return $query->when($params['brand'], function ($query) use ($params) {
             $query->where('brand_id', $params['brand']);
         })
@@ -149,7 +152,7 @@ trait ProductTrait
             $q->with(['productFeatureValues' => function ($q) {
                 $q->where('stock', '>', 0);
             }]);
-        }, 'banner', 'category', 'colors' => function ($c) {
+        }, 'banner', 'category', 'colors'                                => function ($c) {
             $c->where('id', '>', 0);
         }])->first();
     }
