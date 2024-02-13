@@ -58,7 +58,7 @@ Route::middleware('guest')->group(function () {
     // Banner Routes
     Route::get('testimonials', [TestimonialController::class, 'testimonials']);  // Testimonial Routes // -------------- cached
     Route::get('showrooms', [ShowroomController::class, 'showrooms']);           // Showroom Routes // -------------- cached
-    Route::get('colors', [ColorController::class, 'colors']);                    // Color Routes
+    Route::get('colors', [ColorController::class, 'colors']);                    // Color Routes // -------------- cached
     //    route for video review
     Route::get('video-review', [VideoReviewController::class, 'index']);         // -------------- cached
     // Routes on OrderController
@@ -219,9 +219,9 @@ Route::prefix('guest-order')->middleware('api-session')->as('guest-order.')->con
 });
 
 Route::controller(SystemAddressController::class)->group(function () {
-    Route::get('divisions', 'division');
-    Route::get('city/{id?}', 'city');
-    Route::get('area/{id?}', 'area');
+    Route::get('divisions', 'division'); // -------------- cached
+    Route::get('city/{id?}', 'city');    // -------------- cached
+    Route::get('area/{id?}', 'area');    // -------------- cached
 });
 
 Route::get('shipping-charges/{name?}', [ShippingChargeController::class, 'shippingCharges']);

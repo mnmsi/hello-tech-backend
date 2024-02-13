@@ -14,18 +14,15 @@ class VideoReviewController extends Controller
     {
         // Check if the video reviews are cached
         if (Cache::has('video_reviews')) {
-            return $this->respondWithSuccessWithData(
-                VideoReviewResource::collection(Cache::get('video_reviews'))
-            );
+            return $this->respondWithSuccessWithData(Cache::get('video_reviews'));
         }
 
         $data = VideoReviews::all();
+        $data = VideoReviewResource::collection($data);
 
         // cache the response forever
         Cache::forever('video_reviews', $data);
 
-        return $this->respondWithSuccessWithData(
-            VideoReviewResource::collection($data),
-        );
+        return $this->respondWithSuccessWithData($data);
     }
 }

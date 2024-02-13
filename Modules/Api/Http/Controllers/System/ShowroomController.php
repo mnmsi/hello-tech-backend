@@ -14,17 +14,19 @@ class ShowroomController extends Controller
         // Check if showrooms are cached
         if (Cache::has('showrooms')) {
             // Return cached response
-            return $this->respondWithSuccessWithData(ShowroomResource::collection(Cache::get('showrooms')));
+            return $this->respondWithSuccessWithData(Cache::get('showrooms'));
         }
 
         // Get all active showrooms
         $showrooms = Showroom::where('is_active', 1)
             ->get();
 
+        $showrooms = ShowroomResource::collection($showrooms);
+
         // Cache the response forever
         Cache::forever('showrooms', $showrooms);
 
         // Return response with showrooms
-        return $this->respondWithSuccessWithData(ShowroomResource::collection($showrooms));
+        return $this->respondWithSuccessWithData($showrooms);
     }
 }
