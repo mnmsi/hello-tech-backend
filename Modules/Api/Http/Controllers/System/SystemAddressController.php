@@ -22,7 +22,7 @@
         {
             // Check if the divisions are cached
             if (Cache::has('divisions')) {
-                return Cache::get('divisions');
+                return $this->respondWithSuccessWithData(Cache::get('divisions'));
             }
 
             $divisions = $this->getDivision();
@@ -41,7 +41,7 @@
         {
             // Check if the cities are cached
             if (Cache::has("$division_id.cities")) {
-                return Cache::get("$division_id.cities");
+                return $this->respondWithSuccessWithData(Cache::get("$division_id.cities"));
             }
 
             $citiesByDivision = $this->getCityByDivision($division_id);
@@ -60,7 +60,7 @@
         {
             // Check if the areas are cached
             if (Cache::has("$city_id.areas")) {
-                return Cache::get("$city_id.areas");
+                return $this->respondWithSuccessWithData(Cache::get("$city_id.areas"));
             }
 
             $areasByCity = $this->getAreaByCity($city_id);
