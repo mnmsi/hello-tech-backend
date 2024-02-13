@@ -40,7 +40,6 @@ class ProductDetailsResource extends JsonResource
             'category' => new CategoryResource($this->category),
             'sub_category' => new CategoryResource($this->subCategory),
             'is_stock_out' => $this->colors->sum('stock') == 0,
-
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Modules\Api\Http\Resources\Product\ProductCollection;
 use Modules\Api\Http\Resources\Product\ProductDataResource;
 use Modules\Api\Http\Resources\Product\ProductDetailsResource;
@@ -40,11 +41,19 @@ class ProductController extends Controller
 
     public function details($name)
     {
-        $data = $this->getProductDetailsBySlug($name);
-        //        dd($data->toArray());
-        return $this->respondWithSuccessWithData(
-            new ProductDetailsResource($this->getProductDetailsBySlug($name))
-        );
+//        Cache::flush();
+        if (Cache::has('products.' . $name)) {
+            $product = Cache::get('products.' . $name);
+            return $this->respondWithSuccessWithData(
+                $product
+            );
+        } else {
+            $product = $this->getProductDetailsBySlug($name);
+            Cache::forever('products.' . $name, new ProductDetailsResource($product));
+            return $this->respondWithSuccessWithData(
+                $product
+            );
+        }
     }
 
     public function getProductDataById($id)
@@ -56,9 +65,19 @@ class ProductController extends Controller
 
     public function relatedProduct()
     {
-        return $this->respondWithSuccessWithData(
-            ProductResource::collection($this->getRelatedProduct())
-        );
+//        cache this route for two minutes
+        if (Cache::has('related_products')) {
+            $product = Cache::get('related_products');
+            return $this->respondWithSuccessWithData(
+                ProductResource::collection($product)
+            );
+        } else {
+            $product = $this->getRelatedProduct();
+            Cache::put('related_products', $product, 120);
+            return $this->respondWithSuccessWithData(
+                ProductResource::collection($product)
+            );
+        }
     }
 
     public function calculatePrice(Request $request)

@@ -39,7 +39,12 @@ trait ProductTrait
      */
     public function getProductDetails($productId)
     {
-        return Product::find($productId);
+        $product = Product::find($productId);
+        if ($product) {
+            return $product;
+        } else {
+            return [];
+        }
     }
 
     public function featuredProduct($categoryId)
@@ -159,7 +164,7 @@ trait ProductTrait
     public function getRelatedProduct()
     {
         return Product::where('is_active', 1)
-        ->orderByRaw('ISNULL(order_no), order_no ASC')->take(4)->get();
+            ->orderByRaw('ISNULL(order_no), order_no ASC')->take(4)->get();
     }
 
     public function getProductByBrandSlug($slug)
