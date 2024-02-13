@@ -25,9 +25,11 @@ class ProductController extends Controller
 
     public function getFeaturedProduct($categoryId)
     {
-        return $this->respondWithSuccessWithData(
-            ProductResource::collection($this->featuredProduct($categoryId))
-        );
+        $featuredProduct = Cache::remember('featured_products.' . $categoryId, config('cache.stores.redis.lifetime'), function () use ($categoryId) {
+            return ProductResource::collection($this->featuredProduct($categoryId));
+        });
+
+        return $this->respondWithSuccessWithData($featuredProduct);
     }
 
     public function getProduct(Request $request)
@@ -35,7 +37,7 @@ class ProductController extends Controller
         $filterData = $this->initializeFilterData($request);
 
         // Cache the data for 2 minutes
-        $data = Cache::remember(json_encode($filterData), 2 * 60, function () use ($filterData) {
+        $data = Cache::remember(json_encode($filterData), config('cache.stores.redis.lifetime'), function () use ($filterData) {
             return new ProductCollection($this->getProductsQuery($filterData));
         });
 
@@ -53,15 +55,17 @@ class ProductController extends Controller
 
     public function getProductDataById($id)
     {
-        return $this->respondWithSuccessWithData(
-            new ProductDataResource($this->productDataById($id))
-        );
+        $data = Cache::remember('product_data.' . $id, config('cache.stores.redis.lifetime'), function () use ($id) {
+            return new ProductDataResource($this->productDataById($id));
+        });
+
+        return $this->respondWithSuccessWithData($data);
     }
 
     public function relatedProduct()
     {
         // Cache the data for 2 minutes
-        $product = Cache::remember('related_products', 2 * 60, function () {
+        $product = Cache::remember('related_products', config('cache.stores.redis.lifetime'), function () {
             return ProductResource::collection($this->getRelatedProduct());
         });
 
@@ -88,31 +92,38 @@ class ProductController extends Controller
 
     public function getProductByBrand($slug)
     {
-        return $this->respondWithSuccessWithData(
-            ProductResource::collection($this->getProductByBrandSlug($slug))
-        );
+        $data = Cache::remember('brand.products.' . $slug, config('cache.stores.redis.lifetime'), function () use ($slug) {
+            return ProductResource::collection($this->getProductByBrandSlug($slug));
+        });
+
+        return $this->respondWithSuccessWithData($data);
     }
 
     //    new arrivals
     public function newArrivals()
     {
-        return $this->respondWithSuccessWithData(
-            ProductResource::collection($this->getNewArrivals())
-        );
+        $data = Cache::remember('new_arrivals', config('cache.stores.redis.lifetime'), function () {
+            return ProductResource::collection($this->getNewArrivals());
+        });
+
+        return $this->respondWithSuccessWithData($data);
     }
 
     public function featuredNewArrivals()
     {
-        $data = $this->getFeaturedNewArrivals();
-        return $this->respondWithSuccessWithData(
-            ProductResource::collection($this->getFeaturedNewArrivals())
-        );
+        $data = Cache::remember('featured_new_arrivals', config('cache.stores.redis.lifetime'), function () {
+            return ProductResource::collection($this->getFeaturedNewArrivals());
+        });
+
+        return $this->respondWithSuccessWithData($data);
     }
 
     public function searchSuggestions($name)
     {
-        return $this->respondWithSuccessWithData(
-            ProductResource::collection($this->getSearchSuggestions($name))
-        );
+        $data = Cache::remember('search_suggestions.' . $name, config('cache.stores.redis.lifetime'), function () use ($name) {
+            return ProductResource::collection($this->getSearchSuggestions($name));
+        });
+
+        return $this->respondWithSuccessWithData($data);
     }
 }
