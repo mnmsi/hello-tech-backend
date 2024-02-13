@@ -60,19 +60,12 @@ class ProductController extends Controller
 
     public function relatedProduct()
     {
-//        cache this route for two minutes
-        if (Cache::has('related_products')) {
-            $product = Cache::get('related_products');
-            return $this->respondWithSuccessWithData(
-                ProductResource::collection($product)
-            );
-        } else {
-            $product = $this->getRelatedProduct();
-            Cache::put('related_products', $product, 120);
-            return $this->respondWithSuccessWithData(
-                ProductResource::collection($product)
-            );
-        }
+        // Cache the data for 2 minutes
+        $product = Cache::remember('related_products', 2 * 60, function () {
+            return ProductResource::collection($this->getRelatedProduct());
+        });
+
+        return $this->respondWithSuccessWithData($product);
     }
 
     public function calculatePrice(Request $request)

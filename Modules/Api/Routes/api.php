@@ -91,9 +91,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('selected-address/', 'getSelectedAddress');      // Address Delete Routes
     });
 
-    //   System Address Routes
-
-
     //        add review
     Route::controller(ReviewController::class)->group(function () {
         Route::post('product/add-review', 'store');
@@ -130,7 +127,6 @@ Route::middleware('guest')->group(function () {
         Route::get('category/{slug}', 'productMeta');
     });
 
-
     //    Route on Banner
     Route::controller(BannerController::class)->prefix('banners')->group(function () {
         Route::get('/', 'banners');
@@ -139,23 +135,25 @@ Route::middleware('guest')->group(function () {
         Route::get('home-slider', 'homeSlider');
     });
 
-
     // brands route
     Route::prefix('brands')->group(function () {
         Route::get('/', [BrandController::class, 'index']);
         Route::get('/popular', [BrandController::class, 'popularBrands']);
         Route::get('/category/{slug}', [BrandController::class, 'categoryBrands']);
     });
+
     //Routes on Product Category
     Route::controller(CategoryController::class)->prefix('categories')->group(function () {
         Route::get('/', 'categories');                         // Product Categories
         Route::get('popular-categories', 'popularCategories'); // Product Popular Categories
         Route::get('/subcategory', 'subCategories');           // Product Sub Categories
     });
+
     //    Routes on Pre-Order
     Route::controller(PreOrderController::class)->prefix('pre-order')->group(function () {
         Route::post('/store', 'store');
     });
+
     // Routes on product prefix
     Route::prefix('product')->group(function () {
         // Route for product count
@@ -163,10 +161,12 @@ Route::middleware('guest')->group(function () {
         Route::get('review/{id}', [ReviewController::class, 'review']);                // Product Review
         Route::get('related/{id}', [ProductController::class, 'relatedProduct']);      // Related Product
     });
+
     //        Route on Terms and Condition
     Route::controller(TermsConditionController::class)->group(function () {
         Route::get('terms', 'terms');   // -------------- cached
     });
+
     //        Route on Privacy Policy
     Route::controller(PrivacyPolicyController::class)->group(function () {
         Route::get('privacy-policy', 'privacyPolicy'); // -------------- cached
@@ -194,14 +194,17 @@ Route::middleware('product')->group(function () {
         Route::get('/new-arrivals', 'newArrivals');                                // Product Review
         Route::get('featured-new-arrivals', 'featuredNewArrivals');                // Product Review
     });
+
     Route::controller(HomePageSectionController::class)->prefix('dynamic-section')->group(function () {
         Route::get('/', 'homePageSections');   // feature new arrivals
     });
+
     Route::get('promotional-products', [DynamicPageController::class, 'allPromotionalProduct']);
 });
 
 // dynamic page api
 Route::get('dynamic-page/{slug}', [DynamicPageController::class, 'allBrandProduct']);
+
 //Search Suggestions
 Route::get('search-suggestions/{name}', [ProductController::class, 'searchSuggestions']);
 
