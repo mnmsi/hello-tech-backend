@@ -5,8 +5,10 @@ namespace App\Models;
 use App\Models\Product\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Redis\RedisManager;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 
 class BaseModel extends Model
 {
@@ -43,6 +45,7 @@ class BaseModel extends Model
         static::updating(function ($model) {
 
             if (!in_array($model->getTable(), self::$ignoreTables)) {
+
                 // Forget the cache for the updated model
                 Cache::forget($model->getTable());
 
@@ -50,7 +53,7 @@ class BaseModel extends Model
                     $model->clearProductCache($model->product_id);
                 }
                 elseif ($model->getTable() == 'banners') {
-                    Redis::del('banners.*');
+                    $model->delKeys('*banners.*');
                 }
                 else {
                     // clear dependency cache for address
@@ -95,5 +98,16 @@ class BaseModel extends Model
     {
         $product = Product::find($id);
         Cache::forget('products.' . $product->slug);
+    }
+
+    private function delKeys($pattern): void
+    {
+        $redis = Redis::connection('cache');
+        $keys = $redis->keys($pattern);
+
+        foreach ($keys as $key) {
+            $key = Str::replace('laravel_database_', '', $key);
+            $redis->del($key);
+        }
     }
 }

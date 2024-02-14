@@ -3,7 +3,9 @@
 namespace App\Nova;
 
 use App\Models\Product\Product;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Outl1ne\MultiselectField\Multiselect;
@@ -187,5 +189,11 @@ class PromotionalProduct extends Resource
             $model->product_list = json_encode($result);
             $model->save();
         }
+    }
+
+    public static function afterDelete(NovaRequest $request, Model $model)
+    {
+        // Clear the cache for the deleted model
+        Cache::forget($model->getTable());
     }
 }
