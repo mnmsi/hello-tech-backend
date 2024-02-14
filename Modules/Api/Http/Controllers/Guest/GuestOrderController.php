@@ -62,7 +62,7 @@ class GuestOrderController extends Controller
 
             $product = Product::with(['productFeatureValues', 'colors'])->where('id', $request->product_id)->first();
 
-            $price = $product->price + $product->productFeatureValues->whereIn('id', $product_feature_id)->sum('price') + $product->colors->whereIn('id', $request->color_id)->sum('price');
+            $price = $product->price + $product->productFeatureValues->whereIn('id', $product_feature_id)->sum('price') + $product->colors->whereIn('id', $request->product_color_id)->sum('price');
             $subtotal_price = $this->calculateDiscountPrice($price, $product->discount_rate) * $request->quantity;
 
             if (!empty($request->voucher_id)) {
@@ -71,13 +71,11 @@ class GuestOrderController extends Controller
                 $price = $price - $calculateVoucher;
             }
 
-            if ($request->color_id) {
-                $product_color = ProductColor::find($request->color_id);
+            if ($request->product_color_id) {
+                $product_color = ProductColor::find($request->product_color_id);
                 if ($product_color) {
                     if ($product_color->stock > 0) {
-//                        $subtotal_price += $product_color->price;
-//                        $price += $product_color->price;
-                        ProductColor::where('id', $request->color_id)->update([
+                        ProductColor::where('id', $request->product_color_id)->update([
                             'stock' => $product_color->stock - $request->quantity
                         ]);
                     } else {
@@ -91,7 +89,6 @@ class GuestOrderController extends Controller
 //
 
             if ($request->product_feature_id) {
-//                dd($request->product_feature_id);
                 $product_feature = ProductFeatureValue::WhereIn('id', json_decode($request->product_feature_id))->get();
                 if ($product_feature) {
                     $total_feature = $product_feature->sum('price');

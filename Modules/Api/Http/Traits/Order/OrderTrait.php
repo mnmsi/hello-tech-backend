@@ -208,51 +208,61 @@ OrderTrait
 
     public function buyNowOrderStore($data)
     {
+//        dd($data->toArray());
         DB::beginTransaction();
         try {
-            $product = Product::find($data['product_id']);
 
-            if ($product->discount_rate) {
-                if ($product->discount_rate == 100) {
-                    $pp = 0;
-                } else {
-                    $pp = $product->price - (($product->price * $product->discount_rate) / 100);
+            $product_feature_id = $data['product_feature_id'] ?? [];
+            if (isset($request->feature_value_id)) {
+                foreach ($product_feature_id as $key => $value) {
+                    $product_feature_id[$key] = (int)$value;
                 }
-                $sub_price = $pp * $data['quantity'];
-            } else {
-                $sub_price = $product->price * $data['quantity'];
             }
-            $product_color = ProductColor::where('product_id', $data['product_id'])
-                ->where('id', $data['product_color_id'])
-                ->first();
-            if ($product_color) {
-                $sub_price += $product_color->price * $data['quantity'];
-                if ($product_color->stock < $data['quantity']) {
-                    throw new \Exception('Product color out of stock.');
-                }
-                $product_color->stock = $product_color->stock - $data['quantity'];
-                $product_color->save();
-            }
-            if (!empty($data['product_feature_id'])) {
-                $product_feature = ProductFeatureValue::whereIn('id', json_decode($data['product_feature_id']))->get();
-                if ($product_feature) {
-                    $total_feature = $product_feature->sum('price');
-                    $sub_price += $total_feature * $data['quantity'];
 
-                    foreach ($product_feature as $f) {
-                        $ff = ProductFeatureValue::find($f['id']);
-                        if ($f['stock'] < $data['quantity']) {
-                            throw new \Exception('Feature Product out of stock.');
-                        }
-                        $ff->stock = $f['stock'] - $data['quantity'];
-                        $ff->save();
+            $product = Product::with(['productFeatureValues', 'colors'])->where('id', $data['product_id'])->first();
+            $price = $product->price + $product->productFeatureValues->whereIn('id', $product_feature_id)->sum('price') + $product->colors->whereIn('id', $data['product_color_id'])->sum('price');
+            $subtotal_price = $this->calculateDiscountPrice($price, $product->discount_rate) * $data['quantity'];
+
+            if (!empty($request->voucher_id)) {
+                $calculateVoucher = $this->calculateVoucherDiscount($data['voucher_id'], $subtotal_price);
+                $subtotal_price = -$calculateVoucher;
+                $price = $price - $calculateVoucher;
+            }
+
+            if ($data['product_color_id']) {
+                $product_color = ProductColor::find($data['product_color_id']);
+                if ($product_color) {
+                    if ($product_color->stock > 0) {
+                        ProductColor::where('id', $data['product_color_id'])->update([
+                            'stock' => $product_color->stock - $data['quantity']
+                        ]);
+                    } else {
+                        return $this->respondError(
+                            'Product is out of stock'
+                        );
                     }
                 }
             }
-            if (!empty($data['voucher_id'])) {
-                $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'], $sub_price);
-                $sub_price = $sub_price - $voucher_dis;
+
+            if ($data['product_feature_id']) {
+                $product_feature = ProductFeatureValue::WhereIn('id', json_decode($data['product_feature_id']))->get();
+                if ($product_feature) {
+                    $total_feature = $product_feature->sum('price');
+//                    $subtotal_price += $total_feature;
+//                    $price += $total_feature;
+                    foreach ($product_feature as $f) {
+                        if ($f->stock > 0) {
+                            $f->stock = $f->stock - $data['quantity'];
+                            $f->save();
+                        } else {
+                            return $this->respondError(
+                                'Product feature is out of stock'
+                            );
+                        }
+                    }
+                }
             }
+            dd($subtotal_price);
             $total_price = $sub_price + $data['shipping_amount'] ?? 0;
             $order_key = now()->format('Ymd') . '-' . Order::count() + 1;
             $orderData = [
@@ -272,26 +282,28 @@ OrderTrait
                 'discount_rate' => $product->discount_rate,
                 'quantity' => $data['quantity'],
                 'shipping_amount' => $data['shipping_amount'],
-                'subtotal_price' => $data['subtotal_price'] * $data['quantity'] ?? 0,
-                'total_price' => ($data['subtotal_price'] * $data['quantity']) + $data['shipping_amount'] ?? 0,
+                'subtotal_price' => $subtotal_price,
+                'total_price' => $subtotal_price + $data['shipping_amount'] ?? 0,
                 'order_note' => $data['order_note'] ?? null,
                 'status' => 'pending',
             ];
+
             $order = Order::create($orderData);
+
             if ($order) {
-                $totalProductPrice = $this->calculateDiscountPrice($product->price + $product_color->price + $total_feature, $product->discount_rate);
-                $subTotalPrice = $totalProductPrice * $data['quantity'];
                 $orderDetails = [
                     'order_id' => $order->id,
                     'product_id' => $product->id,
-                    'product_color_id' => $product_color->id,
-                    'price' => $totalProductPrice,
+                    'product_color_id' => $data['product_color_id'],
+                    'price' => $price,
                     'discount_rate' => $product->discount_rate,
                     'subtotal_price' => $subTotalPrice,
                     'quantity' => $data['quantity'],
-                    'total' => $subTotalPrice,
+                    'total' => $subTotalPrice * $data['quantity'],
                 ];
+
                 OrderDetails::insert($orderDetails);
+
                 $sslc = new AmarPayController();
                 if ($data['payment_method_id'] == 2) {
                     if ($isProcessPayment = $sslc->payment($orderData)) {
