@@ -10,6 +10,19 @@ use Illuminate\Support\Facades\Redis;
 
 class BaseModel extends Model
 {
+    private static array $ignoreTables = [
+        'carts',
+        'guest_carts',
+        'guest_users',
+        'orders',
+        'order_details',
+        'guest_orders',
+        'guest_order_details',
+        'pre_orders',
+        'section_orders',
+        'section_order_products',
+    ];
+
     private static array $productTables = [
         'products',
         'product_colors',
@@ -29,31 +42,37 @@ class BaseModel extends Model
 
         static::updating(function ($model) {
 
-            // Forget the cache for the updated model
-            Cache::forget($model->getTable());
+            if (!in_array($model->getTable(), self::$ignoreTables)) {
+                // Forget the cache for the updated model
+                Cache::forget($model->getTable());
 
-            if (in_array($model->getTable(), self::$productTables)) {
-                $model->clearProductCache($model->product_id);
-            }
-            elseif ($model->getTable() == 'banners') {
-                Redis::del('banners.*');
-            }
-            else {
-                // clear dependency cache for address
-                $model->clearAddressDependencyCache($model->getTable());
+                if (in_array($model->getTable(), self::$productTables)) {
+                    $model->clearProductCache($model->product_id);
+                }
+                elseif ($model->getTable() == 'banners') {
+                    Redis::del('banners.*');
+                }
+                else {
+                    // clear dependency cache for address
+                    $model->clearAddressDependencyCache($model->getTable());
+                }
             }
         });
 
         static::deleting(function ($model) {
-            if (in_array($model->getTable(), self::$productTables)) {
-                $model->clearProductCache($model->product_id);
-            }
-            elseif ($model->getTable() == 'banners') {
-                Redis::del('banners.*');
-            }
-            else {
-                // Forget the cache for the deleted model
-                Cache::forget($model->getTable());
+
+            if (!in_array($model->getTable(), self::$ignoreTables)) {
+
+                if (in_array($model->getTable(), self::$productTables)) {
+                    $model->clearProductCache($model->product_id);
+                }
+                elseif ($model->getTable() == 'banners') {
+                    Redis::del('banners.*');
+                }
+                else {
+                    // Forget the cache for the deleted model
+                    Cache::forget($model->getTable());
+                }
             }
         });
     }
@@ -72,7 +91,7 @@ class BaseModel extends Model
         }
     }
 
-    private function clearProductCache($id)
+    private function clearProductCache($id): void
     {
         $product = Product::find($id);
         Cache::forget('products.' . $product->slug);

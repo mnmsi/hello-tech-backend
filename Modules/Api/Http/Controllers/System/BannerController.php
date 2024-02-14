@@ -75,12 +75,10 @@ class BannerController extends Controller
                 return new BannerResource($banner);
             });
 
-
             return $this->respondWithSuccessWithData($data);
         }
         catch (\Exception $e) {
             return $this->respondError('Banner not found');
         }
-        // Return response with banner
     }
 }
