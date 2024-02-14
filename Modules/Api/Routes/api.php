@@ -227,7 +227,7 @@ Route::controller(SystemAddressController::class)->group(function () {
     Route::get('area/{id?}', 'area');    // -------------- cached
 });
 
-Route::get('shipping-charges/{name?}', [ShippingChargeController::class, 'shippingCharges']);
+Route::get('shipping-charges/{name?}', [ShippingChargeController::class, 'shippingCharges']); //.............. Cached
 
 Route::post('create-guest-user', [GuestCartController::class, 'createGuestUser']);
 Route::get('voucher-discount', [OrderController::class, 'getVoucherDiscount']); // Buy Now Routes
