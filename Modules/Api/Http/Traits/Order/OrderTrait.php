@@ -48,87 +48,71 @@ OrderTrait
     {
         DB::beginTransaction();
         try {
-            //            cart list
-            $carts = Cart::select('id', 'product_id', 'product_color_id', 'product_data', 'quantity')
-                ->where('user_id', Auth::id())
-                ->where('status', 1)
-                ->get();
-            $newOrderDetails = [];
+            $userCart = Cart::where('user_id', Auth::id())->where('status', 1);
+            $carts = $userCart->get();
+            $orderDetails = [];
+            if ($carts->isEmpty()) {
+                throw new \Exception('Cart is empty');
+            }
 
-            foreach ($carts as $c) {
-                $product_price = 0;
-                $sub_total = 0;
-                // get product
-                $product = Product::find($c['product_id']);
-                if ($product->discount_rate) {
-                    if ($product->discount_rate == 100) {
-                        $pp = 0;
-                    } else {
-                        $pp = $product->price - (($product->price * $product->discount_rate) / 100);
-                    }
-                    $product_price = $pp * $c['quantity'];
-                    $sub_total = $pp;
-                } else {
-                    $product_price = $product->price * $c['quantity'];
-                    $sub_total = $product->price;
+            foreach ($carts as $cartItem) {
+
+                $featurePrice = 0;
+                $product_feature_id = [];
+                $product = Product::with(['productFeatureValues', 'colors'])->where('id', $cartItem['product_id'])->first();
+
+                if (isset($cartItem['product_data'])) {
+                    $product_feature_id = json_decode($cartItem['product_data']);
+                    $featurePrice = $product->productFeatureValues->whereIn('id', $product_feature_id)->sum('price');
                 }
+
+                $price = $product->price + $featurePrice + $product->colors->whereIn('id', $cartItem->product_color_id)->sum('price');
+                $subtotal_price = $this->calculateDiscountPrice($price, $product->discount_rate) * $cartItem['quantity'];
+
                 // product color price
-                $product_color = ProductColor::find($c['product_color_id']);
-                /*
-                 *
-                 * Product color
-                 *
-                 * */
+                $product_color = $product->colors->whereIn('id', $cartItem->product_color_id)->first();
                 if ($product_color) {
-                    if ($product_color->stock < $c['quantity']) {
+                    if ($product_color->stock < $cartItem['quantity']) {
                         throw new \Exception('Product color out of stock.');
                     }
-                    $product_price += $product_color->price * $c['quantity'];
-                    $sub_total += $product_color->price;
-                    $product_color->stock = $product_color->stock - $c['quantity'];
+                    $product_color->stock = $product_color->stock - $cartItem['quantity'];
                     $product_color->save();
                 }
 
-                /*
-                 *
-                 * feature data if exist
-                 *
-                 * */
-                if (!empty($c['product_data'])) {
-                    $product_feature = ProductFeatureValue::whereIn('id', json_decode($c['product_data']))->get();
-                    if ($product_feature) {
-                        $total_feature = $product_feature->sum('price');
-                        $sub_total += $total_feature;
-                        $product_price += $total_feature * $c['quantity'];
-                        foreach ($product_feature as $f) {
-                            $ff = ProductFeatureValue::find($f['id']);
-                            if ($f['stock'] < $c['quantity']) {
-                                throw new \Exception('Feature Product out of stock.');
-                            }
-                            $ff->stock = $f['stock'] - $c['quantity'];
-                            $ff->save();
+                if (!empty($cartItem['product_data'])) {
+                    $product_features = $product_feature_id;
+                    foreach ($product_features as $f) {
+                        $productFeatureValue = ProductFeatureValue::find($f);
+                        if ($productFeatureValue['stock'] < $cartItem['quantity']) {
+                            throw new \Exception('Feature Product out of stock.');
                         }
+                        $productFeatureValue->stock = $productFeatureValue['stock'] - $cartItem['quantity'];
+                        $productFeatureValue->save();
                     }
                 }
-                $newOrderDetails[] = [
-                    "product_id" => $c['product_id'],
-                    "product_color_id" => $c['product_color_id'],
-                    "price" => $sub_total, // product price
-                    "quantity" => $c['quantity'], // quantity
-                    "discount_rate" => $product->discount_rate, // product discount rate
-                    "subtotal_price" => $sub_total, // without quantity
-                    "total" => $sub_total * $c['quantity'], // product + product color + product feature + discount + quantity
-                ];
 
+                $orderDetails[] = [
+                    'product_id' => $cartItem['product_id'],
+                    'product_color_id' => $cartItem['product_color_id'],
+                    'price' => $price ?? 0,
+                    'quantity' => $cartItem['quantity'] ?? 0,
+                    'discount_rate' => $product->discount_rate ?? 0,
+                    'subtotal_price' => $subtotal_price ?? 0,
+                    'total' => $subtotal_price ?? 0,
+                ];
             }
-            $subtotal_price = collect($newOrderDetails)->sum("total");
+
+
+            $subtotal_price = collect($orderDetails)->sum('subtotal_price');
+
             if (!empty($data['voucher_id'])) {
                 $voucher_dis = $this->calculateVoucherDiscount($data['voucher_id'], $subtotal_price);
                 $subtotal_price = $subtotal_price - $voucher_dis;
             }
-            $order_key = now()->format('Ymd') . '-' . Order::count() + 1;
+
             $total_price = $subtotal_price + $data['shipping_amount'] ?? 0;
-//            dd($data->toArray());
+            $order_key = now()->format('Ymd') . '-' . Order::count() + 1;
+
             $orderData = [
                 'user_id' => Auth::id(),
                 'transaction_id' => $order_key,
@@ -145,17 +129,21 @@ OrderTrait
                 'voucher_id' => $data['voucher_id'] ?? null,
                 'shipping_amount' => $data['shipping_amount'],
                 'discount_rate' => $data['discount_rate'] ?? 0,
-                'subtotal_price' => $data['subtotal_price'], // price without shipping cost
-                'total_price' => $data['total_price'], // price with shipping cost
+                'subtotal_price' => $subtotal_price, // price without shipping cost
+                'total_price' => $subtotal_price + $data['shipping_amount'] ?? 0, // price with shipping cost
                 'status' => 'pending',
             ];
+
             $order = Order::create($orderData);
             if ($order) {
-                $order_details_list = collect($newOrderDetails)->map(function ($item) use ($order) {
+                $newOrderDetails = collect($orderDetails)->map(function ($item) use ($order) {
                     return array_merge($item, ['order_id' => $order->id]);
                 })->toArray();
-                OrderDetails::insert($order_details_list);
-                Cart::where('user_id', Auth::id())->where('status', 1)->delete();
+
+                OrderDetails::insert($newOrderDetails);
+
+                $userCart->delete();
+
                 if ($data['payment_method_id'] == 2) {
                     if ($isProcessPayment = $this->processPayment($orderData)) {
                         DB::commit();
@@ -196,8 +184,10 @@ OrderTrait
                     'status' => false,
                     'message' => 'Order Unsuccessful',
                 ];
+
             }
         } catch (\Exception $e) {
+//            dd($e);
             DB::rollBack();
             return [
                 'status' => false,
@@ -208,7 +198,7 @@ OrderTrait
 
     public function buyNowOrderStore($data)
     {
-//        dd($data->toArray());
+
         DB::beginTransaction();
         try {
 
@@ -229,6 +219,8 @@ OrderTrait
                 $price = $price - $calculateVoucher;
             }
 
+            $total_price = $subtotal_price + $data['shipping_amount'] ?? 0;
+
             if ($data['product_color_id']) {
                 $product_color = ProductColor::find($data['product_color_id']);
                 if ($product_color) {
@@ -247,9 +239,7 @@ OrderTrait
             if ($data['product_feature_id']) {
                 $product_feature = ProductFeatureValue::WhereIn('id', json_decode($data['product_feature_id']))->get();
                 if ($product_feature) {
-                    $total_feature = $product_feature->sum('price');
-//                    $subtotal_price += $total_feature;
-//                    $price += $total_feature;
+                    ;
                     foreach ($product_feature as $f) {
                         if ($f->stock > 0) {
                             $f->stock = $f->stock - $data['quantity'];
@@ -262,8 +252,6 @@ OrderTrait
                     }
                 }
             }
-            dd($subtotal_price);
-            $total_price = $sub_price + $data['shipping_amount'] ?? 0;
             $order_key = now()->format('Ymd') . '-' . Order::count() + 1;
             $orderData = [
                 'user_id' => Auth::id(),
@@ -297,9 +285,9 @@ OrderTrait
                     'product_color_id' => $data['product_color_id'],
                     'price' => $price,
                     'discount_rate' => $product->discount_rate,
-                    'subtotal_price' => $subTotalPrice,
+                    'subtotal_price' => $subtotal_price,
                     'quantity' => $data['quantity'],
-                    'total' => $subTotalPrice * $data['quantity'],
+                    'total' => $subtotal_price,
                 ];
 
                 OrderDetails::insert($orderDetails);
@@ -360,6 +348,7 @@ OrderTrait
         return Order::where('user_id', Auth::id())->with(['orderDetails.product', 'userAddress'])->latest()->get();
     }
 
+
     public function buyNowProduct($request)
     {
         try {
@@ -383,101 +372,6 @@ OrderTrait
         }
     }
 
-    public function buyNowRequest($data)
-    {
-        DB::beginTransaction();
-        try {
-            $order_key = now()->format('Ymd') . '-' . Order::count() + 1;
-            $products = Product::where('id', $data->product_id)->first();
-            $total_discountRate = $products->discount_rate;
-            $subtotal_price = $this->calculateDiscountPrice($products->price, $products->discount_rate);
-            $total_price = $subtotal_price + $data['shipping_amount'] ?? 0;
-            $orderData = [
-                'user_id' => Auth::id(),
-                'transaction_id' => $order_key,
-                'order_key' => $order_key,
-                'delivery_option_id' => $data['delivery_option_id'],
-                'payment_method_id' => $data['payment_method_id'],
-                'division' => Division::where('id', $data['division_id'])->first()->name,
-                'city' => City::where('id', $data['city_id'])->first()->name,
-                'area' => Area::where('id', $data['area_id'])->first()->name,
-                'address_line' => $data['address_line'],
-                'name' => $data['name'],
-                'phone' => $data['phone'],
-                'email' => $data['email'] ?? null,
-                'voucher_id' => $data['voucher_id'] ?? null,
-                'shipping_amount' => $data['shipping_amount'] ?? 0,
-                'subtotal_price' => $subtotal_price,
-                'discount_rate' => $total_discountRate,
-                'total_price' => $subtotal_price + $data['shipping_amount'] ?? 0,
-                'status' => 1,
-            ];
-            $order = Order::create($orderData);
-            $orderDetails = [
-                'order_id' => $order->id,
-                'product_id' => $products->id,
-                'product_color_id' => $data['product_color_id'],
-                'product_data' => $data['product_feature_id'] ?? '',
-                'price' => $products->price,
-                'discount_rate' => $total_discountRate,
-                'subtotal_price' => $subtotal_price,
-                'quantity' => 1,
-                'total' => $total_price,
-            ];
-            if ($order) {
-                OrderDetails::create($orderDetails);
-                $sslc = new AmarPayController();
-                if ($data['payment_method_id'] == 2) {
-                    if ($isProcessPayment = $sslc->payment($orderData)) {
-                        DB::commit();
-                        return [
-                            'status' => true,
-                            'message' => 'Payment Successful',
-                            'data' => $isProcessPayment->getTargetUrl()
-                        ];
-                    } else {
-                        return [
-                            'status' => false,
-                            'message' => 'Order Unsuccessful',
-                        ];
-                    }
-                } else {
-                    DB::commit();
-                    $numbers = Notification::where('status', 1)->get();
-                    foreach ($numbers as $number) {
-                        $this->sendSms(strtr($number->phone, [' ' => '']), "New order has been placed with the order number: " . $order->order_key . "  Please check your dashboard");
-                    }
-                    $message = "Hi! " . $data['name'] . ".  Your order has been placed successfully. Your order number is " . $order->order_key . " Total " . $total_price . " BDT.  Thank you for shopping from hellotech.store";
-                    $this->sendSms($data['phone'], $message);
-                    return [
-                        'data' => [
-                            'order_id' => $order->id,
-                            'transaction_id' => $order->transaction_id,
-                            'order_key' => $order->order_key,
-                        ],
-                        'status' => true,
-                        'message' => 'Order Successful',
-                    ];
-                }
-            } else {
-                return [
-                    'status' => false,
-                    'message' => 'Order Unsuccessful',
-                ];
-            }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return $e->getMessage();
-        }
-    }
-
-//    public function buyNowProductPrice($request)
-//    {
-//        $buyNowProduct = $this->buyNowProduct($request);
-//        $buyNowProductPrice = $buyNowProduct->price;
-//        $buyNowProductDiscountRate = $buyNowProduct->discount_rate;
-//        return $buyNowProductPrice - ($buyNowProductPrice * $buyNowProductDiscountRate / 100);
-//    }
 
     public function voucherDiscountCalculate($data)
     {
