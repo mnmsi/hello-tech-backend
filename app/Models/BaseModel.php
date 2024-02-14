@@ -53,7 +53,7 @@ class BaseModel extends Model
                     $model->clearProductCache($model->product_id);
                 }
                 elseif ($model->getTable() == 'banners') {
-                    $model->delKeys('*banners.*');
+                    $model->delKeys('banners.*');
                 }
                 else {
                     // clear dependency cache for address
@@ -70,7 +70,7 @@ class BaseModel extends Model
                     $model->clearProductCache($model->product_id);
                 }
                 elseif ($model->getTable() == 'banners') {
-                    Redis::del('banners.*');
+                    $model->delKeys('banners.*');
                 }
                 else {
                     // Forget the cache for the deleted model
@@ -89,8 +89,8 @@ class BaseModel extends Model
         ];
 
         if (in_array($table, $dependencyAddDB)) {
-            Redis::del('*.cities');
-            Redis::del('*.areas');
+            $this->delKeys('*.cities*');
+            $this->delKeys('*.areas*');
         }
     }
 
@@ -106,7 +106,6 @@ class BaseModel extends Model
         $keys = $redis->keys($pattern);
 
         foreach ($keys as $key) {
-            $key = Str::replace('laravel_database_', '', $key);
             $redis->del($key);
         }
     }
