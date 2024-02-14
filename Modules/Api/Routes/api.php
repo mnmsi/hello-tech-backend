@@ -144,9 +144,9 @@ Route::middleware('guest')->group(function () {
 
     //Routes on Product Category
     Route::controller(CategoryController::class)->prefix('categories')->group(function () {
-        Route::get('/', 'categories');                         // Product Categories
-        Route::get('popular-categories', 'popularCategories'); // Product Popular Categories
-        Route::get('/subcategory', 'subCategories');           // Product Sub Categories
+        Route::get('/', 'categories');                         // Product Categories // -------------- cached
+        Route::get('popular-categories', 'popularCategories'); // Product Popular Categories // -------------- cached
+        Route::get('/subcategory', 'subCategories');           // Product Sub Categories // -------------- cached
     });
 
     //    Routes on Pre-Order
