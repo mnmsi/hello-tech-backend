@@ -40,8 +40,9 @@ class CategoryController extends Controller
 
     public function subCategories(){
 
+
         $data = Cache::rememberForever('subcategories', function () {
-            return CategoryResource::collection($this->getSubCategories());
+            return CategoryResource::collection($this->getCategoryWithSubCategory());
         });
         return $this->respondWithSuccessWithData($data);
     }

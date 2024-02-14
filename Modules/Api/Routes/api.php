@@ -130,9 +130,9 @@ Route::middleware('guest')->group(function () {
     //    Route on Banner
     Route::controller(BannerController::class)->prefix('banners')->group(function () {
         Route::get('/', 'banners');         // -------------- cached
-        Route::get('category/{id}', 'getBannerByCategory');
-        Route::get('product/{id}', 'getBannerByProduct');
-        Route::get('home-slider', 'homeSlider');
+        Route::get('category/{id}', 'getBannerByCategory');  // -------------- cached
+        Route::get('product/{id}', 'getBannerByProduct');  // -------------- cached
+        Route::get('home-slider', 'homeSlider');  // -------------- cached
     });
 
     // brands route
@@ -191,8 +191,8 @@ Route::middleware('product')->group(function () {
         Route::get('related', 'relatedProduct');                                   // Related Product // -------------- cached
         Route::get('total-review/{id}', [ReviewController::class, 'totalReview']); // Product Review
         Route::get('get-product-by-brand/{slug}', 'getProductByBrand');            // Product Review
-        Route::get('/new-arrivals', 'newArrivals');                                // Product Review
-        Route::get('featured-new-arrivals', 'featuredNewArrivals');                // Product Review
+        Route::get('/new-arrivals', 'newArrivals');                                // Product Review // -------------- cached
+        Route::get('featured-new-arrivals', 'featuredNewArrivals');                // Product Review // -------------- cached
     });
 
     Route::controller(HomePageSectionController::class)->prefix('dynamic-section')->group(function () {
