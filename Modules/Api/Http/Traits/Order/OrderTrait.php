@@ -102,7 +102,6 @@ OrderTrait
                 ];
             }
 
-
             $subtotal_price = collect($orderDetails)->sum('subtotal_price');
 
             if (!empty($data['voucher_id'])) {
@@ -187,7 +186,6 @@ OrderTrait
 
             }
         } catch (\Exception $e) {
-//            dd($e);
             DB::rollBack();
             return [
                 'status' => false,
