@@ -129,7 +129,7 @@ Route::middleware('guest')->group(function () {
 
     //    Route on Banner
     Route::controller(BannerController::class)->prefix('banners')->group(function () {
-        Route::get('/', 'banners');
+        Route::get('/', 'banners');         // -------------- cached
         Route::get('category/{id}', 'getBannerByCategory');
         Route::get('product/{id}', 'getBannerByProduct');
         Route::get('home-slider', 'homeSlider');

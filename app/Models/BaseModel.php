@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Redis;
 
 class BaseModel extends Model
 {
-    private static $productTables = [
+    private static array $productTables = [
         'products',
         'product_colors',
         'product_data',
@@ -27,24 +27,31 @@ class BaseModel extends Model
     {
         parent::boot();
 
-        static::updating(function ($model)  {
+        static::updating(function ($model) {
+
+            // Forget the cache for the updated model
+            Cache::forget($model->getTable());
 
             if (in_array($model->getTable(), self::$productTables)) {
-                $product = $model->getProductDetailsById($model->product_id);
-                Cache::forget('products.' . $product->slug);
-            } else {
-                // Forget the cache for the updated model
-                Cache::forget($model->getTable());
-
+                $model->clearProductCache($model->product_id);
+            }
+            elseif ($model->getTable() == 'banners') {
+                Redis::del('banners.*');
+            }
+            else {
                 // clear dependency cache for address
                 $model->clearAddressDependencyCache($model->getTable());
             }
         });
 
         static::deleting(function ($model) {
-            if ($model->getTable() == 'products') {
-                Cache::forget('products.' . $model->slug);
-            } else {
+            if (in_array($model->getTable(), self::$productTables)) {
+                $model->clearProductCache($model->product_id);
+            }
+            elseif ($model->getTable() == 'banners') {
+                Redis::del('banners.*');
+            }
+            else {
                 // Forget the cache for the deleted model
                 Cache::forget($model->getTable());
             }
@@ -65,8 +72,9 @@ class BaseModel extends Model
         }
     }
 
-    private function getProductDetailsById($id)
+    private function clearProductCache($id)
     {
-        return Product::find($id);
+        $product = Product::find($id);
+        Cache::forget('products.' . $product->slug);
     }
 }
