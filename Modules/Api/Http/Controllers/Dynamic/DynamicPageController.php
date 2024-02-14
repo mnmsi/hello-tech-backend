@@ -5,6 +5,7 @@ namespace Modules\Api\Http\Controllers\Dynamic;
 use App\Http\Controllers\Controller;
 use App\Models\Product\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Modules\Api\Http\Resources\Product\ProductDataResource;
 use Modules\Api\Http\Resources\Product\ProductResource;
 use Modules\Api\Http\Traits\Dynamic\DynamicPageTrait;
@@ -68,18 +69,13 @@ class DynamicPageController extends Controller
         ];
     }
 
-    public function allPromotionalProduct(Request $request)
+    public function allPromotionalProduct()
     {
-        try {
-            return [
-                'status' => true,
-                'data' => $this->getAllPromotionalProduct()
-            ];
-        } catch (\Exception $e){
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ]);
-        }
+        $data = Cache::remember('promotional_products',config('cache.stores.redis.lifetime'), function () {
+            return $this->getAllPromotionalProduct();
+        });
+
+        return $this->respondWithSuccessWithData($data);
+
     }
 }
