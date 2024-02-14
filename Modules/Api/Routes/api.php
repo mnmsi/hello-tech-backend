@@ -137,16 +137,16 @@ Route::middleware('guest')->group(function () {
 
     // brands route
     Route::prefix('brands')->group(function () {
-        Route::get('/', [BrandController::class, 'index']);
-        Route::get('/popular', [BrandController::class, 'popularBrands']);
-        Route::get('/category/{slug}', [BrandController::class, 'categoryBrands']);
+        Route::get('/', [BrandController::class, 'index']); //---------------- Cached
+        Route::get('/popular', [BrandController::class, 'popularBrands']); //--------Cached
+        Route::get('/category/{slug}', [BrandController::class, 'categoryBrands']); //--------Cached
     });
 
     //Routes on Product Category
     Route::controller(CategoryController::class)->prefix('categories')->group(function () {
-        Route::get('/', 'categories');                         // Product Categories
-        Route::get('popular-categories', 'popularCategories'); // Product Popular Categories
-        Route::get('/subcategory', 'subCategories');           // Product Sub Categories
+        Route::get('/', 'categories');                         // Product Categories // -------------- cached
+        Route::get('popular-categories', 'popularCategories'); // Product Popular Categories // -------------- cached
+        Route::get('/subcategory', 'subCategories');           // Product Sub Categories // -------------- cached
     });
 
     //    Routes on Pre-Order

@@ -4,6 +4,7 @@ namespace Modules\Api\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Modules\Api\Http\Resources\Product\BrandCollection;
 use Modules\Api\Http\Resources\Product\BrandResource;
 use Modules\Api\Http\Traits\Product\BrandTrait;
@@ -17,9 +18,13 @@ class BrandController extends Controller
      */
     public function index()
     {
-        return $this->respondWithSuccessWithData(
-            new BrandCollection($this->brands())
-        );
+//        cache the response
+
+        $data = Cache::rememberForever('brands', function () {
+            return new BrandCollection($this->brands());
+        });
+
+        return $this->respondWithSuccessWithData($data);
     }
 
     /**
@@ -27,18 +32,23 @@ class BrandController extends Controller
      */
     public function popularBrands()
     {
-        return $this->respondWithSuccessWithData(
-            BrandResource::collection($this->getPopularBrands())
-        );
+        $data = Cache::rememberForever('brands.popular', function () {
+            return BrandResource::collection($this->getPopularBrands());
+        });
+
+        return $this->respondWithSuccessWithData($data);
     }
+
     /**
      * @param $id
      * @return JsonResponse
      */
     public function categoryBrands($slug)
     {
-        return $this->respondWithSuccessWithData(
-            BrandResource::collection($this->getCategoryBrands($slug))
-        );
+        $data = Cache::rememberForever('brands.category.' . $slug, function () use ($slug) {
+            return BrandResource::collection($this->getCategoryBrands($slug));
+        });
+
+        return $this->respondWithSuccessWithData($data);
     }
 }
