@@ -67,7 +67,12 @@ class BaseModel extends Model
             if (!in_array($model->getTable(), self::$ignoreTables)) {
 
                 if (in_array($model->getTable(), self::$productTables)) {
-                    $model->clearProductCache($model->product_id);
+                    if ($model->getTable() == 'products') {
+                        $model->clearProductCache($model->id);
+                    }
+                    else {
+                        $model->clearProductCache($model->product_id);
+                    }
                 }
                 elseif ($model->getTable() == 'banners') {
                     $model->delKeys('banners.*');
