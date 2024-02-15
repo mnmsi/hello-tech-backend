@@ -97,7 +97,9 @@ class BaseModel extends Model
     private function clearProductCache($id): void
     {
         $product = Product::find($id);
-        Cache::forget('products.' . $product->slug);
+        if ($product) {
+            Cache::forget('products.' . $product->slug);
+        }
     }
 
     private function delKeys($pattern): void
