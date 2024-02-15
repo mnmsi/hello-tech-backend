@@ -6,7 +6,7 @@ use App\Models\Product\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Size extends Model
+class Size extends BaseModel
 {
     use HasFactory;
 

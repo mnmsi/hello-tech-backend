@@ -6,7 +6,7 @@ use App\Models\Product\Category;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductMetaKey extends Model
+class ProductMetaKey extends BaseModel
 {
     protected $fillable = [
         'category_id',

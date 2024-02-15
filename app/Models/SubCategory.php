@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class SubCategory extends Model
+class SubCategory extends BaseModel
 {
     use HasFactory;
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
 
-class SectionOrder extends Model
+class SectionOrder extends BaseModel
 {
     use HasFactory;
 

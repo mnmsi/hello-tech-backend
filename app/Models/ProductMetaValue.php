@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ProductMetaValue extends Model
+class ProductMetaValue extends BaseModel
 {
     protected $fillable = [
         'product_meta_key_id',

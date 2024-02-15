@@ -42,6 +42,14 @@ class BaseModel extends Model
     {
         parent::boot();
 
+        static::creating(function ($model) {
+            if (!in_array($model->getTable(), self::$ignoreTables)) {
+                if (in_array($model->getTable(), self::$productTables)) {
+                    $model->checkProductTables($model);
+                }
+            }
+        });
+
         static::updating(function ($model) {
 
             if (!in_array($model->getTable(), self::$ignoreTables)) {
@@ -50,12 +58,10 @@ class BaseModel extends Model
                 Cache::forget($model->getTable());
 
                 if (in_array($model->getTable(), self::$productTables)) {
-                    $model->clearProductCache($model->product_id);
-                }
-                elseif ($model->getTable() == 'banners') {
+                    $model->checkProductTables($model);
+                } elseif ($model->getTable() == 'banners') {
                     $model->delKeys('banners.*');
-                }
-                else {
+                } else {
                     // clear dependency cache for address
                     $model->clearAddressDependencyCache($model->getTable());
                 }
@@ -67,22 +73,17 @@ class BaseModel extends Model
             if (!in_array($model->getTable(), self::$ignoreTables)) {
 
                 if (in_array($model->getTable(), self::$productTables)) {
-                    if ($model->getTable() == 'products') {
-                        $model->clearProductCache($model->id);
-                    }
-                    else {
-                        $model->clearProductCache($model->product_id);
-                    }
-                }
-                elseif ($model->getTable() == 'banners') {
+                    $model->checkProductTables($model);
+                } elseif ($model->getTable() == 'banners') {
                     $model->delKeys('banners.*');
-                }
-                else {
+                } else {
                     // Forget the cache for the deleted model
                     Cache::forget($model->getTable());
                 }
             }
         });
+
+
     }
 
     private function clearAddressDependencyCache($table): void
@@ -104,6 +105,25 @@ class BaseModel extends Model
         $product = Product::find($id);
         if ($product) {
             Cache::forget('products.' . $product->slug);
+        }
+    }
+
+    private function checkProductTables($mod): void
+    {
+        if ($mod->getTable() == 'products') {
+            $mod->clearProductCache($mod->id);
+        } elseif ($mod->getTable() == 'product_feature_values') {
+            $prodKey = ProductFeatureKey::find($mod->product_feature_key_id);
+            if ($prodKey) {
+                $mod->clearProductCache($prodKey->product_id);
+            }
+        } elseif ($mod->getTable() == 'product_meta_keys') {
+            $prodKey = ProductMetaValue::where('product_meta_key_id', $mod->id);
+            if ($prodKey) {
+                $mod->clearProductCache($prodKey->product_id);
+            }
+        } else {
+            $mod->clearProductCache($mod->product_id);
         }
     }
 

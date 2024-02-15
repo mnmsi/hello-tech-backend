@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductFeatureValue extends Model
+class ProductFeatureValue extends BaseModel
 {
     protected $table = "product_feature_values";
     protected $fillable = [

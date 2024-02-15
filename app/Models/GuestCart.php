@@ -7,7 +7,7 @@ use App\Models\Product\ProductColor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GuestCart extends Model
+class GuestCart extends BaseModel
 {
     use HasFactory;
 

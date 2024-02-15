@@ -8,7 +8,7 @@ use App\Models\Product\ProductColor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductData extends Model
+class ProductData extends BaseModel
 {
     use HasFactory;
 

@@ -7,7 +7,7 @@ use App\Models\Product\ProductColor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GuestOrderDetails extends Model
+class GuestOrderDetails extends BaseModel
 {
     use HasFactory;
     protected $fillable = [
