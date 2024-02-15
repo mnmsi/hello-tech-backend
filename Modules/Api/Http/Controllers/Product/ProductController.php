@@ -13,6 +13,7 @@ use Modules\Api\Http\Resources\Product\ProductDetailsResource;
 use Modules\Api\Http\Resources\Product\ProductResource;
 use Modules\Api\Http\Traits\Product\ProductCountTrait;
 use Modules\Api\Http\Traits\Product\ProductTrait;
+use function GuzzleHttp\Promise\all;
 
 class ProductController extends Controller
 {
@@ -37,7 +38,7 @@ class ProductController extends Controller
         $filterData = $this->initializeFilterData($request);
 
         // Cache the data for 2 minutes
-        $data = Cache::remember(json_encode($filterData), config('cache.stores.redis.lifetime'), function () use ($filterData) {
+        $data = Cache::remember(json_encode($request->all()) . json_encode($filterData), config('cache.stores.redis.lifetime'), function () use ($filterData) {
             return new ProductCollection($this->getProductsQuery($filterData));
         });
 
