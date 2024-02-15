@@ -159,7 +159,7 @@ Route::middleware('guest')->group(function () {
         // Route for product count
         Route::get('counts', [ProductController::class, 'totalProductType']);          // Total Product Count
         Route::get('review/{id}', [ReviewController::class, 'review']);                // Product Review
-        Route::get('related/{id}', [ProductController::class, 'relatedProduct']);      // Related Product
+        Route::get('related/{id}', [ProductController::class, 'relatedProduct']);      // Related Product // -------------- cached
     });
 
     //        Route on Terms and Condition
