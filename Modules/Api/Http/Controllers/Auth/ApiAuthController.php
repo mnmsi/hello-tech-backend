@@ -41,7 +41,6 @@ class ApiAuthController extends Controller
                 'token' => $token->plainTextToken,
                 'user' => $user,
             ]);
-
         } // If authentication fails
         else {
             return $this->respondUnAuthenticated();
@@ -89,7 +88,7 @@ class ApiAuthController extends Controller
 
     public function forgotPassword(Request $request)
     {
-//        $type = filter_var($request->user, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        //        $type = filter_var($request->user, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
         $request->validate([
             'phone'    => 'required|string|exists:App\Models\User\User,phone',
         ]);
@@ -114,34 +113,33 @@ class ApiAuthController extends Controller
                 'expires_at' => now()->addMinutes(5)->format('Y-m-d H:i:s'),
             ]);
         }
-//            if ($type == 'phone') {
+        //            if ($type == 'phone') {
 
-//            } else {
-//                PhoneVerification::updateOrCreate([
-//                    'email' => $request->user
-//                ], [
-//                    'email' => $request->user,
-//                    'otp' => $otp,
-//                    'expires_at' => now()->addMinutes(30),
-//                ]);
-//                Mail::to($request->user)->send(new OtpMail($otp));
-//                return $this->respondWithSuccess([
-//                    'message' => 'OTP sent successfully',
-//                    'expires_at' => now()->addMinutes(10)->format('i'),
-//                    'otp' => $otp,
-//                ]);
-//            }
-//        }
+        //            } else {
+        //                PhoneVerification::updateOrCreate([
+        //                    'email' => $request->user
+        //                ], [
+        //                    'email' => $request->user,
+        //                    'otp' => $otp,
+        //                    'expires_at' => now()->addMinutes(30),
+        //                ]);
+        //                Mail::to($request->user)->send(new OtpMail($otp));
+        //                return $this->respondWithSuccess([
+        //                    'message' => 'OTP sent successfully',
+        //                    'expires_at' => now()->addMinutes(10)->format('i'),
+        //                    'otp' => $otp,
+        //                ]);
+        //            }
+        //        }
         else {
             return $this->respondNotFound('User not found');
         }
-
     }
 
     public function resetPassword(ResetPasswordRequest $request)
     {
-//        $type = filter_var($request->user, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
-        $user = User::where('phone',$request->phone)->first();
+        //        $type = filter_var($request->user, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        $user = User::where('phone', $request->phone)->first();
         if ($user) {
             $user->update([
                 'password' => $request->password,
